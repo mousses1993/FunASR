@@ -28,3 +28,7 @@ modelscope_models
 examples/aishell/llm_asr_nar/*
 *egg-info
 env/
+
+runtime/onnxruntime/third_party/ffmpeg*
+runtime/onnxruntime/third_party/onnxruntime*
+runtime/onnxruntime/third_party/json*
