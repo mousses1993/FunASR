@@ -24,40 +24,95 @@ SpectralClustering::SpectralClustering(int min_num_spks, int max_num_spks, float
 
 std::vector<int> SpectralClustering::Cluster(
     const std::vector<std::vector<float>>& embeddings, int oracle_num) {
-    
+
     size_t n = embeddings.size();
     if (n == 0) {
         return std::vector<int>();
     }
-
-    // If too few samples, return all as single speaker
-    if (n < 20) {
-        return std::vector<int>(n, 0);
+    if (n == 1) {
+        return std::vector<int>(1, 0);
     }
 
-    // Compute similarity matrix
+    // Use agglomerative clustering based on cosine similarity.
+    // This is deterministic and avoids the eigenvector computation issues
+    // with power iteration on the Laplacian.
+
+    // Compute cosine similarity matrix
     auto sim_matrix = ComputeSimilarityMatrix(embeddings);
 
-    // Apply P-pruning
-    PPruning(sim_matrix);
+    // Initialize: each segment is its own cluster
+    std::vector<int> labels(n);
+    std::iota(labels.begin(), labels.end(), 0);
+    int num_clusters = static_cast<int>(n);
 
-    // Symmetrize the matrix
-    for (size_t i = 0; i < n; ++i) {
-        for (size_t j = i + 1; j < n; ++j) {
-            float avg = (sim_matrix[i][j] + sim_matrix[j][i]) / 2.0f;
-            sim_matrix[i][j] = avg;
-            sim_matrix[j][i] = avg;
+    // Determine stopping criteria
+    int target_clusters = oracle_num > 0 ? oracle_num : -1;
+    // Similarity threshold for auto mode: use pval_ remapped to [0.5, 0.9]
+    float stop_threshold = 0.5f;
+
+    // Agglomerative clustering with average linkage
+    while (num_clusters > 1) {
+        if (target_clusters > 0 && num_clusters <= target_clusters) break;
+        if (num_clusters <= min_num_spks_) break;
+
+        // Compute average similarity between each pair of clusters
+        float best_sim = -1.0f;
+        int best_a = -1, best_b = -1;
+
+        // Build cluster membership
+        std::map<int, std::vector<size_t>> cluster_members;
+        for (size_t i = 0; i < n; ++i) {
+            cluster_members[labels[i]].push_back(i);
+        }
+
+        // Find the most similar pair of clusters (average linkage)
+        auto it1 = cluster_members.begin();
+        for (; it1 != cluster_members.end(); ++it1) {
+            auto it2 = it1;
+            ++it2;
+            for (; it2 != cluster_members.end(); ++it2) {
+                float total_sim = 0.0f;
+                int count = 0;
+                for (size_t i : it1->second) {
+                    for (size_t j : it2->second) {
+                        total_sim += sim_matrix[i][j];
+                        count++;
+                    }
+                }
+                float avg_sim = count > 0 ? total_sim / count : 0.0f;
+                if (avg_sim > best_sim) {
+                    best_sim = avg_sim;
+                    best_a = it1->first;
+                    best_b = it2->first;
+                }
+            }
+        }
+
+        // In auto mode, stop if best similarity is below threshold
+        if (target_clusters < 0 && best_sim < stop_threshold) break;
+
+        // Merge cluster best_b into best_a
+        if (best_a >= 0 && best_b >= 0) {
+            for (auto& l : labels) {
+                if (l == best_b) l = best_a;
+            }
+            num_clusters--;
+        } else {
+            break;
         }
     }
 
-    // Compute Laplacian
-    auto laplacian = ComputeLaplacian(sim_matrix);
+    // Renumber labels to be consecutive starting from 0
+    std::map<int, int> label_map;
+    int new_label = 0;
+    for (auto& l : labels) {
+        if (label_map.find(l) == label_map.end()) {
+            label_map[l] = new_label++;
+        }
+        l = label_map[l];
+    }
 
-    // Get spectral embeddings and determine number of speakers
-    auto [spectral_embs, num_speakers] = GetSpectralEmbeddings(laplacian, oracle_num);
-
-    // Perform K-means clustering
-    return KMeansClustering(spectral_embs, num_speakers);
+    return labels;
 }
 
 std::vector<std::vector<float>> SpectralClustering::ComputeSimilarityMatrix(
@@ -121,8 +176,156 @@ std::vector<std::vector<float>> SpectralClustering::ComputeLaplacian(
     return laplacian;
 }
 
-// Simple eigenvalue computation using power iteration for top-k eigenvectors
-// For a full implementation, consider using a linear algebra library like Eigen
+// Power iteration to compute the dominant eigenvector of a matrix
+static std::vector<float> PowerIteration(
+    const std::vector<std::vector<float>>& matrix,
+    int max_iterations = 100,
+    float tolerance = 1e-6f) {
+    
+    size_t n = matrix.size();
+    if (n == 0) return std::vector<float>();
+    
+    // Initialize with random values using mt19937 for thread safety
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<float> dis(-1.0f, 1.0f);
+    
+    std::vector<float> v(n);
+    for (size_t i = 0; i < n; ++i) {
+        v[i] = dis(gen);
+    }
+    
+    // Normalize initial vector
+    float norm = 0.0f;
+    for (float val : v) norm += val * val;
+    norm = std::sqrt(norm);
+    if (norm > 1e-10f) {
+        for (float& val : v) val /= norm;
+    }
+    
+    for (int iter = 0; iter < max_iterations; ++iter) {
+        // Matrix-vector multiplication: v_new = matrix * v
+        std::vector<float> v_new(n, 0.0f);
+        for (size_t i = 0; i < n; ++i) {
+            for (size_t j = 0; j < n; ++j) {
+                v_new[i] += matrix[i][j] * v[j];
+            }
+        }
+        
+        // Normalize
+        float new_norm = 0.0f;
+        for (float val : v_new) new_norm += val * val;
+        new_norm = std::sqrt(new_norm);
+        if (new_norm < 1e-10f) break;
+        
+        for (float& val : v_new) val /= new_norm;
+        
+        // Check convergence
+        float diff = 0.0f;
+        for (size_t i = 0; i < n; ++i) {
+            diff += std::abs(v_new[i] - v[i]);
+        }
+        
+        v = v_new;
+        
+        if (diff < tolerance) break;
+    }
+    
+    return v;
+}
+
+// Compute top-k eigenvectors using deflation method
+static std::vector<std::vector<float>> ComputeTopKEigenvectors(
+    std::vector<std::vector<float>> matrix, int k, int max_iterations = 100) {
+    
+    size_t n = matrix.size();
+    std::vector<std::vector<float>> eigenvectors(k, std::vector<float>(n, 0.0f));
+    
+    for (int eig_idx = 0; eig_idx < k; ++eig_idx) {
+        // Power iteration for current eigenvector
+        auto v = PowerIteration(matrix, max_iterations);
+        if (v.empty()) continue;
+        
+        eigenvectors[eig_idx] = v;
+        
+        // Deflation: subtract the outer product of v from matrix
+        // This removes the contribution of the found eigenvector
+        // A' = A - lambda * v * v^T (approximately)
+        // Compute eigenvalue estimate: lambda = v^T * A * v
+        float eigenvalue = 0.0f;
+        for (size_t i = 0; i < n; ++i) {
+            for (size_t j = 0; j < n; ++j) {
+                eigenvalue += v[i] * matrix[i][j] * v[j];
+            }
+        }
+        
+        // Deflate the matrix
+        for (size_t i = 0; i < n; ++i) {
+            for (size_t j = 0; j < n; ++j) {
+                matrix[i][j] -= eigenvalue * v[i] * v[j];
+            }
+        }
+    }
+    
+    return eigenvectors;
+}
+
+// Compute eigenvalues for eigengap analysis
+static std::vector<float> ComputeEigenvalues(
+    const std::vector<std::vector<float>>& matrix, int num_eigenvalues) {
+    
+    std::vector<float> eigenvalues;
+    std::vector<std::vector<float>> matrix_copy = matrix;
+    
+    for (int i = 0; i < num_eigenvalues; ++i) {
+        auto v = PowerIteration(matrix_copy);
+        if (v.empty()) break;
+        
+        // Compute eigenvalue: lambda = v^T * A * v
+        float eigenvalue = 0.0f;
+        size_t n = matrix_copy.size();
+        for (size_t j = 0; j < n; ++j) {
+            for (size_t k = 0; k < n; ++k) {
+                eigenvalue += v[j] * matrix_copy[j][k] * v[k];
+            }
+        }
+        eigenvalues.push_back(eigenvalue);
+        
+        // Deflate for next eigenvalue
+        for (size_t j = 0; j < n; ++j) {
+            for (size_t k = 0; k < n; ++k) {
+                matrix_copy[j][k] -= eigenvalue * v[j] * v[k];
+            }
+        }
+    }
+    
+    return eigenvalues;
+}
+
+// Use eigengap heuristic to determine optimal number of clusters
+static int EstimateNumSpeakersByEigengap(const std::vector<float>& eigenvalues, 
+                                          int min_spks, int max_spks) {
+    if (eigenvalues.size() < 2) return min_spks;
+    
+    // Sort eigenvalues in descending order (they should already be sorted by power iteration)
+    // Find the largest gap between consecutive eigenvalues
+    float max_gap = 0.0f;
+    int optimal_k = min_spks;
+    
+    int check_limit = std::min(static_cast<int>(eigenvalues.size()), max_spks + 1);
+    
+    for (int i = 1; i < check_limit; ++i) {
+        float gap = eigenvalues[i - 1] - eigenvalues[i];
+        if (gap > max_gap && i >= min_spks) {
+            max_gap = gap;
+            optimal_k = i;
+        }
+    }
+    
+    return std::max(min_spks, std::min(optimal_k, max_spks));
+}
+
+// Compute spectral embeddings using power iteration for eigenvector computation
 std::pair<std::vector<std::vector<float>>, int> SpectralClustering::GetSpectralEmbeddings(
     const std::vector<std::vector<float>>& laplacian, int oracle_num) {
     
@@ -133,23 +336,32 @@ std::pair<std::vector<std::vector<float>>, int> SpectralClustering::GetSpectralE
     if (oracle_num > 0) {
         num_speakers = oracle_num;
     } else {
-        // Simple heuristic: use eigengap
-        // In practice, you'd compute all eigenvalues and find the gap
-        // Here we use a simpler approach
-        num_speakers = std::min(2, static_cast<int>(n / 10));
-        num_speakers = std::max(num_speakers, min_num_spks_);
-        num_speakers = std::min(num_speakers, max_num_spks_);
+        // Use eigengap heuristic to estimate number of speakers
+        // Compute more eigenvalues than max_num_spks_ to find the gap
+        int num_eigenvalues_to_compute = std::min(static_cast<int>(n), max_num_spks_ + 3);
+        auto eigenvalues = ComputeEigenvalues(laplacian, num_eigenvalues_to_compute);
+        
+        if (eigenvalues.size() >= 2) {
+            num_speakers = EstimateNumSpeakersByEigengap(eigenvalues, min_num_spks_, max_num_spks_);
+        } else {
+            // Fallback to simple heuristic
+            num_speakers = std::max(2, static_cast<int>(n / 10));
+            num_speakers = std::max(num_speakers, min_num_spks_);
+            num_speakers = std::min(num_speakers, max_num_spks_);
+        }
     }
-
-    // For simplicity, return identity-like embeddings
-    // A proper implementation would compute actual eigenvectors
+    
+    // Compute top-k eigenvectors using power iteration with deflation
+    auto eigenvectors = ComputeTopKEigenvectors(laplacian, num_speakers);
+    
+    // Transpose to get embeddings: each row is a sample's embedding
     std::vector<std::vector<float>> embeddings(n, std::vector<float>(num_speakers, 0.0f));
     for (size_t i = 0; i < n; ++i) {
         for (int j = 0; j < num_speakers; ++j) {
-            embeddings[i][j] = static_cast<float>(std::rand()) / RAND_MAX;
+            embeddings[i][j] = eigenvectors[j][i];
         }
     }
-
+    
     return {embeddings, num_speakers};
 }
 
@@ -163,14 +375,50 @@ std::vector<int> SpectralClustering::KMeansClustering(
 
     size_t dim = embeddings[0].size();
 
-    // Initialize centroids randomly
+    // KMeans++ initialization for better convergence
     std::vector<std::vector<float>> centroids(k, std::vector<float>(dim));
     std::random_device rd;
     std::mt19937 gen(rd());
+    
+    // Step 1: Choose first centroid randomly
     std::uniform_int_distribution<size_t> dis(0, n - 1);
-
-    for (int i = 0; i < k; ++i) {
-        centroids[i] = embeddings[dis(gen)];
+    centroids[0] = embeddings[dis(gen)];
+    
+    // Step 2: Choose remaining centroids with probability proportional to distance squared
+    for (int c = 1; c < k; ++c) {
+        std::vector<float> distances(n);
+        float total_dist = 0.0f;
+        
+        for (size_t i = 0; i < n; ++i) {
+            // Find distance to nearest existing centroid
+            float min_dist = std::numeric_limits<float>::max();
+            for (int j = 0; j < c; ++j) {
+                float dist = 0.0f;
+                for (size_t d = 0; d < dim; ++d) {
+                    float diff = embeddings[i][d] - centroids[j][d];
+                    dist += diff * diff;
+                }
+                min_dist = std::min(min_dist, dist);
+            }
+            distances[i] = min_dist;
+            total_dist += min_dist;
+        }
+        
+        // Choose next centroid with weighted probability
+        std::uniform_real_distribution<float> prob_dis(0.0f, total_dist);
+        float threshold = prob_dis(gen);
+        float cum_dist = 0.0f;
+        size_t chosen = 0;
+        
+        for (size_t i = 0; i < n; ++i) {
+            cum_dist += distances[i];
+            if (cum_dist >= threshold) {
+                chosen = i;
+                break;
+            }
+        }
+        
+        centroids[c] = embeddings[chosen];
     }
 
     std::vector<int> labels(n, 0);
@@ -234,10 +482,8 @@ SpeakerDiarization::SpeakerDiarization() : initialized_(false) {
 }
 
 SpeakerDiarization::~SpeakerDiarization() {
-    if (clusterer_) {
-        delete clusterer_;
-        clusterer_ = nullptr;
-    }
+    // clusterer_ is a unique_ptr, so it's automatically cleaned up
+    // No need for manual delete
 }
 
 bool SpeakerDiarization::Init(CAMPPlusModel* campplus_model,
@@ -249,34 +495,65 @@ bool SpeakerDiarization::Init(CAMPPlusModel* campplus_model,
 
     campplus_model_ = campplus_model;
 
-    // Parse configuration
-    auto it = config.find("segment_duration");
-    if (it != config.end()) {
-        segment_duration_ = std::stof(it->second);
+    // Parse configuration with exception handling
+    try {
+        auto it = config.find("segment_duration");
+        if (it != config.end()) {
+            segment_duration_ = std::stof(it->second);
+        }
+
+        it = config.find("segment_shift");
+        if (it != config.end()) {
+            segment_shift_ = std::stof(it->second);
+        }
+
+        it = config.find("min_num_speakers");
+        if (it != config.end()) {
+            min_num_speakers_ = std::stoi(it->second);
+        }
+
+        it = config.find("max_num_speakers");
+        if (it != config.end()) {
+            max_num_speakers_ = std::stoi(it->second);
+        }
+
+        it = config.find("merge_threshold");
+        if (it != config.end()) {
+            merge_threshold_ = std::stof(it->second);
+        }
+    } catch (const std::invalid_argument& e) {
+        LOG(ERROR) << "Invalid configuration value: " << e.what();
+        return false;
+    } catch (const std::out_of_range& e) {
+        LOG(ERROR) << "Configuration value out of range: " << e.what();
+        return false;
     }
 
-    it = config.find("segment_shift");
-    if (it != config.end()) {
-        segment_shift_ = std::stof(it->second);
+    // Validate configuration values
+    if (segment_duration_ <= 0.0f) {
+        LOG(ERROR) << "Invalid segment_duration: " << segment_duration_ << ", using default";
+        segment_duration_ = DEFAULT_SEGMENT_DURATION;
+    }
+    if (segment_shift_ <= 0.0f) {
+        LOG(ERROR) << "Invalid segment_shift: " << segment_shift_ << ", using default";
+        segment_shift_ = DEFAULT_SEGMENT_SHIFT;
+    }
+    if (min_num_speakers_ < 1) {
+        LOG(ERROR) << "Invalid min_num_speakers: " << min_num_speakers_ << ", using default";
+        min_num_speakers_ = DEFAULT_MIN_NUM_SPEAKERS;
+    }
+    if (max_num_speakers_ < min_num_speakers_) {
+        LOG(ERROR) << "max_num_speakers (" << max_num_speakers_ 
+                   << ") < min_num_speakers (" << min_num_speakers_ << "), adjusting";
+        max_num_speakers_ = min_num_speakers_;
+    }
+    if (merge_threshold_ < 0.0f || merge_threshold_ > 1.0f) {
+        LOG(ERROR) << "Invalid merge_threshold: " << merge_threshold_ << ", using default";
+        merge_threshold_ = DEFAULT_MERGE_THRESHOLD;
     }
 
-    it = config.find("min_num_speakers");
-    if (it != config.end()) {
-        min_num_speakers_ = std::stoi(it->second);
-    }
-
-    it = config.find("max_num_speakers");
-    if (it != config.end()) {
-        max_num_speakers_ = std::stoi(it->second);
-    }
-
-    it = config.find("merge_threshold");
-    if (it != config.end()) {
-        merge_threshold_ = std::stof(it->second);
-    }
-
-    // Create clusterer
-    clusterer_ = new SpectralClustering(min_num_speakers_, max_num_speakers_);
+    // Create clusterer using unique_ptr for automatic memory management
+    clusterer_ = std::make_unique<SpectralClustering>(min_num_speakers_, max_num_speakers_);
 
     initialized_ = true;
     LOG(INFO) << "SpeakerDiarization initialized successfully";
@@ -632,24 +909,36 @@ std::vector<int> SpeakerDiarization::MergeByCosineSimilarity(
 
         // Merge if above threshold
         if (max_sim >= merge_threshold_ && merge_i >= 0 && merge_j >= 0) {
+            // Only remap labels: merge j -> i, do NOT decrement any labels
+            // The label renumbering will be done at the end
             for (auto& label : labels) {
                 if (label == merge_j) {
                     label = merge_i;
-                } else if (label > merge_j) {
-                    label--;
                 }
             }
             merged = true;
         }
     }
 
-    // Correct labels to be consecutive
+    // Renumber labels to be consecutive starting from 0
     std::map<int, int> label_map;
     int new_label = 0;
-    for (auto& label : labels) {
-        if (label_map.find(label) == label_map.end()) {
-            label_map[label] = new_label++;
+    for (const int& original_label : unique_labels) {
+        // Check if this label still exists after merging
+        bool exists = false;
+        for (int l : labels) {
+            if (l == original_label) {
+                exists = true;
+                break;
+            }
         }
+        if (exists && label_map.find(original_label) == label_map.end()) {
+            label_map[original_label] = new_label++;
+        }
+    }
+    
+    // Apply the final mapping
+    for (auto& label : labels) {
         label = label_map[label];
     }
 
@@ -664,9 +953,14 @@ std::vector<std::vector<float>> ComputeCosineSimilarityMatrix(
     size_t n = embeddings.size();
     std::vector<std::vector<float>> sim_matrix(n, std::vector<float>(n, 0.0f));
 
+    // Only compute upper triangle (including diagonal), then mirror
+    // Cosine similarity is symmetric: sim[i][j] = sim[j][i]
     for (size_t i = 0; i < n; ++i) {
-        for (size_t j = 0; j < n; ++j) {
-            sim_matrix[i][j] = CosineSimilarity(embeddings[i], embeddings[j]);
+        sim_matrix[i][i] = 1.0f;  // Self-similarity is always 1.0
+        for (size_t j = i + 1; j < n; ++j) {
+            float sim = CosineSimilarity(embeddings[i], embeddings[j]);
+            sim_matrix[i][j] = sim;
+            sim_matrix[j][i] = sim;  // Mirror for symmetry
         }
     }
 

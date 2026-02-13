@@ -961,7 +961,7 @@
 
 		// Allocate memory for result (caller must free)
 		char* result = new char[json_result.size() + 1];
-		strcpy(result, json_result.c_str());
+		std::memcpy(result, json_result.c_str(), json_result.size() + 1);
 		return result;
 	}
 
@@ -977,6 +977,16 @@
 		const std::vector<std::vector<float>> &hw_emb, int sampling_rate,
 		bool itn, FUNASR_DEC_HANDLE dec_handle)
 	{
+		// NOTE: This API is currently a Work-In-Progress (WIP).
+		// The speaker diarization integration is not yet fully implemented.
+		// Currently, this function only performs ASR and returns the result.
+		// Full speaker diarization integration will be added in a future update.
+		// 
+		// For now, use the separate APIs:
+		//   1. FunOfflineInfer() for ASR
+		//   2. SpeakerDiarizationProcess() for speaker diarization
+		//   3. Manually combine the results based on timestamps
+		
 		// First perform ASR
 		FUNASR_RESULT asr_result = FunOfflineInfer(asr_handle, sz_filename, mode, fn_callback, 
 			hw_emb, sampling_rate, itn, dec_handle);

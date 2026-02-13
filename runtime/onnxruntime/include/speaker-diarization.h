@@ -84,6 +84,8 @@ public:
     /**
      * Initialize the speaker diarization system
      * @param campplus_model Initialized CAM++ model for speaker embedding
+     *                       Note: The caller owns this pointer and must ensure it remains
+     *                       valid for the lifetime of this SpeakerDiarization instance.
      * @param config Configuration parameters
      */
     bool Init(CAMPPlusModel* campplus_model,
@@ -115,8 +117,12 @@ public:
     void SetMaxNumSpeakers(int max_spk) { max_num_speakers_ = max_spk; }
 
 private:
+    // campplus_model_ is a non-owning pointer - the caller retains ownership
+    // and must ensure the model outlives this instance
     CAMPPlusModel* campplus_model_ = nullptr;
-    SpectralClustering* clusterer_ = nullptr;
+    
+    // clusterer_ is owned by this class - use unique_ptr for automatic memory management
+    std::unique_ptr<SpectralClustering> clusterer_;
 
     // Configuration
     float segment_duration_ = DEFAULT_SEGMENT_DURATION;

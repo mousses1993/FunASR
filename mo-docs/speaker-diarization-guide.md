@@ -201,6 +201,17 @@ modelscope download --model iic/speech_campplus_sv_zh-cn_16k-common --local_dir 
 
 ### 实验性导出脚本（仅供参考，不保证正确性）
 
+我们提供了一个导出脚本 `scripts/export_campplus_onnx.py`，可以直接使用：
+
+```bash
+python scripts/export_campplus_onnx.py \
+    --model_dir model_zoo/speaker/CAM++/pytorch \
+    --output_dir model_zoo/speaker/CAM++/onnx \
+    --quantize  # 可选：导出量化模型
+```
+
+或者手动导出（注意：输入名称必须为 `fbank`，C++ 运行时依赖此名称）：
+
 ```python
 import torch
 from funasr import AutoModel
@@ -209,15 +220,16 @@ from funasr import AutoModel
 model = AutoModel(model="iic/speech_campplus_sv_zh-cn_16k-common")
 
 # 导出 ONNX（实验性，可能存在问题）
+# 注意：input_names 必须是 "fbank"，与 C++ 运行时保持一致
 dummy_input = torch.randn(1, 100, 80)  # [batch, frames, features]
 torch.onnx.export(
     model.model,
     dummy_input,
     "campplus.onnx",
-    input_names=["features"],
+    input_names=["fbank"],  # 必须是 "fbank"
     output_names=["embedding"],
     dynamic_axes={
-        "features": {0: "batch", 1: "frames"},
+        "fbank": {0: "batch", 1: "num_frames"},
         "embedding": {0: "batch"}
     },
     opset_version=14
@@ -247,9 +259,9 @@ test_input = torch.randn(1, 100, 80)
 with torch.no_grad():
     pytorch_output = model.model(test_input).numpy()
 
-# ONNX 推理
+# ONNX 推理（注意输入名称为 "fbank"）
 ort_session = ort.InferenceSession("campplus.onnx")
-onnx_output = ort_session.run(None, {"features": test_input.numpy()})[0]
+onnx_output = ort_session.run(None, {"fbank": test_input.numpy()})[0]
 
 # 比较输出
 diff = np.abs(pytorch_output - onnx_output).max()
@@ -294,7 +306,7 @@ A: 使用 `FunOfflineInferWithSpeaker` API 或自行实现:
 
 ## 更新日志
 
-### v1.0.0 (2025-02-13)
+### v1.0.0 (2026-02-13)
 - 初始实现
 - 支持 CAM++ 嵌入提取
 - 支持谱聚类算法
@@ -303,4 +315,4 @@ A: 使用 `FunOfflineInferWithSpeaker` API 或自行实现:
 
 ---
 
-*文档生成日期: 2025-02-13*
+*文档生成日期: 2026-02-13*

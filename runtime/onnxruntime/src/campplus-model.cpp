@@ -140,22 +140,39 @@ std::vector<float> CAMPPlusModel::ExtractEmbedding(const float* features,
 std::vector<std::vector<float>> CAMPPlusModel::ExtractEmbeddings(
     const std::vector<std::tuple<float, float, std::vector<float>>>& audio_segments) {
     
+    // DEPRECATED: This method is not used by SpeakerDiarization.
+    // SpeakerDiarization::ExtractEmbeddings extracts fbank features internally
+    // and calls ExtractEmbedding() directly.
+    //
+    // This method expects pre-computed fbank features (not raw audio) as input.
+    // If you need to extract embeddings from raw audio, use the following pattern:
+    //   1. Call SpeakerDiarization::ExtractFbankFeatures() to get fbank features
+    //   2. Call CAMPPlusModel::ExtractEmbedding() with the fbank features
+    //
+    // This method is kept for API compatibility but may be removed in future versions.
+    
     std::vector<std::vector<float>> embeddings;
     embeddings.reserve(audio_segments.size());
 
     for (const auto& segment : audio_segments) {
         const std::vector<float>& audio_data = std::get<2>(segment);
         
-        // For now, we expect pre-computed fbank features
-        // In a full implementation, you would compute fbank features here
-        // This is a placeholder that assumes features are passed directly
+        // Input validation: expect pre-computed fbank features
+        // Features should be in shape [num_frames * SPEAKER_FBANK_DIM]
         if (audio_data.size() % SPEAKER_FBANK_DIM != 0) {
-            LOG(WARNING) << "Audio data size not divisible by feature dimension";
+            LOG(WARNING) << "Audio data size not divisible by feature dimension. "
+                         << "Expected pre-computed fbank features, got size: " << audio_data.size();
             embeddings.push_back(std::vector<float>());
             continue;
         }
 
         int num_frames = audio_data.size() / SPEAKER_FBANK_DIM;
+        if (num_frames == 0) {
+            LOG(WARNING) << "Empty features provided";
+            embeddings.push_back(std::vector<float>());
+            continue;
+        }
+        
         auto embedding = ExtractEmbedding(audio_data.data(), num_frames, SPEAKER_FBANK_DIM);
         embeddings.push_back(embedding);
     }

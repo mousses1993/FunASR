@@ -53,15 +53,10 @@ int main(int argc, char** argv)
     TCLAP::ValueArg<std::string>    speaker_dir("", SPEAKER_DIR, "the speaker model path (CAM++), which contains model.onnx", true, "", "string");
     TCLAP::ValueArg<std::string>    speaker_quant("", SPEAKER_QUANT, "true (Default), load the model of model.onnx in speaker_dir. If set true, load the model of model_quant.onnx", false, "true", "string");
     
-    // VAD model parameters (required for segmenting audio)
+    // VAD model parameters (optional, for segmenting audio)
     TCLAP::ValueArg<std::string>    vad_dir("", VAD_DIR, "the vad model path, which contains model.onnx, vad.yaml, vad.mvn", false, "", "string");
     TCLAP::ValueArg<std::string>    vad_quant("", VAD_QUANT, "true (Default), load the model of model.onnx in vad_dir. If set true, load the model of model_quant.onnx in vad_dir", false, "true", "string");
-    
-    // ASR model parameters (optional, for transcription)
-    TCLAP::ValueArg<std::string>    model_dir("", MODEL_DIR, "the asr model path, which contains model.onnx, config.yaml, am.mvn", false, "", "string");
-    TCLAP::ValueArg<std::string>    quantize("", QUANTIZE, "true (Default), load the model of model.onnx in model_dir. If set true, load the model of model_quant.onnx in model_dir", false, "true", "string");
-    TCLAP::ValueArg<std::string>    punc_dir("", PUNC_DIR, "the punc model path, which contains model.onnx, punc.yaml", false, "", "string");
-    
+
     // Input/Output parameters
     TCLAP::ValueArg<std::string>    wav_path("", WAV_PATH, "the input audio file (wav, pcm, or other formats supported by ffmpeg)", true, "", "string");
     TCLAP::ValueArg<std::int32_t>   audio_fs("", AUDIO_FS, "the sample rate of audio", false, 16000, "int32_t");
@@ -75,9 +70,6 @@ int main(int argc, char** argv)
     cmd.add(speaker_quant);
     cmd.add(vad_dir);
     cmd.add(vad_quant);
-    cmd.add(model_dir);
-    cmd.add(quantize);
-    cmd.add(punc_dir);
     cmd.add(wav_path);
     cmd.add(audio_fs);
     cmd.add(output_file);
@@ -89,20 +81,6 @@ int main(int argc, char** argv)
     GetValue(speaker_dir, SPEAKER_DIR, model_path);
     GetValue(speaker_quant, SPEAKER_QUANT, model_path);
     GetValue(wav_path, WAV_PATH, model_path);
-    
-    if (vad_dir.isSet()) {
-        GetValue(vad_dir, VAD_DIR, model_path);
-        GetValue(vad_quant, VAD_QUANT, model_path);
-    }
-    
-    if (model_dir.isSet()) {
-        GetValue(model_dir, MODEL_DIR, model_path);
-        GetValue(quantize, QUANTIZE, model_path);
-    }
-    
-    if (punc_dir.isSet()) {
-        GetValue(punc_dir, PUNC_DIR, model_path);
-    }
 
     struct timeval start, end;
     gettimeofday(&start, nullptr);
@@ -124,8 +102,12 @@ int main(int argc, char** argv)
     FUNASR_HANDLE vad_handle = nullptr;
     if (vad_dir.isSet()) {
         gettimeofday(&start, nullptr);
-        LOG(INFO) << "Initializing VAD model...";
-        vad_handle = FsmnVadInit(model_path, thread_num);
+        LOG(INFO) << "Initializing VAD model from: " << vad_dir.getValue();
+        // FsmnVadInit expects MODEL_DIR and QUANTIZE keys (not VAD_DIR/VAD_QUANT)
+        std::map<std::string, std::string> vad_model_path;
+        vad_model_path[MODEL_DIR] = vad_dir.getValue();
+        vad_model_path[QUANTIZE] = vad_quant.getValue();
+        vad_handle = FsmnVadInit(vad_model_path, thread_num);
         if (!vad_handle) {
             LOG(ERROR) << "Failed to initialize VAD model";
             CampplusUninit(campplus_handle);
