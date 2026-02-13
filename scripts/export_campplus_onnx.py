@@ -102,6 +102,7 @@ def export_onnx(
         },
         opset_version=opset_version,
         do_constant_folding=True,
+        dynamo=False,  # Use legacy TorchScript exporter for PyTorch 2.4+ compatibility
     )
     print(f"Exported ONNX model: {onnx_path}")
 
