@@ -892,3 +892,104 @@
 			return;
 		wfst_decoder->UnloadHwsRes();
 	}
+
+	// ==================== Speaker Diarization APIs ====================
+
+	_FUNASRAPI FUNASR_HANDLE CampplusInit(std::map<std::string, std::string>& model_path, int thread_num)
+	{
+		funasr::CAMPPlusModel* model = funasr::CreateCAMPPlusModel(model_path, thread_num);
+		return model;
+	}
+
+	_FUNASRAPI void CampplusUninit(FUNASR_HANDLE handle)
+	{
+		funasr::CAMPPlusModel* model = (funasr::CAMPPlusModel*)handle;
+		if (model) {
+			delete model;
+		}
+	}
+
+	_FUNASRAPI std::vector<float> CampplusExtractEmbedding(FUNASR_HANDLE handle, const float* features, int num_frames, int feat_dim)
+	{
+		funasr::CAMPPlusModel* model = (funasr::CAMPPlusModel*)handle;
+		if (!model) {
+			return std::vector<float>();
+		}
+		return model->ExtractEmbedding(features, num_frames, feat_dim);
+	}
+
+	_FUNASRAPI FUNASR_HANDLE SpeakerDiarizationInit(FUNASR_HANDLE campplus_handle, std::map<std::string, std::string>& config)
+	{
+		funasr::CAMPPlusModel* campplus_model = (funasr::CAMPPlusModel*)campplus_handle;
+		if (!campplus_model) {
+			LOG(ERROR) << "CAMPPlus model handle is null";
+			return nullptr;
+		}
+		funasr::SpeakerDiarization* diarization = funasr::CreateSpeakerDiarization(campplus_model, config);
+		return diarization;
+	}
+
+	_FUNASRAPI void SpeakerDiarizationUninit(FUNASR_HANDLE handle)
+	{
+		funasr::SpeakerDiarization* diarization = (funasr::SpeakerDiarization*)handle;
+		if (diarization) {
+			delete diarization;
+		}
+	}
+
+	_FUNASRAPI const char* SpeakerDiarizationProcess(FUNASR_HANDLE handle, 
+		const std::vector<std::tuple<float, float, std::vector<float>>>& vad_segments,
+		int sample_rate)
+	{
+		funasr::SpeakerDiarization* diarization = (funasr::SpeakerDiarization*)handle;
+		if (!diarization) {
+			return nullptr;
+		}
+
+		std::vector<funasr::SpeakerSegment> segments = diarization->Process(vad_segments, sample_rate);
+		
+		// Convert to JSON string
+		std::string json_result = "[";
+		for (size_t i = 0; i < segments.size(); ++i) {
+			if (i > 0) json_result += ",";
+			char buf[128];
+			snprintf(buf, sizeof(buf), "[%.2f,%.2f,%d]", 
+				segments[i].start_time, segments[i].end_time, segments[i].speaker_id);
+			json_result += buf;
+		}
+		json_result += "]";
+
+		// Allocate memory for result (caller must free)
+		char* result = new char[json_result.size() + 1];
+		strcpy(result, json_result.c_str());
+		return result;
+	}
+
+	_FUNASRAPI void SpeakerDiarizationFreeResult(const char* result)
+	{
+		if (result) {
+			delete[] result;
+		}
+	}
+
+	_FUNASRAPI FUNASR_RESULT FunOfflineInferWithSpeaker(FUNASR_HANDLE asr_handle, FUNASR_HANDLE speaker_handle,
+		const char* sz_filename, FUNASR_MODE mode, QM_CALLBACK fn_callback,
+		const std::vector<std::vector<float>> &hw_emb, int sampling_rate,
+		bool itn, FUNASR_DEC_HANDLE dec_handle)
+	{
+		// First perform ASR
+		FUNASR_RESULT asr_result = FunOfflineInfer(asr_handle, sz_filename, mode, fn_callback, 
+			hw_emb, sampling_rate, itn, dec_handle);
+		
+		if (!asr_result) {
+			return nullptr;
+		}
+
+		// TODO: Integrate speaker diarization results with ASR results
+		// This would require:
+		// 1. Running VAD on the audio
+		// 2. Running speaker diarization on VAD segments
+		// 3. Assigning speaker labels to ASR sentences based on time overlap
+
+		return asr_result;
+	}

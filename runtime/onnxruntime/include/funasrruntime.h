@@ -131,3 +131,30 @@ _FUNASRAPI void			FunASRWfstDecoderUninit(FUNASR_DEC_HANDLE handle);
 _FUNASRAPI void			FunWfstDecoderLoadHwsRes(FUNASR_DEC_HANDLE handle, int inc_bias, std::unordered_map<std::string, int> &hws_map);
 _FUNASRAPI void			FunWfstDecoderUnloadHwsRes(FUNASR_DEC_HANDLE handle);
 
+// Speaker Diarization (CAM++ model)
+// Initialize speaker embedding model
+_FUNASRAPI FUNASR_HANDLE		CampplusInit(std::map<std::string, std::string>& model_path, int thread_num);
+_FUNASRAPI void				CampplusUninit(FUNASR_HANDLE handle);
+
+// Extract speaker embedding from audio buffer
+_FUNASRAPI std::vector<float>	CampplusExtractEmbedding(FUNASR_HANDLE handle, const float* features, int num_frames, int feat_dim);
+
+// Initialize speaker diarization
+_FUNASRAPI FUNASR_HANDLE		SpeakerDiarizationInit(FUNASR_HANDLE campplus_handle, std::map<std::string, std::string>& config);
+_FUNASRAPI void				SpeakerDiarizationUninit(FUNASR_HANDLE handle);
+
+// Perform speaker diarization on VAD segments
+// Returns speaker segments as JSON string: [[start, end, speaker_id], ...]
+_FUNASRAPI const char*			SpeakerDiarizationProcess(FUNASR_HANDLE handle, 
+									const std::vector<std::tuple<float, float, std::vector<float>>>& vad_segments,
+									int sample_rate);
+
+// Free speaker diarization result
+_FUNASRAPI void				SpeakerDiarizationFreeResult(const char* result);
+
+// Combined API: Perform ASR with speaker diarization
+_FUNASRAPI FUNASR_RESULT		FunOfflineInferWithSpeaker(FUNASR_HANDLE asr_handle, FUNASR_HANDLE speaker_handle,
+									const char* sz_filename, FUNASR_MODE mode, QM_CALLBACK fn_callback,
+									const std::vector<std::vector<float>> &hw_emb, int sampling_rate=16000,
+									bool itn=true, FUNASR_DEC_HANDLE dec_handle=nullptr);
+

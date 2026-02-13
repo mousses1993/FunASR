@@ -32,3 +32,4 @@ env/
 runtime/onnxruntime/third_party/ffmpeg*
 runtime/onnxruntime/third_party/onnxruntime*
 runtime/onnxruntime/third_party/json*
+model_zoo

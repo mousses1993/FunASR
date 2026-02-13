@@ -72,4 +72,6 @@ using namespace std;
 #include "offline-stream.h"
 #include "tpass-stream.h"
 #include "tpass-online-stream.h"
+#include "campplus-model.h"
+#include "speaker-diarization.h"
 #include "funasrruntime.h"

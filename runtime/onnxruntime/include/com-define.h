@@ -137,4 +137,9 @@ namespace funasr {
 #define JIEBA_USERDICT "jieba_usr_dict"
 #define JIEBA_HMM_MODEL "jieba.hmm"
 
+// speaker diarization
+#define CAMPP_CONFIG_NAME "config.yaml"
+#define SPEAKER_DIR "speaker-dir"
+#define SPEAKER_QUANT "speaker-quant"
+
 } // namespace funasr
