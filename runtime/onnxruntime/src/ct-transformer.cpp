@@ -16,6 +16,24 @@ void CTTransformer::InitPunc(const std::string &punc_model, const std::string &p
     session_options.SetGraphOptimizationLevel(ORT_ENABLE_ALL);
     session_options.DisableCpuMemArena();
 
+#ifdef ONNXRUNTIME_USE_CUDA
+    // Enable CUDA Execution Provider
+    try {
+        OrtCUDAProviderOptions cuda_options;
+        cuda_options.device_id = 0;
+        cuda_options.arena_extend_strategy = 0;  // 0 = kNextPowerOfTwo
+        cuda_options.gpu_mem_limit = 2ULL * 1024 * 1024 * 1024;  // 2GB
+        cuda_options.cudnn_conv_algo_search = OrtCudnnConvAlgoSearchExhaustive;
+        cuda_options.do_copy_in_default_stream = true;
+
+        session_options.AppendExecutionProvider_CUDA(cuda_options);
+        LOG(INFO) << "CUDA Execution Provider enabled for punctuation model";
+    } catch (std::exception const &e) {
+        LOG(WARNING) << "Failed to enable CUDA Execution Provider: " << e.what()
+                     << ", falling back to CPU";
+    }
+#endif
+
     try{
         m_session = std::make_unique<Ort::Session>(env_, ORTSTRING(punc_model).c_str(), session_options);
         LOG(INFO) << "Successfully load model from " << punc_model;
@@ -27,7 +45,7 @@ void CTTransformer::InitPunc(const std::string &punc_model, const std::string &p
     // read inputnames outputnames
     GetInputNames(m_session.get(), m_strInputNames, m_szInputNames);
     GetOutputNames(m_session.get(), m_strOutputNames, m_szOutputNames);
-    
+
 	m_tokenizer.OpenYaml(punc_config.c_str(), token_file.c_str());
     m_tokenizer.JiebaInit(punc_config);
 }

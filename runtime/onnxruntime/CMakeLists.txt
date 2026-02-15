@@ -1,4 +1,6 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.25)
+
+include(${CMAKE_SOURCE_DIR}/recipes/${PLATFORM}/platform.cmake)
 
 project(FunASROnnx)
 
@@ -19,6 +21,9 @@ else()
     message("Little endian system")
 endif()
 
+find_package(onnxruntime REQUIRED)
+find_package(ffmpeg REQUIRED)
+
 # json
 include(FetchContent)
 if(NOT EXISTS ${PROJECT_SOURCE_DIR}/third_party/json/ChangeLog.md )
@@ -31,6 +36,10 @@ FetchContent_MakeAvailable(json)
 endif()
 
 # for onnxruntime
+if(ONNXRUNTIME_USE_CUDA)
+    add_definitions(-DONNXRUNTIME_USE_CUDA)
+endif()
+
 IF(WIN32)
     file(REMOVE ${PROJECT_SOURCE_DIR}/third_party/glog/src/config.h 
                 ${PROJECT_SOURCE_DIR}/third_party/glog/src/glog/export.h 
@@ -38,12 +47,6 @@ IF(WIN32)
                 ${PROJECT_SOURCE_DIR}/third_party/glog/src/glog/raw_logging.h 
                 ${PROJECT_SOURCE_DIR}/third_party/glog/src/glog/stl_logging.h 
                 ${PROJECT_SOURCE_DIR}/third_party/glog/src/glog/vlog_is_on.h)
-ELSE()
-    link_directories(${ONNXRUNTIME_DIR}/lib)
-    link_directories(${FFMPEG_DIR}/lib)
-
-    include_directories(${ONNXRUNTIME_DIR}/include)
-    include_directories(${FFMPEG_DIR}/include)
 endif()
 include_directories(${CMAKE_SOURCE_DIR}/src)
 include_directories(${PROJECT_SOURCE_DIR}/third_party/kaldi-native-fbank)

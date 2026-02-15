@@ -12,6 +12,24 @@ void FsmnVad::InitVad(const std::string &vad_model, const std::string &vad_cmvn,
     session_options_.SetGraphOptimizationLevel(ORT_ENABLE_ALL);
     session_options_.DisableCpuMemArena();
 
+#ifdef ONNXRUNTIME_USE_CUDA
+    // Enable CUDA Execution Provider
+    try {
+        OrtCUDAProviderOptions cuda_options;
+        cuda_options.device_id = 0;
+        cuda_options.arena_extend_strategy = 0;  // 0 = kNextPowerOfTwo
+        cuda_options.gpu_mem_limit = 2ULL * 1024 * 1024 * 1024;  // 2GB
+        cuda_options.cudnn_conv_algo_search = OrtCudnnConvAlgoSearchExhaustive;
+        cuda_options.do_copy_in_default_stream = true;
+
+        session_options_.AppendExecutionProvider_CUDA(cuda_options);
+        LOG(INFO) << "CUDA Execution Provider enabled for VAD model";
+    } catch (std::exception const &e) {
+        LOG(WARNING) << "Failed to enable CUDA Execution Provider for VAD: " << e.what()
+                     << ", falling back to CPU";
+    }
+#endif
+
     ReadModel(vad_model.c_str());
     LoadCmvn(vad_cmvn.c_str());
     LoadConfigFromYaml(vad_config.c_str());

@@ -33,6 +33,25 @@ bool CAMPPlusModel::InitModel(const std::string& model_path,
         session_options_.SetIntraOpNumThreads(thread_num);
         session_options_.SetGraphOptimizationLevel(
             GraphOptimizationLevel::ORT_ENABLE_EXTENDED);
+        session_options_.DisableCpuMemArena();
+
+#ifdef ONNXRUNTIME_USE_CUDA
+        // Enable CUDA Execution Provider
+        try {
+            OrtCUDAProviderOptions cuda_options;
+            cuda_options.device_id = 0;
+            cuda_options.arena_extend_strategy = 0;  // 0 = kNextPowerOfTwo
+            cuda_options.gpu_mem_limit = 2ULL * 1024 * 1024 * 1024;  // 2GB
+            cuda_options.cudnn_conv_algo_search = OrtCudnnConvAlgoSearchExhaustive;
+            cuda_options.do_copy_in_default_stream = true;
+
+            session_options_.AppendExecutionProvider_CUDA(cuda_options);
+            LOG(INFO) << "CUDA Execution Provider enabled for CAMPPlus speaker model";
+        } catch (std::exception const &e) {
+            LOG(WARNING) << "Failed to enable CUDA Execution Provider for CAMPPlus: " << e.what()
+                         << ", falling back to CPU";
+        }
+#endif
 
         // Create ONNX session
         session_ = std::make_shared<Ort::Session>(env_, model_path.c_str(), 

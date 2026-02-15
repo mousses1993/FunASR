@@ -1,0 +1,4 @@
+
+set(CONAN_HOST_PROFILE "x86_64-Linux-gcc-11.4")
+set(CONAN_BUILD_PROFILE "x86_64-Linux-gcc-11.4")
+set(CONAN_INSTALL_ARGS "")

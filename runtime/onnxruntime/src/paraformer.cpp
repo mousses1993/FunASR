@@ -37,6 +37,24 @@ void Paraformer::InitAsr(const std::string &am_model, const std::string &am_cmvn
     // DisableCpuMemArena can improve performance
     session_options_.DisableCpuMemArena();
 
+#ifdef ONNXRUNTIME_USE_CUDA
+    // Enable CUDA Execution Provider
+    try {
+        OrtCUDAProviderOptions cuda_options;
+        cuda_options.device_id = 0;
+        cuda_options.arena_extend_strategy = 0;  // 0 = kNextPowerOfTwo
+        cuda_options.gpu_mem_limit = 2ULL * 1024 * 1024 * 1024;  // 2GB
+        cuda_options.cudnn_conv_algo_search = OrtCudnnConvAlgoSearchExhaustive;
+        cuda_options.do_copy_in_default_stream = true;
+
+        session_options_.AppendExecutionProvider_CUDA(cuda_options);
+        LOG(INFO) << "CUDA Execution Provider enabled";
+    } catch (std::exception const &e) {
+        LOG(WARNING) << "Failed to enable CUDA Execution Provider: " << e.what()
+                     << ", falling back to CPU";
+    }
+#endif
+
     try {
         m_session_ = std::make_unique<Ort::Session>(env_, ORTSTRING(am_model).c_str(), session_options_);
         LOG(INFO) << "Successfully load model from " << am_model;
@@ -69,8 +87,26 @@ void Paraformer::InitAsr(const std::string &en_model, const std::string &de_mode
     // session_options_.SetInterOpNumThreads(1);
     session_options_.SetIntraOpNumThreads(thread_num);
     session_options_.SetGraphOptimizationLevel(ORT_ENABLE_ALL);
-    // DisableCpuMemArena can improve performance
+    // DisableCpuMemArena can improve performance 
     session_options_.DisableCpuMemArena();
+
+#ifdef ONNXRUNTIME_USE_CUDA
+    // Enable CUDA Execution Provider
+    try {
+        OrtCUDAProviderOptions cuda_options;
+        cuda_options.device_id = 0;
+        cuda_options.arena_extend_strategy = 0;  // 0 = kNextPowerOfTwo
+        cuda_options.gpu_mem_limit = 2ULL * 1024 * 1024 * 1024;  // 2GB
+        cuda_options.cudnn_conv_algo_search = OrtCudnnConvAlgoSearchExhaustive;
+        cuda_options.do_copy_in_default_stream = true;
+
+        session_options_.AppendExecutionProvider_CUDA(cuda_options);
+        LOG(INFO) << "CUDA Execution Provider enabled for online models";
+    } catch (std::exception const &e) {
+        LOG(WARNING) << "Failed to enable CUDA Execution Provider: " << e.what()
+                     << ", falling back to CPU";
+    }
+#endif
 
     try {
         encoder_session_ = std::make_unique<Ort::Session>(env_, ORTSTRING(en_model).c_str(), session_options_);
@@ -238,6 +274,24 @@ void Paraformer::InitHwCompiler(const std::string &hw_model, int thread_num) {
     // DisableCpuMemArena can improve performance
     hw_session_options.DisableCpuMemArena();
 
+#ifdef ONNXRUNTIME_USE_CUDA
+    // Enable CUDA Execution Provider for hotword compiler
+    try {
+        OrtCUDAProviderOptions cuda_options;
+        cuda_options.device_id = 0;
+        cuda_options.arena_extend_strategy = 0;  // 0 = kNextPowerOfTwo
+        cuda_options.gpu_mem_limit = 2ULL * 1024 * 1024 * 1024;  // 2GB
+        cuda_options.cudnn_conv_algo_search = OrtCudnnConvAlgoSearchExhaustive;
+        cuda_options.do_copy_in_default_stream = true;
+
+        hw_session_options.AppendExecutionProvider_CUDA(cuda_options);
+        LOG(INFO) << "CUDA Execution Provider enabled for hotword compiler";
+    } catch (std::exception const &e) {
+        LOG(WARNING) << "Failed to enable CUDA Execution Provider for hotword compiler: " << e.what()
+                     << ", falling back to CPU";
+    }
+#endif
+
     try {
         hw_m_session = std::make_unique<Ort::Session>(hw_env_, ORTSTRING(hw_model).c_str(), hw_session_options);
         LOG(INFO) << "Successfully load model from " << hw_model;
@@ -251,7 +305,7 @@ void Paraformer::InitHwCompiler(const std::string &hw_model, int thread_num) {
     hw_m_strInputNames.push_back(strName.c_str());
     //GetInputName(hw_m_session.get(), strName,1);
     //hw_m_strInputNames.push_back(strName);
-    
+
     GetOutputName(hw_m_session.get(), strName);
     hw_m_strOutputNames.push_back(strName);
 

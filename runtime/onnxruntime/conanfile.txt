@@ -1,0 +1,12 @@
+[requires]
+onnxruntime/1.24.1
+ffmpeg/6.1.4
+
+[generators]
+CMakeDeps
+CMakeToolchain
+
+[layout]
+cmake_layout
+
+[options]

@@ -1,7 +1,7 @@
 
 if(WIN32)
-  include_directories(${ONNXRUNTIME_DIR}/include)
-  include_directories(${FFMPEG_DIR}/include)
+  include_directories(${onnxruntime_INCLUDE_DIRS})
+  include_directories(${ffmpeg_INCLUDE_DIRS})
   include_directories(${OPENSSL_ROOT_DIR}//include)
   link_directories(${OPENSSL_ROOT_DIR}/lib)
   add_definitions(-D_WEBSOCKETPP_CPP11_RANDOM_DEVICE_)

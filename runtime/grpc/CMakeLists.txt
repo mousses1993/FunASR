@@ -37,8 +37,8 @@ add_custom_command(
 # Include generated *.pb.h files
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
-link_directories(${ONNXRUNTIME_DIR}/lib)
-link_directories(${FFMPEG_DIR}/lib)
+# link_directories(${onnxruntime_LIBRARY_DIRS})
+# link_directories(${ffmpeg_LIBRARY_DIRS})
 
 include_directories(${PROJECT_SOURCE_DIR}/../onnxruntime/include/)
 include_directories(${PROJECT_SOURCE_DIR}/../onnxruntime/third_party/yaml-cpp/include/)

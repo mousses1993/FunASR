@@ -87,8 +87,8 @@ if(ENABLE_PORTAUDIO)
 endif()
 
 # Include generated *.pb.h files
-link_directories(${ONNXRUNTIME_DIR}/lib)
-link_directories(${FFMPEG_DIR}/lib)
+# link_directories(${onnxruntime_LIBRARY_DIRS})
+# link_directories(${ffmpeg_LIBRARY_DIRS})
 
 if(ENABLE_GLOG)
     include_directories(${PROJECT_SOURCE_DIR}/../onnxruntime/third_party/glog/src)
