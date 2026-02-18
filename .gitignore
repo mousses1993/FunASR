@@ -33,3 +33,7 @@ runtime/onnxruntime/third_party/json*
 model_zoo
 .vscode/
 .cache
+.cursor
+openspec
+.opencode
+.claude
