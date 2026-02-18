@@ -37,3 +37,4 @@ model_zoo
 openspec
 .opencode
 .claude
+CMakeUserPresets.json

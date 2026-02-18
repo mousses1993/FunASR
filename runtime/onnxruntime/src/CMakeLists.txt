@@ -48,7 +48,7 @@ endif()
 
 
 #message("CXX_FLAGS "${CMAKE_CXX_FLAGS})
-include_directories(${CMAKE_SOURCE_DIR}/include)
-include_directories(${CMAKE_SOURCE_DIR}/third_party)
+include_directories(${PROJECT_SOURCE_DIR}/include)
+include_directories(${PROJECT_SOURCE_DIR}/third_party)
 
 target_link_libraries(funasr PUBLIC ${EXTRA_LIBS} ${TORCH_DEPS})
