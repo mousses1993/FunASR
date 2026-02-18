@@ -51,6 +51,8 @@ add_library(fstscript
   verify.cc
   ${HEADER_FILES}
 )
+
+target_include_directories(fstscript PUBLIC ${PROJECT_SOURCE_DIR}/src/include)
 target_link_libraries(fstscript PRIVATE fst)
 
 set_target_properties(fstscript PROPERTIES

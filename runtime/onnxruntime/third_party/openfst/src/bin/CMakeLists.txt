@@ -1,14 +1,14 @@
 function (add_executable2 _name)
     add_executable(${ARGV})
     if (TARGET ${_name})
-        target_link_libraries(${_name} fstscript fst ${CMAKE_DL_LIBS})
+        target_include_directories(${_name} PRIVATE ${PROJECT_SOURCE_DIR}/src/include)
+        target_include_directories(${_name} PRIVATE ${PROJECT_SOURCE_DIR}/src/script)
+        target_link_libraries(${_name} PRIVATE fstscript fst ${CMAKE_DL_LIBS})
         set_target_properties(${_name} PROPERTIES FOLDER bin)
     endif()
 
     install(TARGETS ${_name} RUNTIME DESTINATION bin)
 endfunction()
-
-include_directories(../include ../script/)
 
 add_executable2(fstarcsort fstarcsort-main.cc fstarcsort.cc)
 

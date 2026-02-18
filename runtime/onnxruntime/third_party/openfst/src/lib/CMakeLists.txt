@@ -40,6 +40,7 @@ set_target_properties(fst PROPERTIES
 find_package(glog REQUIRED)
 find_package(gflags REQUIRED)
 
+target_include_directories(fst PUBLIC ${PROJECT_SOURCE_DIR}/src/include)
 target_link_libraries(fst PUBLIC glog::glog gflags::gflags)
 
 install(TARGETS fst

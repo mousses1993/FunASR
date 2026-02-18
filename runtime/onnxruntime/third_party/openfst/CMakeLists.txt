@@ -2,13 +2,11 @@ project(openfst)
 include(CTest)
 find_package(ICU COMPONENTS data i18n io  test tu uc)
 if (ICU_FOUND)
-  include_directories(${ICU_INCLUDE_DIRS})
   set(LIBS ${LIBS} ${ICU_LIBRARIES})
 endif (ICU_FOUND)
 
 find_package(ZLIB)
 if (ZLIB_FOUND)
-  include_directories(${ZLIB_INCLUDE_DIRECTORIES})
   set(ZLIBS ${ZLIB_LIBRARIES})
 endif (ZLIB_FOUND)
 

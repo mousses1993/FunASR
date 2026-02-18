@@ -22,10 +22,16 @@ add_library(kaldi-decoder STATIC
   decoder/lattice-faster-online-decoder.cc
 )
 
+target_include_directories(kaldi-util PUBLIC ${PROJECT_SOURCE_DIR})
+target_include_directories(kaldi-util PUBLIC ${PROJECT_SOURCE_DIR}/../openfst/src/include)
+target_include_directories(kaldi-decoder PUBLIC ${PROJECT_SOURCE_DIR})
+target_include_directories(kaldi-decoder PUBLIC ${PROJECT_SOURCE_DIR}/../../src)
+target_include_directories(kaldi-decoder PUBLIC ${PROJECT_SOURCE_DIR}/../../src)
+
 if (WIN32)
 target_link_libraries(kaldi-decoder PUBLIC kaldi-util)
 else()
-target_link_libraries(kaldi-decoder PUBLIC kaldi-util dl nlohmann_json::nlohmann_json gflags::gflags glog::glog)
+target_link_libraries(kaldi-decoder PUBLIC kaldi-util dl nlohmann_json::nlohmann_json gflags::gflags glog::glog yaml-cpp)
 endif (WIN32)
 
 
