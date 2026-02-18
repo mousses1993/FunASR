@@ -8,18 +8,17 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 option(ENABLE_WEBSOCKET "Whether to build websocket server" ON)
 option(ENABLE_PORTAUDIO "Whether to build portaudio" ON)
-option(ENABLE_GLOG "Whether to build glog" ON)
 option(ENABLE_FST "Whether to build openfst" ON) # ITN need openfst compiled
 option(BUILD_SHARED_LIBS "Build shared libraries" ON)
 option(GPU "Whether to build with GPU" OFF)
 
 if(WIN32)
-  file(REMOVE ${PROJECT_SOURCE_DIR}/../onnxruntime/third_party/glog/src/config.h 
-    ${PROJECT_SOURCE_DIR}/../onnxruntime/third_party/glog/src/glog/export.h 
-    ${PROJECT_SOURCE_DIR}/../onnxruntime/third_party/glog/src/glog/logging.h 
-    ${PROJECT_SOURCE_DIR}/../onnxruntime/third_party/glog/src/glog/raw_logging.h 
-    ${PROJECT_SOURCE_DIR}/../onnxruntime/third_party/glog/src/glog/stl_logging.h 
-    ${PROJECT_SOURCE_DIR}/../onnxruntime/third_party/glog/src/glog/vlog_is_on.h)
+  # file(REMOVE ${PROJECT_SOURCE_DIR}/../onnxruntime/third_party/glog/src/config.h 
+  #   ${PROJECT_SOURCE_DIR}/../onnxruntime/third_party/glog/src/glog/export.h 
+  #   ${PROJECT_SOURCE_DIR}/../onnxruntime/third_party/glog/src/glog/logging.h 
+  #   ${PROJECT_SOURCE_DIR}/../onnxruntime/third_party/glog/src/glog/raw_logging.h 
+  #   ${PROJECT_SOURCE_DIR}/../onnxruntime/third_party/glog/src/glog/stl_logging.h 
+  #   ${PROJECT_SOURCE_DIR}/../onnxruntime/third_party/glog/src/glog/vlog_is_on.h)
 else()
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -fPIC")
 endif()
@@ -106,14 +105,6 @@ endif()
 # Include generated *.pb.h files
 # link_directories(${onnxruntime_LIBRARY_DIRS})
 # link_directories(${ffmpeg_LIBRARY_DIRS})
-
-if(ENABLE_GLOG)
-    include_directories(${PROJECT_SOURCE_DIR}/../onnxruntime/third_party/glog/src)
-    set(BUILD_TESTING OFF)
-    add_subdirectory(${PROJECT_SOURCE_DIR}/../onnxruntime/third_party/glog glog)
-    include_directories(${glog_BINARY_DIR})
-
-endif()
 
 if(ENABLE_FST)
     # fst depend on glog and gflags

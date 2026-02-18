@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
 
 project(kaldi)
 
+find_package(glog REQUIRED)
+find_package(gflags REQUIRED)
+
 add_library(kaldi-util STATIC
   base/kaldi-error.cc
   base/kaldi-math.cc
@@ -22,7 +25,7 @@ add_library(kaldi-decoder STATIC
 if (WIN32)
 target_link_libraries(kaldi-decoder PUBLIC kaldi-util)
 else()
-target_link_libraries(kaldi-decoder PUBLIC kaldi-util dl)
+target_link_libraries(kaldi-decoder PUBLIC kaldi-util dl nlohmann_json::nlohmann_json gflags::gflags glog::glog)
 endif (WIN32)
 
 
@@ -30,9 +33,6 @@ if (WIN32)
   target_compile_definitions (kaldi-decoder PUBLIC GLOG_NO_ABBREVIATED_SEVERITIES)
 endif (WIN32)
 
-include_directories(${CMAKE_SOURCE_DIR}/build/third_party/glog)
-include_directories(${CMAKE_SOURCE_DIR}/third_party/glog/src)
-include_directories(${CMAKE_SOURCE_DIR}/third_party/gflags/src/include)
 if(TRUE)
   # Arpa binary
   add_executable(arpa2fst

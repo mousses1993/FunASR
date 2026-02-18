@@ -48,8 +48,7 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/../onnxruntime/third_party/yaml-cpp yaml-
 add_subdirectory(${PROJECT_SOURCE_DIR}/../onnxruntime/third_party/kaldi-native-fbank/kaldi-native-fbank/csrc csrc)
 add_subdirectory(${PROJECT_SOURCE_DIR}/../onnxruntime/src src)
 
-include_directories(${PROJECT_SOURCE_DIR}/../onnxruntime/third_party/glog)
-add_subdirectory(${PROJECT_SOURCE_DIR}/../onnxruntime/third_party/glog glog)
+find_package(glog REQUIRED)
 
 # rg_grpc_proto
 add_library(rg_grpc_proto ${rg_grpc_srcs} ${rg_grpc_hdrs} ${rg_proto_srcs} ${rg_proto_hdrs})

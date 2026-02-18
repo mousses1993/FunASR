@@ -1,6 +1,9 @@
 [requires]
 onnxruntime/1.24.1
 ffmpeg/6.1.4
+glog/0.7.1
+gflags/2.2.2
+nlohmann_json/3.12.0
 
 [generators]
 CMakeDeps
@@ -10,3 +13,5 @@ CMakeToolchain
 cmake_layout
 
 [options]
+glog/*:shared=True
+gflags/*:shared=True

@@ -1,5 +1,7 @@
 FILE(GLOB HEADER_FILES ../include/fst/*.h)
 
+set(CMAKE_CXX_STANDARD 17)
+
 if(WIN32)
 add_library(fst STATIC
   compat.cc
@@ -30,19 +32,15 @@ add_library(fst
 )
 endif()
 
+
 set_target_properties(fst PROPERTIES
   SOVERSION "${SOVERSION}"
 )
 
-include_directories(${CMAKE_SOURCE_DIR}/build/third_party/glog)
-include_directories(${CMAKE_SOURCE_DIR}/third_party/glog/src)
-link_directories(${CMAKE_SOURCE_DIR}/build/third_party/glog)
+find_package(glog REQUIRED)
+find_package(gflags REQUIRED)
 
-include_directories(${CMAKE_SOURCE_DIR}/third_party/gflags/src/include)
-link_directories(${CMAKE_SOURCE_DIR}/build/third_party/gflags)
-
-target_link_libraries(fst PUBLIC glog gflags)
-add_dependencies(fst glog gflags)
+target_link_libraries(fst PUBLIC glog::glog gflags::gflags)
 
 install(TARGETS fst
   LIBRARY DESTINATION lib

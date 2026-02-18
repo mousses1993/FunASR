@@ -359,7 +359,6 @@
 
 | 选项 | 默认值 | 说明 |
 |-----|-------|------|
-| `ENABLE_GLOG` | ON | 是否编译 glog 日志库 |
 | `ENABLE_FST` | ON | 是否编译 openfst（ITN 需要） |
 | `GPU` | OFF | 是否启用 GPU 支持（需要 LibTorch） |
 

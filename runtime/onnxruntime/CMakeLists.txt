@@ -4,7 +4,6 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/recipes/${PLATFORM}/platform.cmake)
 
 project(FunASROnnx)
 
-option(ENABLE_GLOG "Whether to build glog" ON)
 option(ENABLE_FST "Whether to build openfst" ON) # ITN need openfst compiled
 option(GPU "Whether to build with GPU" OFF)
 
@@ -23,17 +22,9 @@ endif()
 
 find_package(onnxruntime REQUIRED)
 find_package(ffmpeg REQUIRED)
-
-# json
-include(FetchContent)
-if(NOT EXISTS ${PROJECT_SOURCE_DIR}/third_party/json/ChangeLog.md )
-FetchContent_Declare(json
-  URL   https://github.com/nlohmann/json/archive/refs/tags/v3.11.2.tar.gz
-SOURCE_DIR ${PROJECT_SOURCE_DIR}/third_party/json
-)
-
-FetchContent_MakeAvailable(json)
-endif()
+find_package(nlohmann_json REQUIRED)
+find_package(glog REQUIRED)
+find_package(gflags REQUIRED)
 
 # for onnxruntime
 if(ONNXRUNTIME_USE_CUDA)
@@ -41,12 +32,12 @@ if(ONNXRUNTIME_USE_CUDA)
 endif()
 
 IF(WIN32)
-    file(REMOVE ${PROJECT_SOURCE_DIR}/third_party/glog/src/config.h 
-                ${PROJECT_SOURCE_DIR}/third_party/glog/src/glog/export.h 
-                ${PROJECT_SOURCE_DIR}/third_party/glog/src/glog/logging.h 
-                ${PROJECT_SOURCE_DIR}/third_party/glog/src/glog/raw_logging.h 
-                ${PROJECT_SOURCE_DIR}/third_party/glog/src/glog/stl_logging.h 
-                ${PROJECT_SOURCE_DIR}/third_party/glog/src/glog/vlog_is_on.h)
+    # file(REMOVE ${PROJECT_SOURCE_DIR}/third_party/glog/src/config.h 
+    #             ${PROJECT_SOURCE_DIR}/third_party/glog/src/glog/export.h 
+    #             ${PROJECT_SOURCE_DIR}/third_party/glog/src/glog/logging.h 
+    #             ${PROJECT_SOURCE_DIR}/third_party/glog/src/glog/raw_logging.h 
+    #             ${PROJECT_SOURCE_DIR}/third_party/glog/src/glog/stl_logging.h 
+    #             ${PROJECT_SOURCE_DIR}/third_party/glog/src/glog/vlog_is_on.h)
 endif()
 include_directories(${CMAKE_SOURCE_DIR}/src)
 include_directories(${PROJECT_SOURCE_DIR}/third_party/kaldi-native-fbank)
@@ -54,7 +45,7 @@ include_directories(${PROJECT_SOURCE_DIR}/third_party/yaml-cpp/include)
 include_directories(${PROJECT_SOURCE_DIR}/third_party/jieba/include)
 include_directories(${PROJECT_SOURCE_DIR}/third_party/jieba/include/limonp/include)
 include_directories(${PROJECT_SOURCE_DIR}/third_party/kaldi)
-include_directories(${PROJECT_SOURCE_DIR}/third_party/json/include)
+
 
 if(GPU)
     add_definitions(-DUSE_GPU)
@@ -67,20 +58,8 @@ if(GPU)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -D_GLIBCXX_USE_CXX11_ABI=0")
 endif()
 
-if(ENABLE_GLOG)
-    include_directories(${PROJECT_SOURCE_DIR}/third_party/glog/src)
-    set(BUILD_TESTING OFF)
-    add_subdirectory(third_party/glog)
-    include_directories(${glog_BINARY_DIR})
-    
-endif()
 
 if(ENABLE_FST)
-    # fst depend on glog and gflags
-    include_directories(${PROJECT_SOURCE_DIR}/third_party/gflags)
-    add_subdirectory(third_party/gflags)
-    include_directories(${gflags_BINARY_DIR}/include)
-    
     # the following openfst if cloned from https://github.com/kkm000/openfst.git
     # with some patch to fix the make errors. 
     add_subdirectory(third_party/openfst)
@@ -88,7 +67,6 @@ if(ENABLE_FST)
     if(WIN32)
     include_directories(${openfst_SOURCE_DIR}/src/lib)
     endif()
-
 endif()
 
 add_subdirectory(third_party/yaml-cpp)
