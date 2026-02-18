@@ -39,7 +39,7 @@ IF(WIN32)
     #             ${PROJECT_SOURCE_DIR}/third_party/glog/src/glog/stl_logging.h 
     #             ${PROJECT_SOURCE_DIR}/third_party/glog/src/glog/vlog_is_on.h)
 endif()
-include_directories(${CMAKE_SOURCE_DIR}/src)
+include_directories(${PROJECT_SOURCE_DIR}/src)
 include_directories(${PROJECT_SOURCE_DIR}/third_party/kaldi-native-fbank)
 include_directories(${PROJECT_SOURCE_DIR}/third_party/yaml-cpp/include)
 include_directories(${PROJECT_SOURCE_DIR}/third_party/jieba/include)
