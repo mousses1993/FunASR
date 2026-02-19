@@ -1,4 +1,5 @@
 #include "bias-lm.h"
+#include <yaml-cpp/yaml.h>
 #ifdef _WIN32
 #include "fst-types.cc"
 #endif
