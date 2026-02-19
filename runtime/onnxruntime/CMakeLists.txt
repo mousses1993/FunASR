@@ -26,10 +26,6 @@ find_package(nlohmann_json REQUIRED)
 find_package(glog REQUIRED)
 find_package(gflags REQUIRED)
 
-# for onnxruntime
-if(ONNXRUNTIME_USE_CUDA)
-    add_definitions(-DONNXRUNTIME_USE_CUDA)
-endif()
 
 IF(WIN32)
     # file(REMOVE ${PROJECT_SOURCE_DIR}/third_party/glog/src/config.h 
@@ -55,7 +51,6 @@ if(ENABLE_FST)
     add_subdirectory(third_party/openfst)
 endif()
 
-add_subdirectory(third_party/yaml-cpp)
 add_subdirectory(third_party/kaldi-native-fbank/kaldi-native-fbank/csrc)
 add_subdirectory(third_party/kaldi)
 add_subdirectory(src)

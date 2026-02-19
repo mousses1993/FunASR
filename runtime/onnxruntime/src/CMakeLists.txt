@@ -44,6 +44,7 @@ endif()
 
 if(ONNXRUNTIME_USE_CUDA)
     list(APPEND EXTRA_LIBS cuDNN::cuDNN CUDA::cudart)
+    target_compile_definitions(funasr PUBLIC -DONNXRUNTIME_USE_CUDA)
 endif()
 
 
