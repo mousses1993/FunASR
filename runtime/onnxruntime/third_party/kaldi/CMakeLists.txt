@@ -31,7 +31,7 @@ target_include_directories(kaldi-decoder PUBLIC ${PROJECT_SOURCE_DIR}/../../src)
 if (WIN32)
 target_link_libraries(kaldi-decoder PUBLIC kaldi-util)
 else()
-target_link_libraries(kaldi-decoder PUBLIC kaldi-util dl nlohmann_json::nlohmann_json gflags::gflags glog::glog yaml-cpp)
+target_link_libraries(kaldi-decoder PUBLIC kaldi-util dl nlohmann_json::nlohmann_json gflags::gflags glog::glog yaml-cpp::yaml-cpp)
 endif (WIN32)
 
 
