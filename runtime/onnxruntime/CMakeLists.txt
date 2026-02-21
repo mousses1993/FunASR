@@ -25,6 +25,7 @@ find_package(ffmpeg REQUIRED)
 find_package(nlohmann_json REQUIRED)
 find_package(glog REQUIRED)
 find_package(gflags REQUIRED)
+find_package(yaml-cpp REQUIRED)
 
 
 IF(WIN32)
