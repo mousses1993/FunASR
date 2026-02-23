@@ -4,12 +4,12 @@
 #ifndef FST_SCRIPT_COMPILE_H_
 #define FST_SCRIPT_COMPILE_H_
 
-#include <istream>
-#include <memory>
-
 #include <fst/script/arg-packs.h>
 #include <fst/script/compile-impl.h>
 #include <fst/script/fst-class.h>
+
+#include <istream>
+#include <memory>
 
 namespace fst {
 namespace script {

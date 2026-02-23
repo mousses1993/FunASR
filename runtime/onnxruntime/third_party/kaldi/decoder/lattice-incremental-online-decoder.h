@@ -20,36 +20,33 @@
 // see note at the top of lattice-faster-decoder.h, about how to maintain this
 // file in sync with lattice-faster-decoder.h
 
-
 #ifndef KALDI_DECODER_LATTICE_INCREMENTAL_ONLINE_DECODER_H_
 #define KALDI_DECODER_LATTICE_INCREMENTAL_ONLINE_DECODER_H_
 
-#include "util/stl-utils.h"
-#include "util/hash-list.h"
+#include "decoder/lattice-incremental-decoder.h"
 #include "fst/fstlib.h"
-#include "itf/decodable-itf.h"
 #include "fstext/fstext-lib.h"
+#include "itf/decodable-itf.h"
 #include "lat/determinize-lattice-pruned.h"
 #include "lat/kaldi-lattice.h"
-#include "decoder/lattice-incremental-decoder.h"
+#include "util/hash-list.h"
+#include "util/stl-utils.h"
 
 namespace kaldi {
 
-
-
-/** LatticeIncrementalOnlineDecoderTpl is as LatticeIncrementalDecoderTpl but also
-    supports an efficient way to get the best path (see the function
+/** LatticeIncrementalOnlineDecoderTpl is as LatticeIncrementalDecoderTpl but
+   also supports an efficient way to get the best path (see the function
     BestPathEnd()), which is useful in endpointing and in situations where you
     might want to frequently access the best path.
 
     This is only templated on the FST type, since the Token type is required to
     be BackpointerToken.  Actually it only makes sense to instantiate
-    LatticeIncrementalDecoderTpl with Token == BackpointerToken if you do so indirectly via
-    this child class.
+    LatticeIncrementalDecoderTpl with Token == BackpointerToken if you do so
+   indirectly via this child class.
  */
 template <typename FST>
-class LatticeIncrementalOnlineDecoderTpl:
-      public LatticeIncrementalDecoderTpl<FST, decoder::BackpointerToken> {
+class LatticeIncrementalOnlineDecoderTpl
+    : public LatticeIncrementalDecoderTpl<FST, decoder::BackpointerToken> {
  public:
   using Arc = typename FST::Arc;
   using Label = typename Arc::Label;
@@ -61,18 +58,17 @@ class LatticeIncrementalOnlineDecoderTpl:
   // Instantiate this class once for each thing you have to decode.
   // This version of the constructor does not take ownership of
   // 'fst'.
-  LatticeIncrementalOnlineDecoderTpl(const FST &fst,
-    const TransitionInformation &trans_model,
-                                const LatticeIncrementalDecoderConfig &config):
-      LatticeIncrementalDecoderTpl<FST, Token>(fst, trans_model, config) { }
+  LatticeIncrementalOnlineDecoderTpl(
+      const FST &fst, const TransitionInformation &trans_model,
+      const LatticeIncrementalDecoderConfig &config)
+      : LatticeIncrementalDecoderTpl<FST, Token>(fst, trans_model, config) {}
 
   // This version of the initializer takes ownership of 'fst', and will delete
   // it when this object is destroyed.
-  LatticeIncrementalOnlineDecoderTpl(const LatticeIncrementalDecoderConfig &config,
-                                FST *fst,
-    const TransitionInformation &trans_model):
-      LatticeIncrementalDecoderTpl<FST, Token>(config, fst, trans_model) { }
-
+  LatticeIncrementalOnlineDecoderTpl(
+      const LatticeIncrementalDecoderConfig &config, FST *fst,
+      const TransitionInformation &trans_model)
+      : LatticeIncrementalDecoderTpl<FST, Token>(config, fst, trans_model) {}
 
   struct BestPathIterator {
     void *tok;
@@ -82,23 +78,19 @@ class LatticeIncrementalOnlineDecoderTpl:
     // iterator (assuming it's not an epsilon transition).  Note that this
     // is one less than you might reasonably expect, e.g. it's -1 for
     // the nonemitting transitions before the first frame.
-    BestPathIterator(void *t, int32 f): tok(t), frame(f) { }
+    BestPathIterator(void *t, int32 f) : tok(t), frame(f) {}
     bool Done() { return tok == NULL; }
   };
 
-
   /// Outputs an FST corresponding to the single best path through the lattice.
-  /// This is quite efficient because it doesn't get the entire raw lattice and find
-  /// the best path through it; instead, it uses the BestPathEnd and BestPathIterator
-  /// so it basically traces it back through the lattice.
+  /// This is quite efficient because it doesn't get the entire raw lattice and
+  /// find the best path through it; instead, it uses the BestPathEnd and
+  /// BestPathIterator so it basically traces it back through the lattice.
   /// Returns true if result is nonempty (using the return status is deprecated,
   /// it will become void).  If "use_final_probs" is true AND we reached the
   /// final-state of the graph then it will include those as final-probs, else
   /// it will treat all final-probs as one.
-  bool GetBestPath(Lattice *ofst,
-                   bool use_final_probs = true) const;
-
-
+  bool GetBestPath(Lattice *ofst, bool use_final_probs = true) const;
 
   /// This function returns an iterator that can be used to trace back
   /// the best path.  If use_final_probs == true and at least one final state
@@ -110,23 +102,22 @@ class LatticeIncrementalOnlineDecoderTpl:
   BestPathIterator BestPathEnd(bool use_final_probs,
                                BaseFloat *final_cost = NULL) const;
 
-
   /// This function can be used in conjunction with BestPathEnd() to trace back
   /// the best path one link at a time (e.g. this can be useful in endpoint
   /// detection).  By "link" we mean a link in the graph; not all links cross
   /// frame boundaries, but each time you see a nonzero ilabel you can interpret
   /// that as a frame.  The return value is the updated iterator.  It outputs
-  /// the ilabel and olabel, and the (graph and acoustic) weight to the "arc" pointer,
-  /// while leaving its "nextstate" variable unchanged.
-  BestPathIterator TraceBackBestPath(
-      BestPathIterator iter, LatticeArc *arc) const;
+  /// the ilabel and olabel, and the (graph and acoustic) weight to the "arc"
+  /// pointer, while leaving its "nextstate" variable unchanged.
+  BestPathIterator TraceBackBestPath(BestPathIterator iter,
+                                     LatticeArc *arc) const;
 
   KALDI_DISALLOW_COPY_AND_ASSIGN(LatticeIncrementalOnlineDecoderTpl);
 };
 
-typedef LatticeIncrementalOnlineDecoderTpl<fst::StdFst> LatticeIncrementalOnlineDecoder;
+typedef LatticeIncrementalOnlineDecoderTpl<fst::StdFst>
+    LatticeIncrementalOnlineDecoder;
 
-
-} // end namespace kaldi.
+}  // end namespace kaldi.
 
 #endif

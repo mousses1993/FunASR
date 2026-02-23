@@ -6,13 +6,12 @@
 #ifndef FST_TEST_WEIGHT_TESTER_H_
 #define FST_TEST_WEIGHT_TESTER_H_
 
-#include <iostream>
-#include <sstream>
-
-#include <utility>
-
 #include <fst/log.h>
 #include <fst/weight.h>
+
+#include <iostream>
+#include <sstream>
+#include <utility>
 
 namespace fst {
 

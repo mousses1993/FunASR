@@ -4,15 +4,15 @@
 #ifndef FST_EXTENSIONS_FAR_INFO_H_
 #define FST_EXTENSIONS_FAR_INFO_H_
 
+#include <fst/extensions/far/far.h>
+#include <fst/extensions/far/getters.h>
+
 #include <iomanip>
 #include <memory>
 #include <set>
 #include <string>
 #include <utility>
 #include <vector>
-
-#include <fst/extensions/far/far.h>
-#include <fst/extensions/far/getters.h>
 
 namespace fst {
 

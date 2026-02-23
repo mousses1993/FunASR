@@ -8,10 +8,10 @@
 #ifndef FST_SCRIPT_TEXT_IO_H__
 #define FST_SCRIPT_TEXT_IO_H__
 
+#include <fst/script/weight-class.h>
+
 #include <string>
 #include <vector>
-
-#include <fst/script/weight-class.h>
 
 namespace fst {
 namespace script {

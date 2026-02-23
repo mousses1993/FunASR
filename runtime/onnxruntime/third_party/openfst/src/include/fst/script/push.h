@@ -4,10 +4,10 @@
 #ifndef FST_SCRIPT_PUSH_H_
 #define FST_SCRIPT_PUSH_H_
 
-#include <tuple>
-
 #include <fst/push.h>
 #include <fst/script/fst-class.h>
+
+#include <tuple>
 
 namespace fst {
 namespace script {

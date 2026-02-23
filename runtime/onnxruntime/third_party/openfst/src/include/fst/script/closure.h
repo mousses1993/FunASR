@@ -4,10 +4,10 @@
 #ifndef FST_SCRIPT_CLOSURE_H_
 #define FST_SCRIPT_CLOSURE_H_
 
-#include <utility>
-
 #include <fst/closure.h>
 #include <fst/script/fst-class.h>
+
+#include <utility>
 
 namespace fst {
 namespace script {

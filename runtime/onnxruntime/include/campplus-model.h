@@ -9,12 +9,12 @@
 #ifndef CAMPPLUS_MODEL_H
 #define CAMPPLUS_MODEL_H
 
+#include <onnxruntime_cxx_api.h>
+
 #include <map>
 #include <memory>
 #include <string>
 #include <vector>
-
-#include <onnxruntime_cxx_api.h>
 
 namespace funasr {
 
@@ -27,9 +27,9 @@ constexpr int SPEAKER_FBANK_DIM = 80;
  * [start_time, end_time, speaker_id]
  */
 struct SpeakerSegment {
-  float start_time; // Start time in seconds
-  float end_time;   // End time in seconds
-  int speaker_id;   // Speaker label (0, 1, 2, ...)
+  float start_time;  // Start time in seconds
+  float end_time;    // End time in seconds
+  int speaker_id;    // Speaker label (0, 1, 2, ...)
 };
 
 /**
@@ -37,7 +37,7 @@ struct SpeakerSegment {
  * Used for extracting speaker embeddings from audio segments
  */
 class CAMPPlusModel {
-public:
+ public:
   CAMPPlusModel();
   ~CAMPPlusModel();
 
@@ -86,7 +86,7 @@ public:
    */
   bool IsInitialized() const { return initialized_; }
 
-private:
+ private:
   // ONNX Runtime session
   std::shared_ptr<Ort::Session> session_ = nullptr;
   Ort::Env env_;
@@ -111,10 +111,9 @@ private:
 /**
  * Factory function to create CAMPPlus model
  */
-CAMPPlusModel *
-CreateCAMPPlusModel(const std::map<std::string, std::string> &model_path,
-                    int thread_num = 1);
+CAMPPlusModel *CreateCAMPPlusModel(
+    const std::map<std::string, std::string> &model_path, int thread_num = 1);
 
-} // namespace funasr
+}  // namespace funasr
 
-#endif // CAMPPLUS_MODEL_H
+#endif  // CAMPPLUS_MODEL_H

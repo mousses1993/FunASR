@@ -4,10 +4,10 @@
 #ifndef FST_SCRIPT_REVERSE_H_
 #define FST_SCRIPT_REVERSE_H_
 
-#include <tuple>
-
 #include <fst/reverse.h>
 #include <fst/script/fst-class.h>
+
+#include <tuple>
 
 namespace fst {
 namespace script {

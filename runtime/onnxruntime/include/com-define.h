@@ -1,11 +1,11 @@
-#pragma once 
+#pragma once
 
 namespace funasr {
-#define S_BEGIN  0
+#define S_BEGIN 0
 #define S_MIDDLE 1
-#define S_END    2
-#define S_ALL    3
-#define S_ERR    4
+#define S_END 2
+#define S_ALL 3
+#define S_ERR 4
 
 #ifndef MODEL_SAMPLE_RATE
 #define MODEL_SAMPLE_RATE 16000
@@ -121,17 +121,17 @@ namespace funasr {
 
 // punc
 #define UNK_CHAR "<unk>"
-#define TOKEN_LEN     20
+#define TOKEN_LEN 20
 
-#define CANDIDATE_NUM   6
+#define CANDIDATE_NUM 6
 #define UNKNOW_INDEX 0
-#define NOTPUNC  "_"
+#define NOTPUNC "_"
 #define NOTPUNC_INDEX 1
 #define COMMA_INDEX 2
 #define PERIOD_INDEX 3
 #define QUESTION_INDEX 4
 #define DUN_INDEX 5
-#define CACHE_POP_TRIGGER_LIMIT   200
+#define CACHE_POP_TRIGGER_LIMIT 200
 
 #define JIEBA_DICT "jieba.c.dict"
 #define JIEBA_USERDICT "jieba_usr_dict"
@@ -142,4 +142,4 @@ namespace funasr {
 #define SPEAKER_DIR "speaker-dir"
 #define SPEAKER_QUANT "speaker-quant"
 
-} // namespace funasr
+}  // namespace funasr

@@ -6,11 +6,11 @@
 #ifndef FST_EXTENSIONS_COMPRESS_RANDMOD_H_
 #define FST_EXTENSIONS_COMPRESS_RANDMOD_H_
 
-#include <cstdlib>
-#include <vector>
-
 #include <fst/compat.h>
 #include <fst/mutable-fst.h>
+
+#include <cstdlib>
+#include <vector>
 
 namespace fst {
 

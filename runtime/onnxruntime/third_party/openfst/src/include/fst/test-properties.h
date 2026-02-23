@@ -6,14 +6,12 @@
 #ifndef FST_TEST_PROPERTIES_H_
 #define FST_TEST_PROPERTIES_H_
 
-#include <unordered_set>
-
+#include <fst/connect.h>
+#include <fst/dfs-visit.h>
 #include <fst/flags.h>
 #include <fst/log.h>
 
-#include <fst/connect.h>
-#include <fst/dfs-visit.h>
-
+#include <unordered_set>
 
 DECLARE_bool(fst_verify_properties);
 

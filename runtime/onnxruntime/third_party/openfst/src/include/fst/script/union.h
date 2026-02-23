@@ -4,10 +4,10 @@
 #ifndef FST_SCRIPT_UNION_H_
 #define FST_SCRIPT_UNION_H_
 
-#include <utility>
-
-#include <fst/union.h>
 #include <fst/script/fst-class.h>
+#include <fst/union.h>
+
+#include <utility>
 
 namespace fst {
 namespace script {

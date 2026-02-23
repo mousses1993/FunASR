@@ -21,15 +21,14 @@ void ModelDecoder::do_decoder(std::shared_ptr<FUNASR_MESSAGE> session_msg) {
   try {
     //   std::this_thread::sleep_for(std::chrono::milliseconds(1000*10));
     if (session_msg->status == 1) return;
-    //std::cout << "in do_decoder" << std::endl;
+    // std::cout << "in do_decoder" << std::endl;
     std::shared_ptr<std::vector<char>> buffer = session_msg->samples;
     int num_samples = buffer->size();  // the size of the buf
-    std::string wav_name =session_msg->msg["wav_name"];
+    std::string wav_name = session_msg->msg["wav_name"];
     bool itn = session_msg->msg["itn"];
-    int audio_fs = session_msg->msg["audio_fs"];;
+    int audio_fs = session_msg->msg["audio_fs"];
+    ;
     std::string wav_format = session_msg->msg["wav_format"];
-
- 
 
     if (num_samples > 0 && session_msg->hotwords_embedding->size() > 0) {
       std::string asr_result = "";
@@ -39,7 +38,6 @@ void ModelDecoder::do_decoder(std::shared_ptr<FUNASR_MESSAGE> session_msg) {
       try {
         std::vector<std::vector<float>> hotwords_embedding_(
             *(session_msg->hotwords_embedding));
-   
 
         FUNASR_RESULT Result = FunOfflineInferBuffer(
             asr_handle, buffer->data(), buffer->size(), RASR_NONE, nullptr,
@@ -56,7 +54,7 @@ void ModelDecoder::do_decoder(std::shared_ptr<FUNASR_MESSAGE> session_msg) {
           std::this_thread::sleep_for(std::chrono::milliseconds(20));
         }
       } catch (std::exception const &e) {
-        std::cout << "error in decoder!!! "<<e.what()  <<std::endl;
+        std::cout << "error in decoder!!! " << e.what() << std::endl;
       }
 
       nlohmann::json jsonresult;        // result json
@@ -101,15 +99,14 @@ void ModelDecoder::do_decoder(std::shared_ptr<FUNASR_MESSAGE> session_msg) {
 }
 
 // init asr model
-FUNASR_HANDLE ModelDecoder::initAsr(std::map<std::string, std::string> &model_path,
-                           int thread_num) {
+FUNASR_HANDLE ModelDecoder::initAsr(
+    std::map<std::string, std::string> &model_path, int thread_num) {
   try {
     // init model with api
 
     asr_handle = FunOfflineInit(model_path, thread_num);
     LOG(INFO) << "model successfully inited";
 
- 
     return asr_handle;
 
   } catch (const std::exception &e) {

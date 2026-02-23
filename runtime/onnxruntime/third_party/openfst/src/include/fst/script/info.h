@@ -4,12 +4,12 @@
 #ifndef FST_SCRIPT_INFO_H_
 #define FST_SCRIPT_INFO_H_
 
-#include <string>
-#include <tuple>
-
 #include <fst/script/arg-packs.h>
 #include <fst/script/fst-class.h>
 #include <fst/script/info-impl.h>
+
+#include <string>
+#include <tuple>
 
 namespace fst {
 namespace script {

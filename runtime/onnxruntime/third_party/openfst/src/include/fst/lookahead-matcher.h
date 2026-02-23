@@ -7,19 +7,17 @@
 #ifndef FST_LOOKAHEAD_MATCHER_H_
 #define FST_LOOKAHEAD_MATCHER_H_
 
+#include <fst/add-on.h>
+#include <fst/const-fst.h>
+#include <fst/flags.h>
+#include <fst/fst.h>
+#include <fst/label-reachable.h>
+#include <fst/log.h>
+#include <fst/matcher.h>
+
 #include <memory>
 #include <utility>
 #include <vector>
-
-#include <fst/flags.h>
-#include <fst/log.h>
-
-#include <fst/add-on.h>
-#include <fst/const-fst.h>
-#include <fst/fst.h>
-#include <fst/label-reachable.h>
-#include <fst/matcher.h>
-
 
 DECLARE_string(save_relabel_ipairs);
 DECLARE_string(save_relabel_opairs);
@@ -232,9 +230,8 @@ class TrivialLookAheadMatcher
 
 // Look-ahead of one transition. Template argument flags accepts flags to
 // control behavior.
-template <class M,
-          uint32 flags = kLookAheadNonEpsilons | kLookAheadEpsilons |
-                         kLookAheadWeight | kLookAheadPrefix>
+template <class M, uint32 flags = kLookAheadNonEpsilons | kLookAheadEpsilons |
+                                  kLookAheadWeight | kLookAheadPrefix>
 class ArcLookAheadMatcher : public LookAheadMatcherBase<typename M::FST::Arc> {
  public:
   using FST = typename M::FST;
@@ -578,8 +575,7 @@ class LabelLookAheadMatcher
 
  private:
   void Init(const FST &fst, MatchType match_type,
-            std::shared_ptr<MatcherData> data,
-            Accumulator *accumulator) {
+            std::shared_ptr<MatcherData> data, Accumulator *accumulator) {
     if (!(kFlags & (kInputLookAheadMatcher | kOutputLookAheadMatcher))) {
       FSTERROR() << "LabelLookaheadMatcher: Bad matcher flags: " << kFlags;
       error_ = true;
@@ -731,21 +727,19 @@ class LookAheadMatcher {
       : owned_fst_(fst.Copy()),
         base_(owned_fst_->InitMatcher(match_type)),
         lookahead_(false) {
-    if (!base_) base_.reset(new SortedMatcher<FST>(owned_fst_.get(),
-                                                   match_type));
+    if (!base_)
+      base_.reset(new SortedMatcher<FST>(owned_fst_.get(), match_type));
   }
 
   // This doesn't copy the FST.
   LookAheadMatcher(const FST *fst, MatchType match_type)
-      : base_(fst->InitMatcher(match_type)),
-        lookahead_(false) {
+      : base_(fst->InitMatcher(match_type)), lookahead_(false) {
     if (!base_) base_.reset(new SortedMatcher<FST>(fst, match_type));
   }
 
   // This makes a copy of the FST.
   LookAheadMatcher(const LookAheadMatcher<FST> &matcher, bool safe = false)
-      : base_(matcher.base_->Copy(safe)),
-        lookahead_(matcher.lookahead_) { }
+      : base_(matcher.base_->Copy(safe)), lookahead_(matcher.lookahead_) {}
 
   // Takes ownership of base.
   explicit LookAheadMatcher(MatcherBase<Arc> *base)

@@ -19,18 +19,19 @@
 
 #ifndef KALDI_LAT_COMPOSE_LATTICE_PRUNED_H_
 #define KALDI_LAT_COMPOSE_LATTICE_PRUNED_H_
-#include <fst/fstlib.h>
 #include <fst/fst-decl.h>
+#include <fst/fstlib.h>
+
 #include <algorithm>
 #include <map>
 #include <set>
 #include <vector>
+
 #include "fstext/lattice-weight.h"
 #include "itf/options-itf.h"
 #include "lat/kaldi-lattice.h"
 
 namespace kaldi {
-
 
 /*
    This header implements pruned lattice composition, via the functions
@@ -48,7 +49,8 @@ namespace kaldi {
    larger language model.
 
    The simpler alternative to using ComposeCompactLatticePruned is to use
-   ComposeCompactLatticeDeterministic.  The advantages of ComposedCompactLatticePruned are:
+   ComposeCompactLatticeDeterministic.  The advantages of
+   ComposedCompactLatticePruned are:
 
      (1) The alternative might be too slow, because when you compose a lattice
          with a high-order n-gram language model (or an RNNLM with a high-order
@@ -60,10 +62,10 @@ namespace kaldi {
          the LM score for a particular word given a history is taken
          from a history that is the same as the desired history up to
          the last, say, 4 words, but beyond that may differ.  The
-         advantage of ComposeCompactLatticePruned functions over the alternative is
-         that it will often take, in a suitable sense, the "best" history
-         (instead of an arbitrary history); this happens simply because the
-         paths that are expected to be the best paths are visited first.
+         advantage of ComposeCompactLatticePruned functions over the alternative
+   is that it will often take, in a suitable sense, the "best" history (instead
+   of an arbitrary history); this happens simply because the paths that are
+   expected to be the best paths are visited first.
 
 
    We now describe how you are expected to get the thing to compose with,
@@ -80,9 +82,6 @@ namespace kaldi {
    with the RNNLM language model (the name of FST TBD, Hainan needs to write
    this).
 */
-
-
-
 
 // This options class is used for ComposeCompactLatticePruned,
 // and if in future we write a function ComposeLatticePruned, we'll
@@ -121,23 +120,27 @@ struct ComposeLatticePrunedOptions {
   // heuristics will be less accurate).
   BaseFloat growth_ratio;
 
-  ComposeLatticePrunedOptions(): lattice_compose_beam(6.0),
-                                 max_arcs(100000),
-                                 initial_num_arcs(100),
-                                 growth_ratio(1.5) { }
+  ComposeLatticePrunedOptions()
+      : lattice_compose_beam(6.0),
+        max_arcs(100000),
+        initial_num_arcs(100),
+        growth_ratio(1.5) {}
   void Register(OptionsItf *po) {
-    po->Register("lattice-compose-beam", &lattice_compose_beam,
-                 "Beam used in pruned lattice composition, which determines how "
-                 "large the composed lattice may be.");
-    po->Register("max-arcs", &max_arcs, "Maximum number of arcs we allow in "
-                 "any given lattice, during pruned composition (limits max size "
-                 "of lattices; also see lattice-compose-beam).");
-    po->Register("growth-ratio", &growth_ratio, "Factor used in the lattice "
+    po->Register(
+        "lattice-compose-beam", &lattice_compose_beam,
+        "Beam used in pruned lattice composition, which determines how "
+        "large the composed lattice may be.");
+    po->Register(
+        "max-arcs", &max_arcs,
+        "Maximum number of arcs we allow in "
+        "any given lattice, during pruned composition (limits max size "
+        "of lattices; also see lattice-compose-beam).");
+    po->Register("growth-ratio", &growth_ratio,
+                 "Factor used in the lattice "
                  "composition algorithm; must be >1.0.  Affects speed vs. "
                  "the optimality of the best-first composition.");
   }
 };
-
 
 /**
    Does pruned composition of a lattice 'clat' with a DeterministicOnDemandFst
@@ -166,14 +169,10 @@ struct ComposeLatticePrunedOptions {
                    lattice semiring.
  */
 void ComposeCompactLatticePruned(
-    const ComposeLatticePrunedOptions &opts,
-    const CompactLattice &clat,
+    const ComposeLatticePrunedOptions &opts, const CompactLattice &clat,
     fst::DeterministicOnDemandFst<fst::StdArc> *det_fst,
-    CompactLattice* composed_clat);
+    CompactLattice *composed_clat);
 
-
-
-
-} // namespace kaldi
+}  // namespace kaldi
 
 #endif

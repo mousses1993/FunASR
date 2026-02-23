@@ -6,12 +6,12 @@
 #ifndef FST_EXTENSIONS_FAR_EXTRACT_H_
 #define FST_EXTENSIONS_FAR_EXTRACT_H_
 
+#include <fst/extensions/far/far.h>
+#include <fst/util.h>
+
 #include <memory>
 #include <string>
 #include <vector>
-
-#include <fst/extensions/far/far.h>
-#include <fst/util.h>
 
 namespace fst {
 
@@ -49,8 +49,7 @@ void FarExtract(const std::vector<string> &ifilenames, int32 generate_filenames,
                 const string &keys, const string &key_separator,
                 const string &range_delimiter, const string &filename_prefix,
                 const string &filename_suffix) {
-  std::unique_ptr<FarReader<Arc>> far_reader(
-      FarReader<Arc>::Open(ifilenames));
+  std::unique_ptr<FarReader<Arc>> far_reader(FarReader<Arc>::Open(ifilenames));
   if (!far_reader) return;
   string okey;
   int nrep = 0;

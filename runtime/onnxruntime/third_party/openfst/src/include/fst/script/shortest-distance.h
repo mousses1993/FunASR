@@ -4,15 +4,15 @@
 #ifndef FST_SCRIPT_SHORTEST_DISTANCE_H_
 #define FST_SCRIPT_SHORTEST_DISTANCE_H_
 
-#include <tuple>
-#include <vector>
-
 #include <fst/queue.h>
-#include <fst/shortest-distance.h>
 #include <fst/script/fst-class.h>
 #include <fst/script/prune.h>
 #include <fst/script/script-impl.h>
 #include <fst/script/weight-class.h>
+#include <fst/shortest-distance.h>
+
+#include <tuple>
+#include <vector>
 
 namespace fst {
 namespace script {
@@ -205,8 +205,7 @@ void ShortestDistance(const FstClass &fst, std::vector<WeightClass> *distance,
                       const ShortestDistanceOptions &opts);
 
 void ShortestDistance(const FstClass &ifst, std::vector<WeightClass> *distance,
-                      bool reverse = false,
-                      double delta = fst::kShortestDelta);
+                      bool reverse = false, double delta = fst::kShortestDelta);
 
 }  // namespace script
 }  // namespace fst

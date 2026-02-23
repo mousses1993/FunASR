@@ -1,4 +1,4 @@
-// Acknowledgement: this code is adapted from 
+// Acknowledgement: this code is adapted from
 // https://github.com/wenet-e2e/WeTextProcessing/blob/master/runtime/processor/token_parser.h
 // Retrieved in Aug 2023.
 
@@ -91,6 +91,6 @@ class TokenParser {
   std::unordered_map<std::string, std::vector<std::string>> orders;
 };
 
-}  // funasr
+}  // namespace funasr
 
 #endif  // ITN_TOKEN_PARSER_H_

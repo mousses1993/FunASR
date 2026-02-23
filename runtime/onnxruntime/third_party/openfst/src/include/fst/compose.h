@@ -6,20 +6,18 @@
 #ifndef FST_COMPOSE_H_
 #define FST_COMPOSE_H_
 
-#include <algorithm>
-#include <memory>
-#include <utility>
-
-#include <fst/log.h>
-
 #include <fst/cache.h>
 #include <fst/compose-filter.h>
 #include <fst/fst-decl.h>  // For optional argument declarations
+#include <fst/log.h>
 #include <fst/lookahead-filter.h>
 #include <fst/matcher.h>
 #include <fst/state-table.h>
 #include <fst/test-properties.h>
 
+#include <algorithm>
+#include <memory>
+#include <utility>
 
 namespace fst {
 
@@ -77,8 +75,8 @@ struct ComposeFstImplOptions : public CacheImplOptions<CacheStore> {
   M2 *matcher2;    // FST2 matcher.
   Filter *filter;  // Composition filter (see compose-filter.h).
   StateTable
-    *state_table;        // Composition state table (see compose-state-table.h).
-  bool own_state_table;   // ComposeFstImpl takes ownership of 'state_table'?
+      *state_table;      // Composition state table (see compose-state-table.h).
+  bool own_state_table;  // ComposeFstImpl takes ownership of 'state_table'?
   bool allow_noncommute;  // Allow non-commutative weights
 
   explicit ComposeFstImplOptions(const CacheOptions &opts,
@@ -137,9 +135,9 @@ class ComposeFstImplBase
   using FstImpl<Arc>::SetInputSymbols;
   using FstImpl<Arc>::SetOutputSymbols;
 
-  using CacheImpl::HasStart;
-  using CacheImpl::HasFinal;
   using CacheImpl::HasArcs;
+  using CacheImpl::HasFinal;
+  using CacheImpl::HasStart;
   using CacheImpl::SetFinal;
   using CacheImpl::SetStart;
 
@@ -320,8 +318,8 @@ class ComposeFstImpl
     if ((matcher1_->Type(false) == match_type) &&
         (matcher2_->Type(false) == match_type) &&
         (filter_->Properties(test_props) == test_props)) {
-      return new ComposeFstMatcher<
-        CacheStore, Filter, StateTable>(&fst, match_type);
+      return new ComposeFstMatcher<CacheStore, Filter, StateTable>(&fst,
+                                                                   match_type);
     }
     return nullptr;
   }
@@ -370,9 +368,9 @@ class ComposeFstImpl
   void AddArc(StateId s, const Arc &arc1, const Arc &arc2,
               const FilterState &f) {
     const StateTuple tuple(arc1.nextstate, arc2.nextstate, f);
-    CacheImpl::EmplaceArc(
-        s, arc1.ilabel, arc2.olabel, Times(arc1.weight, arc2.weight),
-        state_table_->FindState(tuple));
+    CacheImpl::EmplaceArc(s, arc1.ilabel, arc2.olabel,
+                          Times(arc1.weight, arc2.weight),
+                          state_table_->FindState(tuple));
   }
 
   StateId ComputeStart() override {
@@ -561,7 +559,8 @@ class ComposeFst
 
   friend class ArcIterator<ComposeFst<Arc, CacheStore>>;
   friend class StateIterator<ComposeFst<Arc, CacheStore>>;
-  template <class, class, class> friend class ComposeFstMatcher;
+  template <class, class, class>
+  friend class ComposeFstMatcher;
 
   // Compose specifying only caching options.
   ComposeFst(const Fst<Arc> &fst1, const Fst<Arc> &fst2,
@@ -797,9 +796,7 @@ class ComposeFstMatcher : public MatcherBase<typename CacheStore::Arc> {
 
   const Fst<Arc> &GetFst() const override { return fst_; }
 
-  uint64 Properties(uint64 inprops) const override {
-    return inprops;
-  }
+  uint64 Properties(uint64 inprops) const override { return inprops; }
 
   void SetState(StateId s) final {
     if (s_ == s) return;

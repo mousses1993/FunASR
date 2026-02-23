@@ -1,4 +1,4 @@
-// Acknowledgement: this code is adapted from 
+// Acknowledgement: this code is adapted from
 // https://github.com/wenet-e2e/WeTextProcessing/blob/master/runtime/utils/string.cc
 // Retrieved in Aug 2023.
 
@@ -18,6 +18,7 @@
 // limitations under the License.
 
 #include "utf8-string.h"
+
 #include <glog/logging.h>
 
 namespace funasr {

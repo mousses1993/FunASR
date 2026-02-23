@@ -304,4 +304,4 @@ void LinearResample::SetRemainder(const float *input, int32_t input_dim) {
     }
   }
 }
-} // namespace funasr
+}  // namespace funasr

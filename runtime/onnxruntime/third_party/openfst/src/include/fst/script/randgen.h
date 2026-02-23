@@ -4,13 +4,12 @@
 #ifndef FST_SCRIPT_RANDGEN_H_
 #define FST_SCRIPT_RANDGEN_H_
 
-#include <ctime>
-
-#include <tuple>
-
 #include <fst/randgen.h>
 #include <fst/script/fst-class.h>
 #include <fst/script/script-impl.h>
+
+#include <ctime>
+#include <tuple>
 
 namespace fst {
 namespace script {

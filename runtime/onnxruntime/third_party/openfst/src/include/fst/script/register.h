@@ -4,12 +4,12 @@
 #ifndef FST_SCRIPT_REGISTER_H_
 #define FST_SCRIPT_REGISTER_H_
 
-#include <istream>
-#include <string>
-
 #include <fst/generic-register.h>
 #include <fst/script/fst-class.h>
 #include <fst/script/weight-class.h>
+
+#include <istream>
+#include <string>
 
 // Holds methods and classes responsible for maintaining
 // the register for FstClass arc types.
@@ -31,8 +31,7 @@ struct FstClassRegEntry {
   FstClassRegEntry(Reader r, Creator cr, Converter co)
       : reader(r), creator(cr), converter(co) {}
 
-  FstClassRegEntry()
-      : reader(nullptr), creator(nullptr), converter(nullptr) {}
+  FstClassRegEntry() : reader(nullptr), creator(nullptr), converter(nullptr) {}
 };
 
 template <class Reader, class Creator, class Converter>
@@ -65,7 +64,7 @@ class FstClassIORegister
 // of FST class (e.g., a plain FstClass, or a MutableFstClass, etc.).
 template <class FstClassType>
 struct IORegistration {
-  using Reader = FstClassType *(*)(std::istream &stream,
+  using Reader = FstClassType *(*)(std::istream & stream,
                                    const FstReadOptions &opts);
 
   using Creator = FstClassImplBase *(*)();

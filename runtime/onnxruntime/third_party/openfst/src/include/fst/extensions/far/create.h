@@ -6,11 +6,11 @@
 #ifndef FST_EXTENSIONS_FAR_CREATE_H_
 #define FST_EXTENSIONS_FAR_CREATE_H_
 
+#include <fst/extensions/far/far.h>
+
 #include <sstream>
 #include <string>
 #include <vector>
-
-#include <fst/extensions/far/far.h>
 
 namespace fst {
 

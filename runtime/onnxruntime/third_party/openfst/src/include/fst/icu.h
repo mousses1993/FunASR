@@ -10,10 +10,10 @@
 #ifndef FST_ICU_H_
 #define FST_ICU_H_
 
+#include <fst/log.h>
+
 #include <sstream>
 #include <vector>
-
-#include <fst/log.h>
 
 namespace fst {
 

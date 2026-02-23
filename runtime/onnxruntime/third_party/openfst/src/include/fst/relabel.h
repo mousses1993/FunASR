@@ -6,18 +6,14 @@
 #ifndef FST_RELABEL_H_
 #define FST_RELABEL_H_
 
+#include <fst/cache.h>
+#include <fst/log.h>
+#include <fst/test-properties.h>
+
 #include <string>
 #include <unordered_map>
 #include <utility>
 #include <vector>
-
-#include <fst/log.h>
-
-#include <fst/cache.h>
-#include <fst/test-properties.h>
-
-
-#include <unordered_map>
 
 namespace fst {
 
@@ -35,10 +31,10 @@ void Relabel(
   using Label = typename Arc::Label;
   const auto props = fst->Properties(kFstProperties, false);
   // Constructs label-to-label maps.
-  const std::unordered_map<Label, Label> input_map(
-      ipairs.begin(), ipairs.end());
-  const std::unordered_map<Label, Label> output_map(
-      opairs.begin(), opairs.end());
+  const std::unordered_map<Label, Label> input_map(ipairs.begin(),
+                                                   ipairs.end());
+  const std::unordered_map<Label, Label> output_map(opairs.begin(),
+                                                    opairs.end());
   for (StateIterator<MutableFst<Arc>> siter(*fst); !siter.Done();
        siter.Next()) {
     for (MutableArcIterator<MutableFst<Arc>> aiter(fst, siter.Value());
@@ -78,11 +74,11 @@ void Relabel(
 // FST. If the 'unknown_i(o)symbol' is non-empty, it is used to label any
 // missing symbol in new_i(o)symbols table.
 template <class Arc>
-void Relabel(MutableFst<Arc> *fst,
-             const SymbolTable *old_isymbols, const SymbolTable *new_isymbols,
-             const string &unknown_isymbol, bool attach_new_isymbols,
-             const SymbolTable *old_osymbols, const SymbolTable *new_osymbols,
-             const string &unknown_osymbol, bool attach_new_osymbols) {
+void Relabel(MutableFst<Arc> *fst, const SymbolTable *old_isymbols,
+             const SymbolTable *new_isymbols, const string &unknown_isymbol,
+             bool attach_new_isymbols, const SymbolTable *old_osymbols,
+             const SymbolTable *new_osymbols, const string &unknown_osymbol,
+             bool attach_new_osymbols) {
   using Label = typename Arc::Label;
   // Constructs vectors of input-side label pairs.
   std::vector<std::pair<Label, Label>> ipairs;
@@ -167,13 +163,10 @@ void Relabel(MutableFst<Arc> *fst, const SymbolTable *old_isymbols,
              const SymbolTable *new_isymbols, bool attach_new_isymbols,
              const SymbolTable *old_osymbols, const SymbolTable *new_osymbols,
              bool attach_new_osymbols) {
-  Relabel(fst,
-          old_isymbols, new_isymbols, "" /* no unknown isymbol */,
-          attach_new_isymbols,
-          old_osymbols, new_osymbols, "" /* no unknown ioymbol */,
-          attach_new_osymbols);
+  Relabel(fst, old_isymbols, new_isymbols, "" /* no unknown isymbol */,
+          attach_new_isymbols, old_osymbols, new_osymbols,
+          "" /* no unknown ioymbol */, attach_new_osymbols);
 }
-
 
 // Relabels either the input labels or output labels. The old to
 // new labels are specified using symbol tables. Any label associations not
@@ -236,12 +229,10 @@ class RelabelFstImpl : public CacheImpl<Arc> {
     SetType("relabel");
   }
 
-  RelabelFstImpl(const Fst<Arc> &fst,
-                 const SymbolTable *old_isymbols,
+  RelabelFstImpl(const Fst<Arc> &fst, const SymbolTable *old_isymbols,
                  const SymbolTable *new_isymbols,
                  const SymbolTable *old_osymbols,
-                 const SymbolTable *new_osymbols,
-                 const RelabelFstOptions &opts)
+                 const SymbolTable *new_osymbols, const RelabelFstOptions &opts)
       : CacheImpl<Arc>(opts),
         fst_(fst.Copy()),
         relabel_input_(false),
@@ -438,7 +429,7 @@ class StateIterator<RelabelFst<Arc>> : public StateIteratorBase<Arc> {
   }
 
  private:
-  const internal::RelabelFstImpl<Arc>* impl_;
+  const internal::RelabelFstImpl<Arc> *impl_;
   StateIterator<Fst<Arc>> siter_;
   StateId s_;
 

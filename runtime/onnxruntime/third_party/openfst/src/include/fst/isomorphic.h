@@ -8,15 +8,13 @@
 #ifndef FST_ISOMORPHIC_H_
 #define FST_ISOMORPHIC_H_
 
+#include <fst/fst.h>
+#include <fst/log.h>
+
 #include <algorithm>
 #include <list>
 #include <type_traits>
 #include <vector>
-
-#include <fst/log.h>
-
-#include <fst/fst.h>
-
 
 namespace fst {
 namespace internal {
@@ -114,12 +112,12 @@ class Isomorphism {
 
   std::unique_ptr<Fst<Arc>> fst1_;
   std::unique_ptr<Fst<Arc>> fst2_;
-  float delta_;                          // Weight equality delta.
-  std::vector<Arc> arcs1_;               // For sorting arcs on FST1.
-  std::vector<Arc> arcs2_;               // For sorting arcs on FST2.
-  std::vector<StateId> state_pairs_;     // Maintains state correspondences.
+  float delta_;                       // Weight equality delta.
+  std::vector<Arc> arcs1_;            // For sorting arcs on FST1.
+  std::vector<Arc> arcs2_;            // For sorting arcs on FST2.
+  std::vector<StateId> state_pairs_;  // Maintains state correspondences.
   std::list<std::pair<StateId, StateId>> queue_;  // Queue of state pairs.
-  bool error_;                           // Error flag.
+  bool error_;                                    // Error flag.
   ArcCompare comp_;
 };
 

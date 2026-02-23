@@ -6,18 +6,17 @@
 #ifndef FST_EQUIVALENT_H_
 #define FST_EQUIVALENT_H_
 
+#include <fst/encode.h>
+#include <fst/log.h>
+#include <fst/push.h>
+#include <fst/union-find.h>
+#include <fst/vector-fst.h>
+
 #include <algorithm>
 #include <deque>
 #include <unordered_map>
 #include <utility>
 #include <vector>
-#include <fst/log.h>
-
-#include <fst/encode.h>
-#include <fst/push.h>
-#include <fst/union-find.h>
-#include <fst/vector-fst.h>
-
 
 namespace fst {
 namespace internal {

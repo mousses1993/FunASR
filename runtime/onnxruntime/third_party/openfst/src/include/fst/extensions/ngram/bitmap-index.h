@@ -4,10 +4,10 @@
 #ifndef FST_EXTENSIONS_NGRAM_BITMAP_INDEX_H_
 #define FST_EXTENSIONS_NGRAM_BITMAP_INDEX_H_
 
+#include <fst/compat.h>
+
 #include <utility>
 #include <vector>
-
-#include <fst/compat.h>
 
 // This class is a bitstring storage class with an index that allows
 // seeking to the Nth set or clear bit in time O(Log(N)) where N is

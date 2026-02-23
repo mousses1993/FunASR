@@ -9,7 +9,10 @@
 #ifndef FST_EXTENSIONS_FAR_STLIST_H_
 #define FST_EXTENSIONS_FAR_STLIST_H_
 
+#include <fst/util.h>
+
 #include <algorithm>
+#include <fstream>
 #include <functional>
 #include <iostream>
 #include <memory>
@@ -17,9 +20,6 @@
 #include <string>
 #include <utility>
 #include <vector>
-
-#include <fstream>
-#include <fst/util.h>
 
 namespace fst {
 
@@ -36,10 +36,10 @@ template <class T, class Writer>
 class STListWriter {
  public:
   explicit STListWriter(const string &filename)
-      : stream_(filename.empty() ? &std::cout : new std::ofstream(
-                                                    filename,
-                                                    std::ios_base::out |
-                                                        std::ios_base::binary)),
+      : stream_(filename.empty()
+                    ? &std::cout
+                    : new std::ofstream(filename, std::ios_base::out |
+                                                      std::ios_base::binary)),
         error_(false) {
     WriteType(*stream_, kSTListMagicNumber);
     WriteType(*stream_, kSTListFileVersion);
@@ -217,9 +217,10 @@ class STListReader {
   Reader entry_reader_;                  // Read functor.
   std::vector<std::istream *> streams_;  // Input streams.
   std::vector<string> sources_;          // Corresponding filenames.
-  std::priority_queue<
-      std::pair<string, size_t>, std::vector<std::pair<string, size_t>>,
-      std::greater<std::pair<string, size_t>>> heap_;  // (Key, stream id) heap
+  std::priority_queue<std::pair<string, size_t>,
+                      std::vector<std::pair<string, size_t>>,
+                      std::greater<std::pair<string, size_t>>>
+      heap_;                          // (Key, stream id) heap
   mutable std::unique_ptr<T> entry_;  // The currently read entry.
   bool error_;
 

@@ -48,22 +48,22 @@ namespace kaldi {
 
 class OnlineFeatureInterface {
  public:
-  virtual int32 Dim() const = 0; /// returns the feature dimension.
+  virtual int32 Dim() const = 0;  /// returns the feature dimension.
 
   /// Returns the total number of frames, since the start of the utterance, that
   /// are now available.  In an online-decoding context, this will likely
   /// increase with time as more data becomes available.
   virtual int32 NumFramesReady() const = 0;
 
-  /// Returns true if this is the last frame.  Frame indices are zero-based, so the
-  /// first frame is zero.  IsLastFrame(-1) will return false, unless the file
-  /// is empty (which is a case that I'm not sure all the code will handle, so
-  /// be careful).  This function may return false for some frame if
-  /// we haven't yet decided to terminate decoding, but later true if we decide
-  /// to terminate decoding.  This function exists mainly to correctly handle
-  /// end effects in feature extraction, and is not a mechanism to determine how
-  /// many frames are in the decodable object (as it used to be, and for backward
-  /// compatibility, still is, in the Decodable interface).
+  /// Returns true if this is the last frame.  Frame indices are zero-based, so
+  /// the first frame is zero.  IsLastFrame(-1) will return false, unless the
+  /// file is empty (which is a case that I'm not sure all the code will handle,
+  /// so be careful).  This function may return false for some frame if we
+  /// haven't yet decided to terminate decoding, but later true if we decide to
+  /// terminate decoding.  This function exists mainly to correctly handle end
+  /// effects in feature extraction, and is not a mechanism to determine how
+  /// many frames are in the decodable object (as it used to be, and for
+  /// backward compatibility, still is, in the Decodable interface).
   virtual bool IsLastFrame(int32 frame) const = 0;
 
   /// Gets the feature vector for this frame.  Before calling this for a given
@@ -73,7 +73,6 @@ class OnlineFeatureInterface {
   /// some kind of caching going on, but most of the time it shouldn't modify
   /// the class.
   virtual void GetFrame(int32 frame, VectorBase<BaseFloat> *feat) = 0;
-
 
   /// This is like GetFrame() but for a collection of frames.  There is a
   /// default implementation that just gets the frames one by one, but it
@@ -88,7 +87,6 @@ class OnlineFeatureInterface {
     }
   }
 
-
   // Returns frame shift in seconds.  Helps to estimate duration from frame
   // counts.
   virtual BaseFloat FrameShiftInSeconds() const = 0;
@@ -96,14 +94,12 @@ class OnlineFeatureInterface {
   /// Virtual destructor.  Note: constructors that take another member of
   /// type OnlineFeatureInterface are not expected to take ownership of
   /// that pointer; the caller needs to keep track of that manually.
-  virtual ~OnlineFeatureInterface() { }
-
+  virtual ~OnlineFeatureInterface() {}
 };
-
 
 /// Add a virtual class for "source" features such as MFCC or PLP or pitch
 /// features.
-class OnlineBaseFeature: public OnlineFeatureInterface {
+class OnlineBaseFeature : public OnlineFeatureInterface {
  public:
   /// This would be called from the application, when you get more wave data.
   /// Note: the sampling_rate is typically only provided so the code can assert
@@ -118,8 +114,7 @@ class OnlineBaseFeature: public OnlineFeatureInterface {
   virtual void InputFinished() = 0;
 };
 
-
 /// @}
-}  // namespace Kaldi
+}  // namespace kaldi
 
 #endif  // KALDI_ITF_ONLINE_FEATURE_ITF_H_

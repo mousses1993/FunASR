@@ -6,12 +6,12 @@
 #ifndef FST_EXTENSIONS_MPDT_REVERSE_H_
 #define FST_EXTENSIONS_MPDT_REVERSE_H_
 
-#include <limits>
-#include <vector>
-
 #include <fst/mutable-fst.h>
 #include <fst/relabel.h>
 #include <fst/reverse.h>
+
+#include <limits>
+#include <vector>
 
 namespace fst {
 

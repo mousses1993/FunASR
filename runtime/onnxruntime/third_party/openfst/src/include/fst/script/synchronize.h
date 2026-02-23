@@ -4,10 +4,10 @@
 #ifndef FST_SCRIPT_SYNCHRONIZE_H_
 #define FST_SCRIPT_SYNCHRONIZE_H_
 
-#include <utility>
-
-#include <fst/synchronize.h>
 #include <fst/script/fst-class.h>
+#include <fst/synchronize.h>
+
+#include <utility>
 
 namespace fst {
 namespace script {

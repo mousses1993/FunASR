@@ -9,15 +9,15 @@
 #ifndef FST_EXTENSIONS_COMPRESS_GZFILE_H_
 #define FST_EXTENSIONS_COMPRESS_GZFILE_H_
 
+#include <fst/compat.h>
+#include <fst/fst.h>
+#include <fst/log.h>
+#include <zlib.h>
+
 #include <cstddef>
 #include <memory>
 #include <sstream>
 #include <string>
-
-#include <fst/compat.h>
-#include <fst/log.h>
-#include <fst/fst.h>
-#include <zlib.h>
 
 using std::stringstream;
 using std::unique_ptr;
@@ -32,14 +32,12 @@ namespace fst {
 class GzFile {
  public:
   GzFile(const char *filename, const char *mode)
-      : gzfile_(gzopen(filename, mode)), error_(check_handle()) {
-  }
+      : gzfile_(gzopen(filename, mode)), error_(check_handle()) {}
 
   // The caller is responsible to ensure the corresponding FD is open and has
   // the needed modes ("r" for reading, "w" or "a" for writing).
   explicit GzFile(const int fd, const char *mode)
-      : gzfile_(gzdopen(fd, mode)), error_(check_handle()), close_me_(false) {
-  }
+      : gzfile_(gzdopen(fd, mode)), error_(check_handle()), close_me_(false) {}
 
   // If the instance was constructed from an FD, flush the buffer; otherwise,
   // close the file, which flushes the buffer as a side-effect.

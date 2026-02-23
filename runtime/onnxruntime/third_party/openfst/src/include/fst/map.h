@@ -7,9 +7,7 @@
 #ifndef FST_MAP_H_
 #define FST_MAP_H_
 
-
 #include <fst/arc-map.h>
-
 
 namespace fst {
 

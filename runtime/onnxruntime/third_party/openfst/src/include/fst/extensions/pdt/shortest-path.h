@@ -6,16 +6,15 @@
 #ifndef FST_EXTENSIONS_PDT_SHORTEST_PATH_H_
 #define FST_EXTENSIONS_PDT_SHORTEST_PATH_H_
 
+#include <fst/extensions/pdt/paren.h>
+#include <fst/extensions/pdt/pdt.h>
+#include <fst/log.h>
+#include <fst/shortest-path.h>
+
 #include <stack>
 #include <unordered_map>
 #include <utility>
 #include <vector>
-
-#include <fst/log.h>
-
-#include <fst/extensions/pdt/paren.h>
-#include <fst/extensions/pdt/pdt.h>
-#include <fst/shortest-path.h>
 
 namespace fst {
 
@@ -683,8 +682,8 @@ Arc PdtShortestPath<Arc, Queue>::GetPathArc(SearchState s, SearchState d,
 }
 
 template <class Arc, class Queue>
-const Arc PdtShortestPath<Arc, Queue>::kNoArc = Arc(kNoLabel, kNoLabel,
-                                                    Weight::Zero(), kNoStateId);
+const Arc PdtShortestPath<Arc, Queue>::kNoArc =
+    Arc(kNoLabel, kNoLabel, Weight::Zero(), kNoStateId);
 
 // Functional variants.
 

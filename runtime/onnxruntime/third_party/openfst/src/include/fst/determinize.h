@@ -6,6 +6,15 @@
 #ifndef FST_DETERMINIZE_H_
 #define FST_DETERMINIZE_H_
 
+#include <fst/arc-map.h>
+#include <fst/bi-table.h>
+#include <fst/cache.h>
+#include <fst/factor-weight.h>
+#include <fst/filter-state.h>
+#include <fst/log.h>
+#include <fst/prune.h>
+#include <fst/test-properties.h>
+
 #include <algorithm>
 #include <climits>
 #include <forward_list>
@@ -13,17 +22,6 @@
 #include <string>
 #include <utility>
 #include <vector>
-
-#include <fst/log.h>
-
-#include <fst/arc-map.h>
-#include <fst/bi-table.h>
-#include <fst/cache.h>
-#include <fst/factor-weight.h>
-#include <fst/filter-state.h>
-#include <fst/prune.h>
-#include <fst/test-properties.h>
-
 
 namespace fst {
 
@@ -705,9 +703,9 @@ class DeterminizeFsaImpl : public DeterminizeFstImplBase<Arc> {
   // Adds an arc from state S to the destination state associated with state
   // tuple in det_arc as created by GetLabelMap.
   void AddArc(StateId s, DetArc &&det_arc) {
-    CacheImpl<Arc>::EmplaceArc(
-        s, det_arc.label, det_arc.label, std::move(det_arc.weight),
-        FindState(det_arc.dest_tuple));
+    CacheImpl<Arc>::EmplaceArc(s, det_arc.label, det_arc.label,
+                               std::move(det_arc.weight),
+                               FindState(det_arc.dest_tuple));
   }
 
   float delta_;                         // Quantization delta for weights.
@@ -960,7 +958,8 @@ namespace internal {
 // Initialization of transducer determinization implementation, which is defined
 // after DeterminizeFst since it calls it.
 template <class Arc, GallicType G, class D, class Filter, class T>
-void DeterminizeFstImpl<Arc, G, D, Filter, T>::Init(const Fst<Arc> &fst, Filter *filter) {
+void DeterminizeFstImpl<Arc, G, D, Filter, T>::Init(const Fst<Arc> &fst,
+                                                    Filter *filter) {
   // Mapper to an acceptor.
   const ToFst to_fst(fst, ToMapper());
   auto *to_filter = filter ? new ToFilter(to_fst, filter) : nullptr;

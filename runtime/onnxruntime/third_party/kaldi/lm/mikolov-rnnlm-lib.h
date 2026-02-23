@@ -54,6 +54,7 @@
 
 #include <string>
 #include <vector>
+
 #include "util/stl-utils.h"
 
 namespace rnnlm {
@@ -65,8 +66,8 @@ typedef double real;      //  doubles for NN weights
 typedef double direct_t;  //  doubles for ME weights;
 
 struct neuron {
-  real ac;    // actual value stored in neuron
-  real er;    // error value in neuron, used by learning algorithm
+  real ac;  // actual value stored in neuron
+  real er;  // error value in neuron, used by learning algorithm
 };
 
 struct synapse {
@@ -81,18 +82,22 @@ struct vocab_word {
   int class_index;
 };
 
-const unsigned int PRIMES[] = {108641969, 116049371, 125925907, 133333309,
-  145678979, 175308587, 197530793, 234567803, 251851741, 264197411,
-  330864029, 399999781,
-  407407183, 459258997, 479012069, 545678687, 560493491, 607407037, 629629243,
-  656789717, 716048933, 718518067, 725925469, 733332871, 753085943, 755555077,
-  782715551, 790122953, 812345159, 814814293, 893826581, 923456189, 940740127,
-  953085797, 985184539, 990122807};
-const unsigned int PRIMES_SIZE  =  sizeof(PRIMES) / sizeof(PRIMES[0]);
+const unsigned int PRIMES[] = {
+    108641969, 116049371, 125925907, 133333309, 145678979, 175308587,
+    197530793, 234567803, 251851741, 264197411, 330864029, 399999781,
+    407407183, 459258997, 479012069, 545678687, 560493491, 607407037,
+    629629243, 656789717, 716048933, 718518067, 725925469, 733332871,
+    753085943, 755555077, 782715551, 790122953, 812345159, 814814293,
+    893826581, 923456189, 940740127, 953085797, 985184539, 990122807};
+const unsigned int PRIMES_SIZE = sizeof(PRIMES) / sizeof(PRIMES[0]);
 
 const int MAX_NGRAM_ORDER = 20;
 
-enum FileTypeEnum {TEXT, BINARY, COMPRESSED};  // COMPRESSED not yet implemented
+enum FileTypeEnum {
+  TEXT,
+  BINARY,
+  COMPRESSED
+};  // COMPRESSED not yet implemented
 
 class CRnnLM {
  protected:
@@ -157,17 +162,17 @@ class CRnnLM {
 
   int independent;
 
-  struct neuron *neu0;    // neurons in input layer
-  struct neuron *neu1;    // neurons in hidden layer
-  struct neuron *neuc;    // neurons in hidden layer
-  struct neuron *neu2;    // neurons in output layer
+  struct neuron *neu0;  // neurons in input layer
+  struct neuron *neu1;  // neurons in hidden layer
+  struct neuron *neuc;  // neurons in hidden layer
+  struct neuron *neu2;  // neurons in output layer
 
-  struct synapse *syn0;   // weights between input and hidden layer
-  struct synapse *syn1;   // weights between hidden and output layer
-                          // (or hidden and compression if compression>0)
-  struct synapse *sync;   // weights between hidden and compression layer
-  direct_t *syn_d;        // direct parameters between input and output layer
-                          // (similar to Maximum Entropy model parameters)
+  struct synapse *syn0;  // weights between input and hidden layer
+  struct synapse *syn1;  // weights between hidden and output layer
+                         // (or hidden and compression if compression>0)
+  struct synapse *sync;  // weights between hidden and compression layer
+  direct_t *syn_d;       // direct parameters between input and output layer
+                         // (similar to Maximum Entropy model parameters)
 
   // backup used in training:
   struct neuron *neu0b;
@@ -187,7 +192,6 @@ class CRnnLM {
   std::string unk_sym;
 
  public:
-
   int alpha_set, train_file_set;
 
   CRnnLM();
@@ -204,29 +208,28 @@ class CRnnLM {
   void readWord(char *word, FILE *fin);
   int searchVocab(const char *word);
 
-  void saveWeights();      // saves current weights and unit activations
+  void saveWeights();  // saves current weights and unit activations
   void initNet();
   void goToDelimiter(int delim, FILE *fi);
   void restoreNet();
-  void netReset();         // will erase just hidden layer state + bptt history
-                           // + maxent history (called at end of sentences in
-                           // the independent mode)
+  void netReset();  // will erase just hidden layer state + bptt history
+                    // + maxent history (called at end of sentences in
+                    // the independent mode)
 
   void computeNet(int last_word, int word);
   void copyHiddenLayerToInput();
 
   void matrixXvector(struct neuron *dest, struct neuron *srcvec,
-                     struct synapse *srcmatrix, int matrix_width,
-                     int from, int to, int from2, int to2, int type);
+                     struct synapse *srcmatrix, int matrix_width, int from,
+                     int to, int from2, int to2, int type);
 
   void restoreContextFromVector(const std::vector<float> &context_in);
   void saveContextToVector(std::vector<float> *context_out);
 
-  float computeConditionalLogprob(
-      std::string current_word,
-      const std::vector<std::string> &history_words,
-      const std::vector<float> &context_in,
-      std::vector<float> *context_out);
+  float computeConditionalLogprob(std::string current_word,
+                                  const std::vector<std::string> &history_words,
+                                  const std::vector<float> &context_in,
+                                  std::vector<float> *context_out);
 
   void setUnkSym(const std::string &unk);
   void setUnkPenalty(const std::string &filename);

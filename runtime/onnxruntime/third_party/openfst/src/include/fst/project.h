@@ -9,7 +9,6 @@
 #include <fst/arc-map.h>
 #include <fst/mutable-fst.h>
 
-
 namespace fst {
 
 // This specifies whether to project on input or output.
@@ -30,9 +29,7 @@ class ProjectMapper {
     return ToArc(label, label, arc.weight, arc.nextstate);
   }
 
-  constexpr MapFinalAction FinalAction() const {
-    return MAP_NO_SUPERFINAL;
-  }
+  constexpr MapFinalAction FinalAction() const { return MAP_NO_SUPERFINAL; }
 
   constexpr MapSymbolsAction InputSymbolsAction() const {
     return project_type_ == PROJECT_INPUT ? MAP_COPY_SYMBOLS

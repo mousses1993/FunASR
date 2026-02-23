@@ -6,16 +6,15 @@
 #ifndef FST_EXTENSIONS_LINEAR_LINEAR_FST_DATA_H_
 #define FST_EXTENSIONS_LINEAR_LINEAR_FST_DATA_H_
 
+#include <fst/compat.h>
+#include <fst/extensions/linear/trie.h>
+#include <fst/fst.h>
+
 #include <memory>
 #include <numeric>
 #include <string>
 #include <utility>
 #include <vector>
-
-#include <fst/compat.h>
-#include <fst/fst.h>
-
-#include <fst/extensions/linear/trie.h>
 
 namespace fst {
 

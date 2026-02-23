@@ -6,11 +6,10 @@
 #ifndef FST_REVERSE_H_
 #define FST_REVERSE_H_
 
-#include <algorithm>
-#include <vector>
-
 #include <fst/cache.h>
 
+#include <algorithm>
+#include <vector>
 
 namespace fst {
 

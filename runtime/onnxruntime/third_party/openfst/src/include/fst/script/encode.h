@@ -4,14 +4,14 @@
 #ifndef FST_SCRIPT_ENCODE_H_
 #define FST_SCRIPT_ENCODE_H_
 
+#include <fst/encode.h>
+#include <fst/script/encodemapper-class.h>
+#include <fst/script/fst-class.h>
+
 #include <memory>
 #include <string>
 #include <tuple>
 #include <utility>
-
-#include <fst/encode.h>
-#include <fst/script/encodemapper-class.h>
-#include <fst/script/fst-class.h>
 
 namespace fst {
 namespace script {

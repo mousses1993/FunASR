@@ -4,10 +4,10 @@
 #ifndef FST_SCRIPT_DRAW_H_
 #define FST_SCRIPT_DRAW_H_
 
-#include <ostream>
-
 #include <fst/script/draw-impl.h>
 #include <fst/script/fst-class.h>
+
+#include <ostream>
 
 namespace fst {
 namespace script {
@@ -40,8 +40,8 @@ struct FstDrawerArgs {
                 const SymbolTable *osyms, const SymbolTable *ssyms, bool accep,
                 const string &title, float width, float height, bool portrait,
                 bool vertical, float ranksep, float nodesep, int fontsize,
-                int precision, const string &float_format,
-                bool show_weight_one, std::ostream *ostrm,  const string &dest)
+                int precision, const string &float_format, bool show_weight_one,
+                std::ostream *ostrm, const string &dest)
       : fst(fst),
         isyms(isyms),
         osyms(osyms),
@@ -66,9 +66,10 @@ template <class Arc>
 void DrawFst(FstDrawerArgs *args) {
   const Fst<Arc> &fst = *(args->fst.GetFst<Arc>());
   FstDrawer<Arc> fstdrawer(fst, args->isyms, args->osyms, args->ssyms,
-      args->accep, args->title, args->width, args->height, args->portrait,
-      args->vertical, args->ranksep, args->nodesep, args->fontsize,
-      args->precision, args->float_format, args->show_weight_one);
+                           args->accep, args->title, args->width, args->height,
+                           args->portrait, args->vertical, args->ranksep,
+                           args->nodesep, args->fontsize, args->precision,
+                           args->float_format, args->show_weight_one);
   fstdrawer.Draw(args->ostrm, args->dest);
 }
 

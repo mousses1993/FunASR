@@ -6,9 +6,8 @@
 #ifndef FST_TEST_ALGO_TEST_H_
 #define FST_TEST_ALGO_TEST_H_
 
-#include <fst/log.h>
-
 #include <fst/fstlib.h>
+#include <fst/log.h>
 #include <fst/test/rand-fst.h>
 
 DECLARE_int32(repeat);  // defined in ./algo_test.cc
@@ -858,12 +857,11 @@ class WeightedTester {
     if ((wprops & (kPath | kSemiring)) == (kPath | kSemiring)) {
       VLOG(1) << "Check n-best weights";
       VectorFst<Arc> R(A);
-      RmEpsilon(&R, /*connect=*/ true, Arc::Weight::Zero(), kNoStateId,
-                kDelta);
+      RmEpsilon(&R, /*connect=*/true, Arc::Weight::Zero(), kNoStateId, kDelta);
       int nshortest = rand() % kNumRandomShortestPaths + 2;
       VectorFst<Arc> paths;
-      ShortestPath(R, &paths, nshortest, /*unique=*/ true,
-                   /*first_path=*/ false, Weight::Zero(), kNumShortestStates,
+      ShortestPath(R, &paths, nshortest, /*unique=*/true,
+                   /*first_path=*/false, Weight::Zero(), kNumShortestStates,
                    kDelta);
       std::vector<Weight> distance;
       ShortestDistance(paths, &distance, true, kDelta);

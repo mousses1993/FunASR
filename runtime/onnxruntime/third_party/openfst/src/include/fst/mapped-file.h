@@ -4,12 +4,12 @@
 #ifndef FST_MAPPED_FILE_H_
 #define FST_MAPPED_FILE_H_
 
+#include <fst/compat.h>
+#include <fst/flags.h>
+
 #include <cstddef>
 #include <istream>
 #include <string>
-
-#include <fst/compat.h>
-#include <fst/flags.h>
 
 namespace fst {
 

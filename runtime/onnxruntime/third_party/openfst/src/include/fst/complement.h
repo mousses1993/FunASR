@@ -6,14 +6,13 @@
 #ifndef FST_COMPLEMENT_H_
 #define FST_COMPLEMENT_H_
 
+#include <fst/fst.h>
+#include <fst/log.h>
+#include <fst/test-properties.h>
+
 #include <algorithm>
 #include <string>
 #include <vector>
-#include <fst/log.h>
-
-#include <fst/fst.h>
-#include <fst/test-properties.h>
-
 
 namespace fst {
 
@@ -264,8 +263,8 @@ inline void ComplementFst<Arc>::InitStateIterator(
 }
 
 template <class Arc>
-inline void ComplementFst<Arc>::InitArcIterator(StateId s,
-    ArcIteratorData<Arc> *data) const {
+inline void ComplementFst<Arc>::InitArcIterator(
+    StateId s, ArcIteratorData<Arc> *data) const {
   data->base = new ArcIterator<ComplementFst<Arc>>(*this, s);
 }
 

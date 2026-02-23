@@ -6,5 +6,5 @@ namespace funasr {
 extern void *AlignedMalloc(size_t alignment, size_t required_bytes);
 extern void AlignedFree(void *p);
 
-} // namespace funasr
+}  // namespace funasr
 #endif

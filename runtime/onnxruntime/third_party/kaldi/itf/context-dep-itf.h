@@ -17,7 +17,6 @@
 // See the Apache 2 License for the specific language governing permissions and
 // limitations under the License.
 
-
 #ifndef KALDI_ITF_CONTEXT_DEP_ITF_H_
 #define KALDI_ITF_CONTEXT_DEP_ITF_H_
 #include "base/kaldi-common.h"
@@ -33,12 +32,14 @@ namespace kaldi {
 /// phone-in-context to a sequence of integer leaf-ids.
 class ContextDependencyInterface {
  public:
-  /// ContextWidth() returns the value N (e.g. 3 for triphone models) that says how many phones
+  /// ContextWidth() returns the value N (e.g. 3 for triphone models) that says
+  /// how many phones
   ///   are considered for computing context.
   virtual int ContextWidth() const = 0;
 
-  /// Central position P of the phone context, in 0-based numbering, e.g. P = 1 for typical
-  /// triphone system.  We have to see if we can do without this function.
+  /// Central position P of the phone context, in 0-based numbering, e.g. P = 1
+  /// for typical triphone system.  We have to see if we can do without this
+  /// function.
   virtual int CentralPosition() const = 0;
 
   /// The "new" Compute interface.  For typical topologies,
@@ -67,10 +68,9 @@ class ContextDependencyInterface {
   /// only be called if the HmmTopology object's IsHmm() function call returns
   /// true.
   virtual void GetPdfInfo(
-      const std::vector<int32> &phones,  // list of phones
+      const std::vector<int32> &phones,           // list of phones
       const std::vector<int32> &num_pdf_classes,  // indexed by phone,
-      std::vector<std::vector<std::pair<int32, int32> > > *pdf_info)
-      const = 0;
+      std::vector<std::vector<std::pair<int32, int32> > > *pdf_info) const = 0;
 
   /// This function outputs information about what possible pdf-ids can
   /// be generated for HMM-states; it covers the general case where
@@ -91,12 +91,13 @@ class ContextDependencyInterface {
   /// This is less efficient than the other version of GetPdfInfo().
   virtual void GetPdfInfo(
       const std::vector<int32> &phones,
-      const std::vector<std::vector<std::pair<int32, int32> > > &pdf_class_pairs,
-      std::vector<std::vector<std::vector<std::pair<int32, int32> > > > *pdf_info)
-      const = 0;
+      const std::vector<std::vector<std::pair<int32, int32> > >
+          &pdf_class_pairs,
+      std::vector<std::vector<std::vector<std::pair<int32, int32> > > >
+          *pdf_info) const = 0;
 
-
-  /// NumPdfs() returns the number of acoustic pdfs (they are numbered 0.. NumPdfs()-1).
+  /// NumPdfs() returns the number of acoustic pdfs (they are numbered 0..
+  /// NumPdfs()-1).
   virtual int32 NumPdfs() const = 0;
 
   virtual ~ContextDependencyInterface() {};
@@ -104,11 +105,11 @@ class ContextDependencyInterface {
 
   /// Returns pointer to new object which is copy of current one.
   virtual ContextDependencyInterface *Copy() const = 0;
+
  private:
   KALDI_DISALLOW_COPY_AND_ASSIGN(ContextDependencyInterface);
 };
 /// @}
-}  // namespace Kaldi
-
+}  // namespace kaldi
 
 #endif

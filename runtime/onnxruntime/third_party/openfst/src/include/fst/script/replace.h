@@ -4,12 +4,12 @@
 #ifndef FST_SCRIPT_REPLACE_H_
 #define FST_SCRIPT_REPLACE_H_
 
+#include <fst/replace.h>
+#include <fst/script/fst-class.h>
+
 #include <tuple>
 #include <utility>
 #include <vector>
-
-#include <fst/replace.h>
-#include <fst/script/fst-class.h>
 
 namespace fst {
 namespace script {
@@ -20,8 +20,8 @@ struct ReplaceOptions {
   const ReplaceLabelType return_label_type;  // How to label return arc.
   const int64 return_label;                  // Specifies return arc label.
 
-  explicit ReplaceOptions(int64 root,
-      ReplaceLabelType call_label_type = REPLACE_LABEL_INPUT,
+  explicit ReplaceOptions(
+      int64 root, ReplaceLabelType call_label_type = REPLACE_LABEL_INPUT,
       ReplaceLabelType return_label_type = REPLACE_LABEL_NEITHER,
       int64 return_label = 0)
       : root(root),
@@ -58,13 +58,13 @@ void Replace(ReplaceArgs *args) {
     ofst->SetProperties(kError, kError);
     return;
   }
-  typed_opts.gc = true;     // Caching options to speed up batch copy.
+  typed_opts.gc = true;  // Caching options to speed up batch copy.
   typed_opts.gc_limit = 0;
   *ofst = rfst;
 }
 
-void Replace(const std::vector<LabelFstClassPair> &pairs,
-             MutableFstClass *ofst, const ReplaceOptions &opts);
+void Replace(const std::vector<LabelFstClassPair> &pairs, MutableFstClass *ofst,
+             const ReplaceOptions &opts);
 
 }  // namespace script
 }  // namespace fst

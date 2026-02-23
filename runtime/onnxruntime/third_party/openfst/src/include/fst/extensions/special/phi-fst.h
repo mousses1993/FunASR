@@ -4,12 +4,12 @@
 #ifndef FST_EXTENSIONS_SPECIAL_PHI_FST_H_
 #define FST_EXTENSIONS_SPECIAL_PHI_FST_H_
 
-#include <memory>
-#include <string>
-
 #include <fst/const-fst.h>
 #include <fst/matcher-fst.h>
 #include <fst/matcher.h>
+
+#include <memory>
+#include <string>
 
 DECLARE_int64(phi_fst_phi_label);
 DECLARE_bool(phi_fst_phi_loop);
@@ -91,7 +91,8 @@ class PhiFstMatcher : public PhiMatcher<M> {
   enum : uint8 { kFlags = flags };
 
   // This makes a copy of the FST.
-  PhiFstMatcher(const FST &fst, MatchType match_type,
+  PhiFstMatcher(
+      const FST &fst, MatchType match_type,
       std::shared_ptr<MatcherData> data = std::make_shared<MatcherData>())
       : PhiMatcher<M>(fst, match_type,
                       PhiLabel(match_type, data ? data->PhiLabel()
@@ -101,7 +102,8 @@ class PhiFstMatcher : public PhiMatcher<M> {
         data_(data) {}
 
   // This doesn't copy the FST.
-  PhiFstMatcher(const FST *fst, MatchType match_type,
+  PhiFstMatcher(
+      const FST *fst, MatchType match_type,
       std::shared_ptr<MatcherData> data = std::make_shared<MatcherData>())
       : PhiMatcher<M>(fst, match_type,
                       PhiLabel(match_type, data ? data->PhiLabel()
@@ -148,30 +150,30 @@ using Log64PhiFst = MatcherFst<ConstFst<Log64Arc>,
                                PhiFstMatcher<SortedMatcher<ConstFst<Log64Arc>>>,
                                input_phi_fst_type>;
 
-using StdInputPhiFst =
-    MatcherFst<ConstFst<StdArc>, PhiFstMatcher<SortedMatcher<ConstFst<StdArc>>,
-                                               kPhiFstMatchInput>,
-               input_phi_fst_type>;
+using StdInputPhiFst = MatcherFst<
+    ConstFst<StdArc>,
+    PhiFstMatcher<SortedMatcher<ConstFst<StdArc>>, kPhiFstMatchInput>,
+    input_phi_fst_type>;
 
-using LogInputPhiFst =
-    MatcherFst<ConstFst<LogArc>, PhiFstMatcher<SortedMatcher<ConstFst<LogArc>>,
-                                               kPhiFstMatchInput>,
-               input_phi_fst_type>;
+using LogInputPhiFst = MatcherFst<
+    ConstFst<LogArc>,
+    PhiFstMatcher<SortedMatcher<ConstFst<LogArc>>, kPhiFstMatchInput>,
+    input_phi_fst_type>;
 
 using Log64InputPhiFst = MatcherFst<
     ConstFst<Log64Arc>,
     PhiFstMatcher<SortedMatcher<ConstFst<Log64Arc>>, kPhiFstMatchInput>,
     input_phi_fst_type>;
 
-using StdOutputPhiFst =
-    MatcherFst<ConstFst<StdArc>, PhiFstMatcher<SortedMatcher<ConstFst<StdArc>>,
-                                               kPhiFstMatchOutput>,
-               output_phi_fst_type>;
+using StdOutputPhiFst = MatcherFst<
+    ConstFst<StdArc>,
+    PhiFstMatcher<SortedMatcher<ConstFst<StdArc>>, kPhiFstMatchOutput>,
+    output_phi_fst_type>;
 
-using LogOutputPhiFst =
-    MatcherFst<ConstFst<LogArc>, PhiFstMatcher<SortedMatcher<ConstFst<LogArc>>,
-                                               kPhiFstMatchOutput>,
-               output_phi_fst_type>;
+using LogOutputPhiFst = MatcherFst<
+    ConstFst<LogArc>,
+    PhiFstMatcher<SortedMatcher<ConstFst<LogArc>>, kPhiFstMatchOutput>,
+    output_phi_fst_type>;
 
 using Log64OutputPhiFst = MatcherFst<
     ConstFst<Log64Arc>,

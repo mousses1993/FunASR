@@ -4,14 +4,14 @@
 #ifndef FST_SCRIPT_MAP_H_
 #define FST_SCRIPT_MAP_H_
 
-#include <memory>
-#include <tuple>
-
 #include <fst/arc-map.h>
-#include <fst/state-map.h>
 #include <fst/script/arg-packs.h>
 #include <fst/script/fst-class.h>
 #include <fst/script/weight-class.h>
+#include <fst/state-map.h>
+
+#include <memory>
+#include <tuple>
 
 namespace fst {
 namespace script {

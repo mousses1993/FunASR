@@ -6,13 +6,12 @@
 #ifndef FST_MATCHER_FST_H_
 #define FST_MATCHER_FST_H_
 
-#include <memory>
-#include <string>
-
 #include <fst/add-on.h>
 #include <fst/const-fst.h>
 #include <fst/lookahead-matcher.h>
 
+#include <memory>
+#include <string>
 
 namespace fst {
 

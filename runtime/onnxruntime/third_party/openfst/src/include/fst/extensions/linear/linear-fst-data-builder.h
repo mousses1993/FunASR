@@ -4,6 +4,13 @@
 #ifndef FST_EXTENSIONS_LINEAR_LINEAR_FST_DATA_BUILDER_H_
 #define FST_EXTENSIONS_LINEAR_LINEAR_FST_DATA_BUILDER_H_
 
+#include <fst/compat.h>
+#include <fst/extensions/linear/linear-fst-data.h>
+#include <fst/fst.h>
+#include <fst/log.h>
+#include <fst/symbol-table.h>
+#include <fst/util.h>
+
 #include <map>
 #include <queue>
 #include <set>
@@ -11,14 +18,6 @@
 #include <stack>
 #include <string>
 #include <vector>
-
-#include <fst/compat.h>
-#include <fst/log.h>
-#include <fst/fst.h>
-#include <fst/symbol-table.h>
-#include <fst/util.h>
-
-#include <fst/extensions/linear/linear-fst-data.h>
 
 namespace fst {
 
@@ -697,17 +696,15 @@ bool FeatureGroupBuilder<A>::AddWeight(const std::vector<Label> &input,
     LOG(WARNING) << "\tOutput: " << JoinLabels(output, fsyms_);
     return false;
   }
-  if (num_input_start > 0 &&
-      input.size() - future_size_ - num_input_start <
-          output.size() - num_output_start) {
+  if (num_input_start > 0 && input.size() - future_size_ - num_input_start <
+                                 output.size() - num_output_start) {
     LOG(WARNING) << "Ignored: matching start-of-sentence with actual output!";
     LOG(WARNING) << "\tInput: " << JoinLabels(input, fsyms_);
     LOG(WARNING) << "\tOutput: " << JoinLabels(output, osyms_);
     return false;
   }
-  if (num_output_start > 0 &&
-      input.size() - future_size_ - num_input_start >
-          output.size() - num_output_start) {
+  if (num_output_start > 0 && input.size() - future_size_ - num_input_start >
+                                  output.size() - num_output_start) {
     LOG(WARNING) << "Ignored: matching start-of-sentence with actual input!";
     LOG(WARNING) << "\tInput: " << JoinLabels(input, fsyms_);
     LOG(WARNING) << "\tOutput: " << JoinLabels(output, osyms_);

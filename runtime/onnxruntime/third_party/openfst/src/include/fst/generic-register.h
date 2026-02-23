@@ -8,11 +8,11 @@
 #ifndef FST_NO_DYNAMIC_LINKING
 #include <dlfcn.h>
 #endif
+#include <fst/log.h>
+#include <fst/types.h>
+
 #include <map>
 #include <string>
-
-#include <fst/types.h>
-#include <fst/log.h>
 
 // Generic class representing a globally-stored correspondence between
 // objects of KeyType and EntryType.

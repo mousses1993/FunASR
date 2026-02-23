@@ -37,9 +37,11 @@ struct KaldiRnnlmWrapperOpts {
   KaldiRnnlmWrapperOpts() : unk_symbol("<RNN_UNK>"), eos_symbol("</s>") {}
 
   void Register(OptionsItf *opts) {
-    opts->Register("unk-symbol", &unk_symbol, "Symbol for out-of-vocabulary "
+    opts->Register("unk-symbol", &unk_symbol,
+                   "Symbol for out-of-vocabulary "
                    "words in rnnlm.");
-    opts->Register("eos-symbol", &eos_symbol, "End of sentence symbol in "
+    opts->Register("eos-symbol", &eos_symbol,
+                   "End of sentence symbol in "
                    "rnnlm.");
   }
 };
@@ -85,11 +87,11 @@ class RnnlmDeterministicFst
   // not const.
   virtual Weight Final(StateId s);
 
-  virtual bool GetArc(StateId s, Label ilabel, fst::StdArc* oarc);
+  virtual bool GetArc(StateId s, Label ilabel, fst::StdArc *oarc);
 
  private:
-  typedef unordered_map<std::vector<Label>,
-                        StateId, VectorHasher<Label> > MapType;
+  typedef unordered_map<std::vector<Label>, StateId, VectorHasher<Label> >
+      MapType;
   StateId start_state_;
   MapType wseq_to_state_;
   std::vector<std::vector<Label> > state_to_wseq_;

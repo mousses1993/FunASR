@@ -4,12 +4,12 @@
 #ifndef FST_SCRIPT_DISAMBIGUATE_H_
 #define FST_SCRIPT_DISAMBIGUATE_H_
 
-#include <tuple>
-#include <utility>
-
 #include <fst/disambiguate.h>
 #include <fst/script/fst-class.h>
 #include <fst/script/weight-class.h>
+
+#include <tuple>
+#include <utility>
 
 namespace fst {
 namespace script {
@@ -30,7 +30,7 @@ struct DisambiguateOptions {
 };
 
 using DisambiguateArgs = std::tuple<const FstClass &, MutableFstClass *,
-                                     const DisambiguateOptions &>;
+                                    const DisambiguateOptions &>;
 
 template <class Arc>
 void Disambiguate(DisambiguateArgs *args) {
@@ -40,8 +40,8 @@ void Disambiguate(DisambiguateArgs *args) {
   const auto &opts = std::get<2>(*args);
   const auto weight_threshold = *(opts.weight_threshold.GetWeight<Weight>());
   const fst::DisambiguateOptions<Arc> disargs(opts.delta, weight_threshold,
-                                                  opts.state_threshold,
-                                                  opts.subsequential_label);
+                                              opts.state_threshold,
+                                              opts.subsequential_label);
   Disambiguate(ifst, ofst, disargs);
 }
 

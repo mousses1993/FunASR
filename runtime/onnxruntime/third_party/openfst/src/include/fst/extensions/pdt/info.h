@@ -6,12 +6,12 @@
 #ifndef FST_EXTENSIONS_PDT_INFO_H_
 #define FST_EXTENSIONS_PDT_INFO_H_
 
+#include <fst/extensions/pdt/pdt.h>
+#include <fst/fst.h>
+
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
-
-#include <fst/extensions/pdt/pdt.h>
-#include <fst/fst.h>
 
 namespace fst {
 

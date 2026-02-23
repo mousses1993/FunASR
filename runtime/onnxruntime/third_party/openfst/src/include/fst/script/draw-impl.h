@@ -7,13 +7,13 @@
 #ifndef FST_SCRIPT_DRAW_IMPL_H_
 #define FST_SCRIPT_DRAW_IMPL_H_
 
+#include <fst/fst.h>
+#include <fst/script/fst-class.h>
+#include <fst/util.h>
+
 #include <ostream>
 #include <sstream>
 #include <string>
-
-#include <fst/fst.h>
-#include <fst/util.h>
-#include <fst/script/fst-class.h>
 
 namespace fst {
 
@@ -90,12 +90,12 @@ class FstDrawer {
   }
 
  private:
-  void SetStreamState(std::ostream* strm) const {
+  void SetStreamState(std::ostream *strm) const {
     strm->precision(precision_);
     if (float_format_ == "e")
-        strm->setf(std::ios_base::scientific, std::ios_base::floatfield);
+      strm->setf(std::ios_base::scientific, std::ios_base::floatfield);
     if (float_format_ == "f")
-        strm->setf(std::ios_base::fixed, std::ios_base::floatfield);
+      strm->setf(std::ios_base::fixed, std::ios_base::floatfield);
     // O.w. defaults to "g" per standard lib.
   }
 
@@ -144,7 +144,9 @@ class FstDrawer {
   }
 
   template <class T>
-  void Print(T t) const { *ostrm_ << t; }
+  void Print(T t) const {
+    *ostrm_ << t;
+  }
 
   template <class T>
   string ToString(T t) const {

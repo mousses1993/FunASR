@@ -6,16 +6,14 @@
 #ifndef FST_STRING_WEIGHT_H_
 #define FST_STRING_WEIGHT_H_
 
-#include <cstdlib>
-
-#include <list>
-#include <string>
-#include <vector>
-
 #include <fst/product-weight.h>
 #include <fst/union-weight.h>
 #include <fst/weight.h>
 
+#include <cstdlib>
+#include <list>
+#include <string>
+#include <vector>
 
 namespace fst {
 
@@ -172,7 +170,8 @@ class StringWeightIterator {
   const Label &first_;
   const decltype(Weight::rest_) &rest_;
   bool init_;  // In the initialized state?
-  typename std::remove_reference<decltype (Weight::rest_)>::type::const_iterator iter_;
+  typename std::remove_reference<decltype(Weight::rest_)>::type::const_iterator
+      iter_;
 };
 
 // Traverses string in backward direction.
@@ -209,7 +208,8 @@ class StringWeightReverseIterator {
   const Label &first_;
   const decltype(Weight::rest_) &rest_;
   bool fin_;  // In the final state?
-  typename std::remove_reference<decltype (Weight::rest_)>::type::const_reverse_iterator iter_;
+  typename std::remove_reference<
+      decltype(Weight::rest_)>::type::const_reverse_iterator iter_;
 };
 
 // StringWeight member functions follow that require

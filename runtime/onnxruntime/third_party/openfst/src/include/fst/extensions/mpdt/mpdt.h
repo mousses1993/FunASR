@@ -6,13 +6,13 @@
 #ifndef FST_EXTENSIONS_MPDT_MPDT_H_
 #define FST_EXTENSIONS_MPDT_MPDT_H_
 
+#include <fst/compat.h>
+#include <fst/extensions/pdt/pdt.h>
+
 #include <array>
 #include <functional>
 #include <map>
 #include <vector>
-
-#include <fst/compat.h>
-#include <fst/extensions/pdt/pdt.h>
 
 namespace fst {
 

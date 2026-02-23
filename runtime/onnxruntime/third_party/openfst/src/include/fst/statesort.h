@@ -6,13 +6,11 @@
 #ifndef FST_STATESORT_H_
 #define FST_STATESORT_H_
 
-#include <algorithm>
-#include <vector>
-
 #include <fst/log.h>
-
 #include <fst/mutable-fst.h>
 
+#include <algorithm>
+#include <vector>
 
 namespace fst {
 

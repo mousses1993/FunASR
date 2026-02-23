@@ -8,20 +8,20 @@
 #ifndef FST_EXTENSIONS_NGRAM_NGRAM_FST_H_
 #define FST_EXTENSIONS_NGRAM_NGRAM_FST_H_
 
+#include <fst/compat.h>
+#include <fst/extensions/ngram/bitmap-index.h>
+#include <fst/fstlib.h>
+#include <fst/log.h>
+#include <fst/mapped-file.h>
 #include <stddef.h>
 #include <string.h>
+
 #include <algorithm>
+#include <fstream>
 #include <iostream>
 #include <string>
 #include <utility>
 #include <vector>
-
-#include <fst/compat.h>
-#include <fst/log.h>
-#include <fstream>
-#include <fst/extensions/ngram/bitmap-index.h>
-#include <fst/fstlib.h>
-#include <fst/mapped-file.h>
 
 namespace fst {
 template <class A>
@@ -384,8 +384,7 @@ class NGramFst : public ImplToExpandedFst<internal::NGramFstImpl<A>> {
 
   static NGramFst<A> *Read(const string &filename) {
     if (!filename.empty()) {
-      std::ifstream strm(filename,
-                              std::ios_base::in | std::ios_base::binary);
+      std::ifstream strm(filename, std::ios_base::in | std::ios_base::binary);
       if (!strm.good()) {
         LOG(ERROR) << "NGramFst::Read: Can't open file: " << filename;
         return nullptr;
@@ -436,8 +435,7 @@ class NGramFst : public ImplToExpandedFst<internal::NGramFstImpl<A>> {
       aiter.Next();
     }
     // Other requirement: all states other than unigram an epsilon arc.
-    for (fst::StateIterator<Fst<A>> siter(fst); !siter.Done();
-         siter.Next()) {
+    for (fst::StateIterator<Fst<A>> siter(fst); !siter.Done(); siter.Next()) {
       const typename A::StateId &state = siter.Value();
       fst::ArcIterator<Fst<A>> aiter(fst, state);
       if (state != unigram) {

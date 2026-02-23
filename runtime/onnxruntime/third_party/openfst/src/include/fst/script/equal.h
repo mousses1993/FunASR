@@ -4,11 +4,11 @@
 #ifndef FST_SCRIPT_EQUAL_H_
 #define FST_SCRIPT_EQUAL_H_
 
-#include <tuple>
-
 #include <fst/equal.h>
 #include <fst/script/arg-packs.h>
 #include <fst/script/fst-class.h>
+
+#include <tuple>
 
 namespace fst {
 namespace script {

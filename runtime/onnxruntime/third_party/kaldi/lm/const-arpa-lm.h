@@ -210,7 +210,6 @@ union Int32AndFloat {
 
 class ConstArpaLm {
  public:
-
   // Default constructor, will be used if you are going to load the ConstArpaLm
   // format language model from disk.
   ConstArpaLm() {
@@ -228,12 +227,17 @@ class ConstArpaLm {
               const int32 unk_symbol, const int32 ngram_order,
               const int32 num_words, const int32 overflow_buffer_size,
               const int64 lm_states_size, int32** unigram_states,
-              int32** overflow_buffer, int32* lm_states) :
-      bos_symbol_(bos_symbol), eos_symbol_(eos_symbol),
-      unk_symbol_(unk_symbol), ngram_order_(ngram_order),
-      num_words_(num_words), overflow_buffer_size_(overflow_buffer_size),
-      lm_states_size_(lm_states_size), unigram_states_(unigram_states),
-      overflow_buffer_(overflow_buffer), lm_states_(lm_states) {
+              int32** overflow_buffer, int32* lm_states)
+      : bos_symbol_(bos_symbol),
+        eos_symbol_(eos_symbol),
+        unk_symbol_(unk_symbol),
+        ngram_order_(ngram_order),
+        num_words_(num_words),
+        overflow_buffer_size_(overflow_buffer_size),
+        lm_states_size_(lm_states_size),
+        unigram_states_(unigram_states),
+        overflow_buffer_(overflow_buffer),
+        lm_states_(lm_states) {
     KALDI_ASSERT(unigram_states_ != NULL);
     KALDI_ASSERT(overflow_buffer_ != NULL);
     KALDI_ASSERT(lm_states_ != NULL);
@@ -257,14 +261,14 @@ class ConstArpaLm {
 
   // Reads the ConstArpaLm format language model. It calls ReadInternal() or
   // ReadInternalOldFormat() to do the actual reading.
-  void Read(std::istream &is, bool binary);
+  void Read(std::istream& is, bool binary);
 
   // Writes the language model in ConstArpaLm format.
-  void Write(std::ostream &os, bool binary) const;
+  void Write(std::ostream& os, bool binary) const;
 
   // Creates Arpa format language model from ConstArpaLm format, and writes it
   // to output stream. This will be useful in testing.
-  void WriteArpa(std::ostream &os) const;
+  void WriteArpa(std::ostream& os) const;
 
   // Wrapper of GetNgramLogprobRecurse. It first maps possible out-of-vocabulary
   // words to <unk>, if <unk> is defined, and then calls GetNgramLogprobRecurse.
@@ -282,13 +286,13 @@ class ConstArpaLm {
 
  private:
   // Function that loads data from stream to the class.
-  void ReadInternal(std::istream &is, bool binary);
+  void ReadInternal(std::istream& is, bool binary);
 
   // Function that loads data from stream to the class. This is a deprecated one
   // that handles the old on-disk format. We keep this for back-compatibility
   // purpose. We have modified the Write() function so for all the new on-disk
   // format, ReadInternal() will be called.
-  void ReadInternalOldFormat(std::istream &is, bool binary);
+  void ReadInternalOldFormat(std::istream& is, bool binary);
 
   // Loops up n-gram probability for given word sequence. Backoff is handled by
   // recursively calling this function.
@@ -319,9 +323,8 @@ class ConstArpaLm {
   void DecodeChildInfo(const int32 child_info, int32* parent,
                        int32** child_lm_state, float* logprob) const;
 
-  void WriteArpaRecurse(int32* lm_state,
-                        const std::vector<int32>& seq,
-                        std::vector<ArpaLine> *output) const;
+  void WriteArpaRecurse(int32* lm_state, const std::vector<int32>& seq,
+                        std::vector<ArpaLine>* output) const;
 
   // We assign memory in Read(). If it is called, we have to release memory in
   // the destructor.
@@ -391,7 +394,7 @@ class ConstArpaLm {
  in DeterministicOnDemandFst.
  */
 class ConstArpaLmDeterministicFst
-  : public fst::DeterministicOnDemandFst<fst::StdArc> {
+    : public fst::DeterministicOnDemandFst<fst::StdArc> {
  public:
   typedef fst::StdArc::Weight Weight;
   typedef fst::StdArc::StateId StateId;
@@ -410,8 +413,8 @@ class ConstArpaLmDeterministicFst
   virtual bool GetArc(StateId s, Label ilabel, fst::StdArc* oarc);
 
  private:
-  typedef unordered_map<std::vector<Label>,
-                        StateId, VectorHasher<Label> > MapType;
+  typedef unordered_map<std::vector<Label>, StateId, VectorHasher<Label> >
+      MapType;
   StateId start_state_;
   MapType wseq_to_state_;
   std::vector<std::vector<Label> > state_to_wseq_;

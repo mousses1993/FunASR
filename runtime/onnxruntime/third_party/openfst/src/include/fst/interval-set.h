@@ -6,13 +6,11 @@
 #ifndef FST_INTERVAL_SET_H_
 #define FST_INTERVAL_SET_H_
 
+#include <fst/util.h>
+
 #include <algorithm>
 #include <iostream>
 #include <vector>
-
-
-#include <fst/util.h>
-
 
 namespace fst {
 

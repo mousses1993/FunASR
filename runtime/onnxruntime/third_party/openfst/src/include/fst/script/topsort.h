@@ -4,9 +4,9 @@
 #ifndef FST_SCRIPT_TOPSORT_H_
 #define FST_SCRIPT_TOPSORT_H_
 
-#include <fst/topsort.h>
 #include <fst/script/arg-packs.h>
 #include <fst/script/fst-class.h>
+#include <fst/topsort.h>
 
 namespace fst {
 namespace script {

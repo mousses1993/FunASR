@@ -6,11 +6,9 @@
 #ifndef FST_VERIFY_H_
 #define FST_VERIFY_H_
 
-#include <fst/log.h>
-
 #include <fst/fst.h>
+#include <fst/log.h>
 #include <fst/test-properties.h>
-
 
 namespace fst {
 

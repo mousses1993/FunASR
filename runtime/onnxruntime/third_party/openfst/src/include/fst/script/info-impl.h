@@ -7,10 +7,6 @@
 #ifndef FST_SCRIPT_INFO_IMPL_H_
 #define FST_SCRIPT_INFO_IMPL_H_
 
-#include <map>
-#include <string>
-#include <vector>
-
 #include <fst/connect.h>
 #include <fst/dfs-visit.h>
 #include <fst/fst.h>
@@ -20,6 +16,10 @@
 #include <fst/test-properties.h>
 #include <fst/verify.h>
 #include <fst/visit.h>
+
+#include <map>
+#include <string>
+#include <vector>
 
 namespace fst {
 

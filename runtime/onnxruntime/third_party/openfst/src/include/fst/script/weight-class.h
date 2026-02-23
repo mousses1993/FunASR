@@ -7,14 +7,14 @@
 #ifndef FST_SCRIPT_WEIGHT_CLASS_H_
 #define FST_SCRIPT_WEIGHT_CLASS_H_
 
-#include <memory>
-#include <ostream>
-#include <string>
-
 #include <fst/arc.h>
 #include <fst/generic-register.h>
 #include <fst/util.h>
 #include <fst/weight.h>
+
+#include <memory>
+#include <ostream>
+#include <string>
 
 namespace fst {
 namespace script {
@@ -94,7 +94,6 @@ class WeightClassImpl : public WeightImplBase {
   W weight_;
 };
 
-
 class WeightClass {
  public:
   WeightClass() = default;
@@ -132,7 +131,7 @@ class WeightClass {
   template <class W>
   const W *GetWeight() const {
     if (W::Type() != impl_->Type()) {
-       return nullptr;
+      return nullptr;
     } else {
       auto *typed_impl = static_cast<WeightClassImpl<W> *>(impl_.get());
       return typed_impl->GetImpl();

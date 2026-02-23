@@ -13,14 +13,12 @@
 
 // Google-only...
 // ...Google-only
-#include <fst/log.h>
-
 #include <fst/expanded-fst.h>
 #include <fst/fst-decl.h>
+#include <fst/log.h>
 #include <fst/mapped-file.h>
 #include <fst/test-properties.h>
 #include <fst/util.h>
-
 
 namespace fst {
 

@@ -1,4 +1,4 @@
-// Acknowledgement: this code is adapted from 
+// Acknowledgement: this code is adapted from
 // https://github.com/wenet-e2e/WeTextProcessing/blob/master/runtime/processor/token_parser.cc
 // Retrieved in Aug 2023.
 
@@ -18,7 +18,9 @@
 // limitations under the License.
 
 #include "itn-token-parser.h"
+
 #include <glog/logging.h>
+
 #include "utf8-string.h"
 
 namespace funasr {

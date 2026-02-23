@@ -6,12 +6,6 @@
 #ifndef FST_ARC_H_
 #define FST_ARC_H_
 
-#include <climits>
-#include <string>
-#include <type_traits>
-#include <utility>
-
-
 #include <fst/expectation-weight.h>
 #include <fst/float-weight.h>
 #include <fst/lexicographic-weight.h>
@@ -21,6 +15,10 @@
 #include <fst/sparse-power-weight.h>
 #include <fst/string-weight.h>
 
+#include <climits>
+#include <string>
+#include <type_traits>
+#include <utility>
 
 namespace fst {
 
@@ -114,7 +112,9 @@ struct GallicArc {
         nextstate(nextstate) {}
 
   explicit GallicArc(const Arc &arc)
-      : ilabel(arc.ilabel), olabel(arc.ilabel), weight(arc.olabel, arc.weight),
+      : ilabel(arc.ilabel),
+        olabel(arc.ilabel),
+        weight(arc.olabel, arc.weight),
         nextstate(arc.nextstate) {}
 
   static const string &Type() {

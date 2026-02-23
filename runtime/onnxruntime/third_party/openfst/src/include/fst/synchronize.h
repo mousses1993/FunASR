@@ -6,16 +6,15 @@
 #ifndef FST_SYNCHRONIZE_H_
 #define FST_SYNCHRONIZE_H_
 
+#include <fst/cache.h>
+#include <fst/test-properties.h>
+
 #include <algorithm>
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
 #include <utility>
 #include <vector>
-
-#include <fst/cache.h>
-#include <fst/test-properties.h>
-
 
 namespace fst {
 
@@ -329,9 +328,8 @@ class SynchronizeFst : public ImplToFst<internal::SynchronizeFstImpl<A>> {
   friend class ArcIterator<SynchronizeFst<A>>;
   friend class StateIterator<SynchronizeFst<A>>;
 
-  explicit SynchronizeFst(
-      const Fst<A> &fst,
-      const SynchronizeFstOptions &opts = SynchronizeFstOptions())
+  explicit SynchronizeFst(const Fst<A> &fst, const SynchronizeFstOptions &opts =
+                                                 SynchronizeFstOptions())
       : ImplToFst<Impl>(std::make_shared<Impl>(fst, opts)) {}
 
   // See Fst<>::Copy() for doc.

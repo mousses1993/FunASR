@@ -6,12 +6,10 @@
 #ifndef FST_PARTITION_H_
 #define FST_PARTITION_H_
 
-#include <algorithm>
-#include <vector>
-
-
 #include <fst/queue.h>
 
+#include <algorithm>
+#include <vector>
 
 namespace fst {
 namespace internal {

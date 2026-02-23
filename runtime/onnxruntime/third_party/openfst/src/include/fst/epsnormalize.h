@@ -6,12 +6,10 @@
 #ifndef FST_EPSNORMALIZE_H_
 #define FST_EPSNORMALIZE_H_
 
-
 #include <fst/arc-map.h>
 #include <fst/factor-weight.h>
 #include <fst/invert.h>
 #include <fst/rmepsilon.h>
-
 
 namespace fst {
 

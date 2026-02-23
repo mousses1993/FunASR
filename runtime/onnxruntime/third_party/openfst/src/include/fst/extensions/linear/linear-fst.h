@@ -6,22 +6,21 @@
 #ifndef FST_EXTENSIONS_LINEAR_LINEAR_FST_H_
 #define FST_EXTENSIONS_LINEAR_LINEAR_FST_H_
 
-#include <algorithm>
-#include <iostream>
-#include <memory>
-#include <vector>
-
-#include <fst/compat.h>
-#include <fst/log.h>
-#include <fst/extensions/pdt/collection.h>
 #include <fst/bi-table.h>
 #include <fst/cache.h>
-#include <fstream>
+#include <fst/compat.h>
+#include <fst/extensions/linear/linear-fst-data.h>
+#include <fst/extensions/pdt/collection.h>
 #include <fst/fst.h>
+#include <fst/log.h>
 #include <fst/matcher.h>
 #include <fst/symbol-table.h>
 
-#include <fst/extensions/linear/linear-fst-data.h>
+#include <algorithm>
+#include <fstream>
+#include <iostream>
+#include <memory>
+#include <vector>
 
 namespace fst {
 
@@ -335,8 +334,8 @@ inline void LinearTaggerFstImpl<A>::ExpandArcs(StateId s,
                        next_stub_));
   } else {
     std::pair<typename std::vector<typename A::Label>::const_iterator,
-              typename std::vector<typename A::Label>::const_iterator> range =
-        data_->PossibleOutputLabels(obs_ilabel);
+              typename std::vector<typename A::Label>::const_iterator>
+        range = data_->PossibleOutputLabels(obs_ilabel);
     for (typename std::vector<typename A::Label>::const_iterator it =
              range.first;
          it != range.second; ++it)
@@ -361,8 +360,8 @@ inline void LinearTaggerFstImpl<A>::AppendArcs(StateId /*s*/,
         MakeArc(state, ilabel, LinearFstData<A>::kStartOfSentence, next_stub_));
   } else {
     std::pair<typename std::vector<typename A::Label>::const_iterator,
-              typename std::vector<typename A::Label>::const_iterator> range =
-        data_->PossibleOutputLabels(obs_ilabel);
+              typename std::vector<typename A::Label>::const_iterator>
+        range = data_->PossibleOutputLabels(obs_ilabel);
     for (typename std::vector<typename A::Label>::const_iterator it =
              range.first;
          it != range.second; ++it)
@@ -495,8 +494,7 @@ class LinearTaggerFst : public ImplToFst<internal::LinearTaggerFstImpl<A>> {
 
   static LinearTaggerFst<A> *Read(const string &filename) {
     if (!filename.empty()) {
-      std::ifstream strm(filename,
-                              std::ios_base::in | std::ios_base::binary);
+      std::ifstream strm(filename, std::ios_base::in | std::ios_base::binary);
       if (!strm) {
         LOG(ERROR) << "LinearTaggerFst::Read: Can't open file: " << filename;
         return nullptr;
@@ -515,8 +513,7 @@ class LinearTaggerFst : public ImplToFst<internal::LinearTaggerFstImpl<A>> {
 
   bool Write(const string &filename) const override {
     if (!filename.empty()) {
-      std::ofstream strm(filename,
-                               std::ios_base::out | std::ios_base::binary);
+      std::ofstream strm(filename, std::ios_base::out | std::ios_base::binary);
       if (!strm) {
         LOG(ERROR) << "LinearTaggerFst::Write: Can't open file: " << filename;
         return false;
@@ -952,8 +949,7 @@ class LinearClassifierFst
 
   static LinearClassifierFst<A> *Read(const string &filename) {
     if (!filename.empty()) {
-      std::ifstream strm(filename,
-                              std::ios_base::in | std::ios_base::binary);
+      std::ifstream strm(filename, std::ios_base::in | std::ios_base::binary);
       if (!strm) {
         LOG(ERROR) << "LinearClassifierFst::Read: Can't open file: "
                    << filename;
@@ -974,8 +970,7 @@ class LinearClassifierFst
 
   bool Write(const string &filename) const override {
     if (!filename.empty()) {
-      std::ofstream strm(filename,
-                               std::ios_base::out | std::ios_base::binary);
+      std::ofstream strm(filename, std::ios_base::out | std::ios_base::binary);
       if (!strm) {
         LOG(ERROR) << "ProdLmFst::Write: Can't open file: " << filename;
         return false;

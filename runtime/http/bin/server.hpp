@@ -57,8 +57,6 @@ class server {
   /// Acceptor used to listen for incoming connections.
   asio::ip::tcp::acceptor acceptor_;
 
- 
-
   std::shared_ptr<ModelDecoder> model_decoder;
 
   std::atomic<int> atom_id;

@@ -592,4 +592,4 @@ const int pos_enc_div_term_hex[] = {
     0x38f22ce3, 0x38e99e04, 0x38e15c92, 0x38d965ce};
 #endif
 
-} // namespace funasr
+}  // namespace funasr

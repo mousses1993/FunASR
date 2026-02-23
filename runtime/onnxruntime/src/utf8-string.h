@@ -1,4 +1,4 @@
-// Acknowledgement: this code is adapted from 
+// Acknowledgement: this code is adapted from
 // https://github.com/wenet-e2e/WeTextProcessing/blob/master/runtime/utils/string.h
 // Retrieved in Aug 2023.
 

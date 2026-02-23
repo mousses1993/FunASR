@@ -4,11 +4,11 @@
 #ifndef FST_SCRIPT_DETERMINIZE_H_
 #define FST_SCRIPT_DETERMINIZE_H_
 
-#include <tuple>
-
 #include <fst/determinize.h>
 #include <fst/script/fst-class.h>
 #include <fst/script/weight-class.h>
+
+#include <tuple>
 
 namespace fst {
 namespace script {
@@ -34,8 +34,8 @@ struct DeterminizeOptions {
         increment_subsequential_label(increment_subsequential_label) {}
 };
 
-using DeterminizeArgs = std::tuple<const FstClass &, MutableFstClass *,
-                                   const DeterminizeOptions &>;
+using DeterminizeArgs =
+    std::tuple<const FstClass &, MutableFstClass *, const DeterminizeOptions &>;
 
 template <class Arc>
 void Determinize(DeterminizeArgs *args) {
@@ -44,8 +44,9 @@ void Determinize(DeterminizeArgs *args) {
   MutableFst<Arc> *ofst = std::get<1>(*args)->GetMutableFst<Arc>();
   const auto &opts = std::get<2>(*args);
   const auto weight_threshold = *(opts.weight_threshold.GetWeight<Weight>());
-  const fst::DeterminizeOptions<Arc> detargs(opts.delta, weight_threshold,
-      opts.state_threshold, opts.subsequential_label, opts.det_type,
+  const fst::DeterminizeOptions<Arc> detargs(
+      opts.delta, weight_threshold, opts.state_threshold,
+      opts.subsequential_label, opts.det_type,
       opts.increment_subsequential_label);
   Determinize(ifst, ofst, detargs);
 }

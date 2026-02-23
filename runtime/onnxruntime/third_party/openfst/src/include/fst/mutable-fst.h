@@ -7,19 +7,16 @@
 #ifndef FST_MUTABLE_FST_H_
 #define FST_MUTABLE_FST_H_
 
+#include <fst/expanded-fst.h>
+#include <fst/log.h>
 #include <stddef.h>
 #include <sys/types.h>
 
+#include <fstream>
 #include <istream>
 #include <string>
 #include <utility>
 #include <vector>
-
-#include <fst/log.h>
-#include <fstream>
-
-#include <fst/expanded-fst.h>
-
 
 namespace fst {
 
@@ -133,8 +130,7 @@ class MutableFst : public ExpandedFst<A> {
                                const string &convert_type = "vector") {
     if (convert == false) {
       if (!filename.empty()) {
-        std::ifstream strm(filename,
-                                std::ios_base::in | std::ios_base::binary);
+        std::ifstream strm(filename, std::ios_base::in | std::ios_base::binary);
         if (!strm) {
           LOG(ERROR) << "MutableFst::Read: Can't open file: " << filename;
           return nullptr;

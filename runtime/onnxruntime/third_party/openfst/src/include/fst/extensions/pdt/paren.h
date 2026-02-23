@@ -6,18 +6,16 @@
 #ifndef FST_EXTENSIONS_PDT_PAREN_H_
 #define FST_EXTENSIONS_PDT_PAREN_H_
 
+#include <fst/dfs-visit.h>
+#include <fst/extensions/pdt/collection.h>
+#include <fst/extensions/pdt/pdt.h>
+#include <fst/fst.h>
+#include <fst/log.h>
+
 #include <algorithm>
 #include <set>
 #include <unordered_map>
 #include <unordered_set>
-
-#include <fst/log.h>
-
-#include <fst/extensions/pdt/collection.h>
-#include <fst/extensions/pdt/pdt.h>
-#include <fst/dfs-visit.h>
-#include <fst/fst.h>
-
 
 namespace fst {
 namespace internal {

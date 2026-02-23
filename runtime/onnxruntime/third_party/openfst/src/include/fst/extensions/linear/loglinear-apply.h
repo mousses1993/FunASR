@@ -4,9 +4,9 @@
 #ifndef FST_EXTENSIONS_LINEAR_LOGLINEAR_APPLY_H_
 #define FST_EXTENSIONS_LINEAR_LOGLINEAR_APPLY_H_
 
-#include <fst/compat.h>
-#include <fst/arc.h>
 #include <fst/arc-map.h>
+#include <fst/arc.h>
+#include <fst/compat.h>
 #include <fst/compose.h>
 #include <fst/determinize.h>
 #include <fst/float-weight.h>

@@ -1,10 +1,10 @@
 #ifndef WFST_DECODER_
 #define WFST_DECODER_
-#include "kaldi/decoder/lattice-faster-online-decoder.h"
-#include "model.h"
+#include "bias-lm.h"
 #include "fst/fstlib.h"
 #include "fst/symbol-table.h"
-#include "bias-lm.h"
+#include "kaldi/decoder/lattice-faster-online-decoder.h"
+#include "model.h"
 #include "phone-set.h"
 #include "util.h"
 
@@ -12,9 +12,7 @@
 namespace funasr {
 class Decodable : public kaldi::DecodableInterface {
  public:
-  Decodable(float scale = 1.0f) : scale_(scale) { 
-    Reset(); 
-  }
+  Decodable(float scale = 1.0f) : scale_(scale) { Reset(); }
   void Reset() {
     num_frames_ = 0;
     finished_ = false;
@@ -49,26 +47,25 @@ class Decodable : public kaldi::DecodableInterface {
 };
 
 struct DecodeOptions : public kaldi::LatticeFasterDecoderConfig {
-  DecodeOptions(float glob_beam = 3.0f, float lat_beam = 3.0f, float ac_sc = 10.0f) :
-  kaldi::LatticeFasterDecoderConfig(glob_beam, lat_beam), acoustic_scale(ac_sc) {
-  }
+  DecodeOptions(float glob_beam = 3.0f, float lat_beam = 3.0f,
+                float ac_sc = 10.0f)
+      : kaldi::LatticeFasterDecoderConfig(glob_beam, lat_beam),
+        acoustic_scale(ac_sc) {}
   float acoustic_scale;
 };
 
 class WfstDecoder {
  public:
-  WfstDecoder(fst::Fst<fst::StdArc>* lm,
-              PhoneSet* phone_set,
-              Vocab* vocab,
-              float glob_beam,
-              float lat_beam,
-              float am_scale);
+  WfstDecoder(fst::Fst<fst::StdArc>* lm, PhoneSet* phone_set, Vocab* vocab,
+              float glob_beam, float lat_beam, float am_scale);
   ~WfstDecoder();
   void StartUtterance();
   void EndUtterance();
-  string Search(float *in, int len, int64_t token_nums);
-  string FinalizeDecode(bool is_stamp=false, std::vector<float> us_alphas={0}, std::vector<float> us_cif_peak={0});
-  void LoadHwsRes(int inc_bias, unordered_map<string, int> &hws_map);
+  string Search(float* in, int len, int64_t token_nums);
+  string FinalizeDecode(bool is_stamp = false,
+                        std::vector<float> us_alphas = {0},
+                        std::vector<float> us_cif_peak = {0});
+  void LoadHwsRes(int inc_bias, unordered_map<string, int>& hws_map);
   void UnloadHwsRes();
 
  private:
@@ -82,5 +79,5 @@ class WfstDecoder {
   std::shared_ptr<kaldi::LatticeFasterOnlineDecoder> decoder_ = nullptr;
   std::shared_ptr<BiasLm> bias_lm_ = nullptr;
 };
-} // namespace funasr
-#endif // WFST_DECODER_
+}  // namespace funasr
+#endif  // WFST_DECODER_

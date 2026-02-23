@@ -6,15 +6,15 @@
 #ifndef FST_EXTENSIONS_FAR_PRINT_STRINGS_H_
 #define FST_EXTENSIONS_FAR_PRINT_STRINGS_H_
 
+#include <fst/extensions/far/far.h>
+#include <fst/flags.h>
+#include <fst/shortest-distance.h>
+#include <fst/string.h>
+
+#include <fstream>
 #include <iomanip>
 #include <string>
 #include <vector>
-
-#include <fst/flags.h>
-#include <fst/extensions/far/far.h>
-#include <fstream>
-#include <fst/shortest-distance.h>
-#include <fst/string.h>
 
 DECLARE_string(far_field_separator);
 

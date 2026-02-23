@@ -107,8 +107,7 @@ class AllFstOperationsRegisterer {
     REGISTER_FST_OPERATION(Equivalent, Arc, EquivalentArgs);
     REGISTER_FST_OPERATION(PrintFstInfo, Arc, InfoArgs);
     REGISTER_FST_OPERATION(GetFstInfo, Arc, GetInfoArgs);
-    REGISTER_FST_OPERATION(InitArcIteratorClass, Arc,
-                           InitArcIteratorClassArgs);
+    REGISTER_FST_OPERATION(InitArcIteratorClass, Arc, InitArcIteratorClassArgs);
     REGISTER_FST_OPERATION(InitEncodeMapperClass, Arc,
                            InitEncodeMapperClassArgs);
     REGISTER_FST_OPERATION(InitMutableArcIteratorClass, Arc,

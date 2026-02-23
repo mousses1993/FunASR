@@ -6,14 +6,13 @@
 #ifndef FST_ARCSORT_H_
 #define FST_ARCSORT_H_
 
-#include <algorithm>
-#include <string>
-#include <vector>
-
 #include <fst/cache.h>
 #include <fst/state-map.h>
 #include <fst/test-properties.h>
 
+#include <algorithm>
+#include <string>
+#include <vector>
 
 namespace fst {
 

@@ -21,16 +21,14 @@
 #define KALDI_DECODER_TRAINING_GRAPH_COMPILER_H_
 
 #include "base/kaldi-common.h"
-#include "hmm/transition-model.h"
 #include "fst/fstlib.h"
 #include "fstext/fstext-lib.h"
+#include "hmm/transition-model.h"
 #include "tree/context-dep.h"
-
 
 namespace kaldi {
 
 struct TrainingGraphCompilerOptions {
-
   BaseFloat transition_scale;
   BaseFloat self_loop_scale;
   bool rm_eps;
@@ -38,34 +36,40 @@ struct TrainingGraphCompilerOptions {
 
   explicit TrainingGraphCompilerOptions(BaseFloat transition_scale = 1.0,
                                         BaseFloat self_loop_scale = 1.0,
-                                        bool b = true) :
-      transition_scale(transition_scale),
-      self_loop_scale(self_loop_scale),
-      rm_eps(false),
-      reorder(b) { }
+                                        bool b = true)
+      : transition_scale(transition_scale),
+        self_loop_scale(self_loop_scale),
+        rm_eps(false),
+        reorder(b) {}
 
   void Register(OptionsItf *opts) {
-    opts->Register("transition-scale", &transition_scale, "Scale of transition "
+    opts->Register("transition-scale", &transition_scale,
+                   "Scale of transition "
                    "probabilities (excluding self-loops)");
-    opts->Register("self-loop-scale", &self_loop_scale, "Scale of self-loop vs. "
+    opts->Register("self-loop-scale", &self_loop_scale,
+                   "Scale of self-loop vs. "
                    "non-self-loop probability mass ");
-    opts->Register("reorder", &reorder, "Reorder transition ids for greater decoding efficiency.");
-    opts->Register("rm-eps", &rm_eps,  "Remove [most] epsilons before minimization (only applicable "
-                   "if disambig symbols present)");
+    opts->Register("reorder", &reorder,
+                   "Reorder transition ids for greater decoding efficiency.");
+    opts->Register(
+        "rm-eps", &rm_eps,
+        "Remove [most] epsilons before minimization (only applicable "
+        "if disambig symbols present)");
   }
 };
 
-
 class TrainingGraphCompiler {
  public:
-  TrainingGraphCompiler(const TransitionModel &trans_model,  // Maintains reference to this object.
-                        const ContextDependency &ctx_dep,  // And this.
-                        fst::VectorFst<fst::StdArc> *lex_fst,  // Takes ownership of this object.
-                        // It should not contain disambiguation symbols or subsequential symbol,
-                        // but it should contain optional silence.
-                        const std::vector<int32> &disambig_syms, // disambig symbols in phone symbol table.
-                        const TrainingGraphCompilerOptions &opts);
-
+  TrainingGraphCompiler(
+      const TransitionModel
+          &trans_model,                  // Maintains reference to this object.
+      const ContextDependency &ctx_dep,  // And this.
+      fst::VectorFst<fst::StdArc> *lex_fst,  // Takes ownership of this object.
+      // It should not contain disambiguation symbols or subsequential symbol,
+      // but it should contain optional silence.
+      const std::vector<int32>
+          &disambig_syms,  // disambig symbols in phone symbol table.
+      const TrainingGraphCompilerOptions &opts);
 
   // CompileGraph compiles a single training graph its input is a
   // weighted acceptor (G) at the word level, its output is HCLG.
@@ -77,7 +81,7 @@ class TrainingGraphCompiler {
 
   // Same as `CompileGraph`, but uses an external LG fst.
   bool CompileGraphFromLG(const fst::VectorFst<fst::StdArc> &phone2word_fst,
-                                   fst::VectorFst<fst::StdArc> * out_fst);
+                          fst::VectorFst<fst::StdArc> *out_fst);
 
   // CompileGraphs allows you to compile a number of graphs at the same
   // time.  This consumes more memory but is faster.
@@ -91,26 +95,26 @@ class TrainingGraphCompiler {
 
   // This function creates FSTs from the text and calls CompileGraphs.
   bool CompileGraphsFromText(
-      const std::vector<std::vector<int32> >  &word_grammar,
+      const std::vector<std::vector<int32> > &word_grammar,
       std::vector<fst::VectorFst<fst::StdArc> *> *out_fsts);
 
-
   ~TrainingGraphCompiler() { delete lex_fst_; }
+
  private:
   const TransitionModel &trans_model_;
   const ContextDependency &ctx_dep_;
-  fst::VectorFst<fst::StdArc> *lex_fst_; // lexicon FST (an input; we take
+  fst::VectorFst<fst::StdArc> *lex_fst_;  // lexicon FST (an input; we take
   // ownership as we need to modify it).
-  std::vector<int32> disambig_syms_; // disambig symbols (if any) in the phone
-  int32 subsequential_symbol_;  // search in ../fstext/context-fst.h for more info.
+  std::vector<int32> disambig_syms_;  // disambig symbols (if any) in the phone
+  int32 subsequential_symbol_;  // search in ../fstext/context-fst.h for more
+                                // info.
   // symbol table.
-  fst::TableComposeCache<fst::Fst<fst::StdArc> > lex_cache_;  // stores matcher..
+  fst::TableComposeCache<fst::Fst<fst::StdArc> >
+      lex_cache_;  // stores matcher..
   // this is one of Dan's extensions.
 
   TrainingGraphCompilerOptions opts_;
 };
-
-
 
 }  // end namespace kaldi.
 

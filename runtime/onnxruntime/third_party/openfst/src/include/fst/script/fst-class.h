@@ -4,17 +4,17 @@
 #ifndef FST_SCRIPT_FST_CLASS_H_
 #define FST_SCRIPT_FST_CLASS_H_
 
+#include <fst/expanded-fst.h>
+#include <fst/fst.h>
+#include <fst/mutable-fst.h>
+#include <fst/script/arc-class.h>
+#include <fst/script/weight-class.h>
+#include <fst/vector-fst.h>
+
 #include <algorithm>
 #include <limits>
 #include <string>
 #include <type_traits>
-
-#include <fst/expanded-fst.h>
-#include <fst/fst.h>
-#include <fst/mutable-fst.h>
-#include <fst/vector-fst.h>
-#include <fst/script/arc-class.h>
-#include <fst/script/weight-class.h>
 
 // Classes to support "boxing" all existing types of FST arcs in a single
 // FstClass which hides the arc types. This allows clients to load

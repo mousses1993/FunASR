@@ -6,10 +6,8 @@
 #ifndef FST_VISIT_H_
 #define FST_VISIT_H_
 
-
 #include <fst/arcfilter.h>
 #include <fst/mutable-fst.h>
-
 
 namespace fst {
 
@@ -272,8 +270,10 @@ class PartialCopyVisitor : public CopyVisitor<A> {
 
   PartialCopyVisitor(MutableFst<Arc> *ofst, StateId maxvisit,
                      bool copy_grey = true, bool copy_black = true)
-      : CopyVisitor<A>(ofst), maxvisit_(maxvisit),
-        copy_grey_(copy_grey), copy_black_(copy_black) {}
+      : CopyVisitor<A>(ofst),
+        maxvisit_(maxvisit),
+        copy_grey_(copy_grey),
+        copy_black_(copy_black) {}
 
   void InitVisit(const Fst<A> &ifst) {
     CopyVisitor<A>::InitVisit(ifst);

@@ -8,16 +8,14 @@
 #ifndef FST_STATE_MAP_H_
 #define FST_STATE_MAP_H_
 
+#include <fst/arc-map.h>
+#include <fst/cache.h>
+#include <fst/log.h>
+#include <fst/mutable-fst.h>
+
 #include <algorithm>
 #include <string>
 #include <utility>
-
-#include <fst/log.h>
-
-#include <fst/arc-map.h>
-#include <fst/cache.h>
-#include <fst/mutable-fst.h>
-
 
 namespace fst {
 
@@ -261,8 +259,8 @@ class StateMapFstImpl : public CacheImpl<B> {
   void InitStateIterator(StateIteratorData<B> *datb) const {
     StateIteratorData<A> data;
     fst_->InitStateIterator(&data);
-    datb->base = data.base ? new StateMapStateIteratorBase<A, B>(data.base)
-        : nullptr;
+    datb->base =
+        data.base ? new StateMapStateIteratorBase<A, B>(data.base) : nullptr;
     datb->nstates = data.nstates;
   }
 

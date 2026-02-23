@@ -6,11 +6,10 @@
 #ifndef FST_POWER_WEIGHT_H_
 #define FST_POWER_WEIGHT_H_
 
-#include <string>
-
 #include <fst/tuple-weight.h>
 #include <fst/weight.h>
 
+#include <string>
 
 namespace fst {
 

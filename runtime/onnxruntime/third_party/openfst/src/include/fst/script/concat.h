@@ -4,10 +4,10 @@
 #ifndef FST_SCRIPT_CONCAT_H_
 #define FST_SCRIPT_CONCAT_H_
 
-#include <utility>
-
 #include <fst/concat.h>
 #include <fst/script/fst-class.h>
+
+#include <utility>
 
 namespace fst {
 namespace script {

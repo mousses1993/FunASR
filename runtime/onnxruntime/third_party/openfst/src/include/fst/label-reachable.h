@@ -7,19 +7,17 @@
 #ifndef FST_LABEL_REACHABLE_H_
 #define FST_LABEL_REACHABLE_H_
 
-#include <unordered_map>
-#include <utility>
-#include <vector>
-
-#include <fst/log.h>
-
 #include <fst/accumulator.h>
 #include <fst/arcsort.h>
 #include <fst/interval-set.h>
+#include <fst/log.h>
 #include <fst/state-reachable.h>
 #include <fst/util.h>
 #include <fst/vector-fst.h>
 
+#include <unordered_map>
+#include <utility>
+#include <vector>
 
 namespace fst {
 

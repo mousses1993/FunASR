@@ -6,11 +6,11 @@
 #ifndef FST_EXTENSIONS_MPDT_INFO_H_
 #define FST_EXTENSIONS_MPDT_INFO_H_
 
-#include <unordered_map>
-#include <vector>
-
 #include <fst/extensions/mpdt/mpdt.h>
 #include <fst/fst.h>
+
+#include <unordered_map>
+#include <vector>
 
 namespace fst {
 

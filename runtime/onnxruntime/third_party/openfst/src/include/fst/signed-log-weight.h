@@ -11,12 +11,11 @@
 #ifndef FST_SIGNED_LOG_WEIGHT_H_
 #define FST_SIGNED_LOG_WEIGHT_H_
 
-#include <cstdlib>
-
 #include <fst/float-weight.h>
 #include <fst/pair-weight.h>
 #include <fst/product-weight.h>
 
+#include <cstdlib>
 
 namespace fst {
 template <class T>
@@ -181,8 +180,8 @@ inline bool ApproxEqual(const SignedLogWeightTpl<T> &w1,
   if (w1.IsPositive() == w2.IsPositive()) {
     return ApproxEqual(w1.Value2(), w2.Value2(), delta);
   } else {
-    return ApproxEqual(w1.Value2(), X2::Zero(), delta)
-        && ApproxEqual(w2.Value2(), X2::Zero(), delta);
+    return ApproxEqual(w1.Value2(), X2::Zero(), delta) &&
+           ApproxEqual(w2.Value2(), X2::Zero(), delta);
   }
 }
 
@@ -193,8 +192,7 @@ inline bool operator==(const SignedLogWeightTpl<T> &w1,
   if (w1.IsPositive() == w2.IsPositive()) {
     return w1.Value2() == w2.Value2();
   } else {
-    return w1.Value2() == X2::Zero()
-        && w2.Value2() == X2::Zero();
+    return w1.Value2() == X2::Zero() && w2.Value2() == X2::Zero();
   }
 }
 
@@ -213,8 +211,8 @@ using SignedLog64Weight = SignedLogWeightTpl<double>;
 template <class W1, class W2>
 bool SignedLogConvertCheck(W1 weight) {
   if (weight.Value1().Value() < 0.0) {
-    FSTERROR() << "WeightConvert: Can't convert weight " << weight
-               << " from " << W1::Type() << " to " << W2::Type();
+    FSTERROR() << "WeightConvert: Can't convert weight " << weight << " from "
+               << W1::Type() << " to " << W2::Type();
     return false;
   }
   return true;
@@ -229,9 +227,7 @@ class Adder<SignedLogWeightTpl<T>> {
   using X2 = LogWeightTpl<T>;
 
   explicit Adder(Weight w = Weight::Zero())
-      : ssum_(w.IsPositive()),
-        sum_(w.Value2().Value()),
-        c_(0.0) { }
+      : ssum_(w.IsPositive()), sum_(w.Value2().Value()), c_(0.0) {}
 
   Weight Add(const Weight &w) {
     const auto sw = w.IsPositive();
@@ -416,16 +412,16 @@ class WeightGenerate<SignedLogWeightTpl<T>> {
 
   explicit WeightGenerate(bool allow_zero = true,
                           size_t num_random_weights = kNumRandomWeights)
-    : allow_zero_(allow_zero), num_random_weights_(num_random_weights) {}
+      : allow_zero_(allow_zero), num_random_weights_(num_random_weights) {}
 
   Weight operator()() const {
     static const X1 negative_one(-1.0);
     static const X1 positive_one(+1.0);
     const int m = rand() % 2;                                    // NOLINT
     const int n = rand() % (num_random_weights_ + allow_zero_);  // NOLINT
-    return Weight((m == 0) ? negative_one : positive_one,
-                  (allow_zero_ && n == num_random_weights_) ?
-                   X2::Zero() : X2(n));
+    return Weight(
+        (m == 0) ? negative_one : positive_one,
+        (allow_zero_ && n == num_random_weights_) ? X2::Zero() : X2(n));
   }
 
  private:

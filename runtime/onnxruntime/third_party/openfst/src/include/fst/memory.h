@@ -6,14 +6,14 @@
 #ifndef FST_MEMORY_H_
 #define FST_MEMORY_H_
 
+#include <fst/log.h>
+#include <fst/types.h>
+
+#include <fstream>
 #include <list>
 #include <memory>
 #include <utility>
 #include <vector>
-
-#include <fst/types.h>
-#include <fst/log.h>
-#include <fstream>
 
 namespace fst {
 
@@ -71,7 +71,7 @@ class MemoryArenaImpl : public MemoryArenaBase {
 
  private:
   const size_t block_size_;  // Default block size in bytes.
-  size_t block_pos_;   // Current position in block in bytes.
+  size_t block_pos_;         // Current position in block in bytes.
   std::list<std::unique_ptr<char[]>> blocks_;  // List of allocated blocks.
 };
 
@@ -270,7 +270,7 @@ class BlockAllocator {
   size_type max_size() const { return Allocator().max_size(); }
 
   template <class U, class... Args>
-  void construct(U *p, Args &&... args) {
+  void construct(U *p, Args &&...args) {
     Allocator().construct(p, std::forward<Args>(args)...);
   }
 
@@ -362,7 +362,7 @@ class PoolAllocator {
   size_type max_size() const { return Allocator().max_size(); }
 
   template <class U, class... Args>
-  void construct(U *p, Args &&... args) {
+  void construct(U *p, Args &&...args) {
     Allocator().construct(p, std::forward<Args>(args)...);
   }
 

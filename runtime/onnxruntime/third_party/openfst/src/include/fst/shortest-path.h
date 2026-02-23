@@ -6,19 +6,17 @@
 #ifndef FST_SHORTEST_PATH_H_
 #define FST_SHORTEST_PATH_H_
 
-#include <functional>
-#include <type_traits>
-#include <utility>
-#include <vector>
-
-#include <fst/log.h>
-
 #include <fst/cache.h>
 #include <fst/determinize.h>
+#include <fst/log.h>
 #include <fst/queue.h>
 #include <fst/shortest-distance.h>
 #include <fst/test-properties.h>
 
+#include <functional>
+#include <type_traits>
+#include <utility>
+#include <vector>
 
 namespace fst {
 
@@ -150,7 +148,7 @@ class FirstPathSelect<S, W, NaturalAStarQueue<S, W, Estimate>> {
   using Queue = NaturalAStarQueue<S, W, Estimate>;
 
   FirstPathSelect(const Queue &state_queue)
-    : estimate_(state_queue.GetCompare().GetEstimate()) {}
+      : estimate_(state_queue.GetCompare().GetEstimate()) {}
 
   bool operator()(S s, W d, W f) const {
     return f == Plus(Times(d, estimate_(s)), f);
@@ -279,9 +277,9 @@ class ShortestPathCompare {
 
  private:
   Weight PWeight(StateId state) const {
-    return (state == superfinal_)
-               ? Weight::One()
-               : (state < distance_.size()) ? distance_[state] : Weight::Zero();
+    return (state == superfinal_)       ? Weight::One()
+           : (state < distance_.size()) ? distance_[state]
+                                        : Weight::Zero();
   }
 
   const std::vector<std::pair<StateId, Weight>> &pairs_;
@@ -376,10 +374,9 @@ void NShortestPath(const Fst<RevArc> &ifst, MutableFst<Arc> *ofst,
     const auto state = heap.back();
     const auto p = pairs[state];
     heap.pop_back();
-    const auto d =
-        (p.first == kNoStateId)
-            ? Weight::One()
-            : (p.first < distance.size()) ? distance[p.first] : Weight::Zero();
+    const auto d = (p.first == kNoStateId)       ? Weight::One()
+                   : (p.first < distance.size()) ? distance[p.first]
+                                                 : Weight::Zero();
     if (less(limit, Times(d, p.second)) ||
         (state_threshold != kNoStateId &&
          ofst->NumStates() >= state_threshold)) {

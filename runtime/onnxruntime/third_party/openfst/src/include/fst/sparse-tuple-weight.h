@@ -14,16 +14,14 @@
 #ifndef FST_SPARSE_TUPLE_WEIGHT_H_
 #define FST_SPARSE_TUPLE_WEIGHT_H_
 
+#include <fst/weight.h>
+
 #include <algorithm>
 #include <list>
 #include <stack>
 #include <string>
 #include <unordered_map>
 #include <utility>
-
-
-#include <fst/weight.h>
-
 
 namespace fst {
 

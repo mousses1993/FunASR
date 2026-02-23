@@ -6,22 +6,13 @@
 #ifndef FST_MINIMIZE_H_
 #define FST_MINIMIZE_H_
 
-#include <cmath>
-
-#include <algorithm>
-#include <map>
-#include <queue>
-#include <utility>
-#include <vector>
-
-#include <fst/log.h>
-
 #include <fst/arcsort.h>
 #include <fst/connect.h>
 #include <fst/dfs-visit.h>
 #include <fst/encode.h>
 #include <fst/factor-weight.h>
 #include <fst/fst.h>
+#include <fst/log.h>
 #include <fst/mutable-fst.h>
 #include <fst/partition.h>
 #include <fst/push.h>
@@ -30,6 +21,12 @@
 #include <fst/shortest-distance.h>
 #include <fst/state-map.h>
 
+#include <algorithm>
+#include <cmath>
+#include <map>
+#include <queue>
+#include <utility>
+#include <vector>
 
 namespace fst {
 namespace internal {

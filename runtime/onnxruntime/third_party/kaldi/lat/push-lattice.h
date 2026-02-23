@@ -18,20 +18,18 @@
 // See the Apache 2 License for the specific language governing permissions and
 // limitations under the License.
 
-
 #ifndef KALDI_LAT_PUSH_LATTICE_H_
 #define KALDI_LAT_PUSH_LATTICE_H_
 
-#include <vector>
 #include <map>
+#include <vector>
 
 #include "base/kaldi-common.h"
-#include "util/common-utils.h"
 #include "fstext/fstext-lib.h"
 #include "lat/kaldi-lattice.h"
+#include "util/common-utils.h"
 
 namespace fst {
-
 
 /// This function pushes the transition-ids as far towards the start as they
 /// will go.  It can be useful prior to lattice-align-words (for non-linear
@@ -42,7 +40,7 @@ namespace fst {
 /// which should never happen, but we handle it gracefully by just leaving the
 /// lattice the same.
 /// This function used to be called just PushCompactLattice.
-template<class Weight, class IntType>
+template <class Weight, class IntType>
 bool PushCompactLatticeStrings(
     MutableFst<ArcTpl<CompactLatticeWeightTpl<Weight, IntType> > > *clat);
 
@@ -52,7 +50,7 @@ bool PushCompactLatticeStrings(
 /// weights as negated log-probs).  It returns true on success, false if it
 /// failed due to TopSort failing, which should never happen, but we handle it
 /// gracefully by just leaving the lattice the same.
-template<class Weight, class IntType>
+template <class Weight, class IntType>
 bool PushCompactLatticeWeights(
     MutableFst<ArcTpl<CompactLatticeWeightTpl<Weight, IntType> > > *clat);
 

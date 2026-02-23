@@ -6,17 +6,15 @@
 #ifndef FST_SHORTEST_DISTANCE_H_
 #define FST_SHORTEST_DISTANCE_H_
 
-#include <cstddef>
-#include <vector>
-
-#include <fst/log.h>
-
 #include <fst/arcfilter.h>
 #include <fst/cache.h>
+#include <fst/log.h>
 #include <fst/queue.h>
 #include <fst/reverse.h>
 #include <fst/test-properties.h>
 
+#include <cstddef>
+#include <vector>
 
 namespace fst {
 
@@ -43,8 +41,7 @@ struct ShortestDistanceOptions {
 
   ShortestDistanceOptions(Queue *state_queue, ArcFilter arc_filter,
                           StateId source = kNoStateId,
-                          float delta = kShortestDelta,
-                          bool first_path = false)
+                          float delta = kShortestDelta, bool first_path = false)
       : state_queue(state_queue),
         arc_filter(arc_filter),
         source(source),

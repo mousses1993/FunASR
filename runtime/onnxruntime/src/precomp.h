@@ -1,21 +1,22 @@
-#pragma once 
-// system 
+#pragma once
+// system
+#include <locale.h>
+#include <math.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
+
+#include <cstring>
 #include <deque>
-#include <iostream>
 #include <fstream>
-#include <sstream>
+#include <iostream>
 #include <iterator>
 #include <list>
-#include <locale.h>
-#include <vector>
-#include <string>
-#include <math.h>
 #include <numeric>
-#include <cstring>
+#include <sstream>
+#include <string>
+#include <vector>
 
 #ifdef _WIN32
 #include <win_func.h>
@@ -28,10 +29,10 @@ using namespace std;
 #if defined(__APPLE__)
 #include <onnxruntime/onnxruntime_cxx_api.h>
 #else
-#include "onnxruntime_run_options_config_keys.h"
-#include "onnxruntime_cxx_api.h"
 #include "itn-model.h"
 #include "itn-processor.h"
+#include "onnxruntime_cxx_api.h"
+#include "onnxruntime_run_options_config_keys.h"
 #endif
 
 #include "kaldi-native-fbank/csrc/feature-fbank.h"
@@ -40,38 +41,37 @@ using namespace std;
 // mine
 #include <glog/logging.h>
 
-
-#include "common-struct.h"
-#include "com-define.h"
-#include "commonfunc.h"
-#include "predefine-coe.h"
-#include "model.h"
-#include "vad-model.h"
-#include "punc-model.h"
-#include "tokenizer.h"
-#include "ct-transformer.h"
-#include "ct-transformer-online.h"
-#include "e2e-vad.h"
-#include "fsmn-vad.h"
-#include "encode_converter.h"
-#include "vocab.h"
-#include "phone-set.h"
-#include "wfst-decoder.h"
 #include "audio.h"
+#include "com-define.h"
+#include "common-struct.h"
+#include "commonfunc.h"
+#include "ct-transformer-online.h"
+#include "ct-transformer.h"
+#include "e2e-vad.h"
+#include "encode_converter.h"
 #include "fsmn-vad-online.h"
-#include "tensor.h"
-#include "util.h"
-#include "seg_dict.h"
-#include "resample.h"
+#include "fsmn-vad.h"
+#include "model.h"
 #include "paraformer.h"
+#include "phone-set.h"
+#include "predefine-coe.h"
+#include "punc-model.h"
+#include "resample.h"
+#include "seg_dict.h"
 #include "sensevoice-small.h"
+#include "tensor.h"
+#include "tokenizer.h"
+#include "util.h"
+#include "vad-model.h"
+#include "vocab.h"
+#include "wfst-decoder.h"
 #ifdef USE_GPU
 #include "paraformer-torch.h"
 #endif
-#include "paraformer-online.h"
-#include "offline-stream.h"
-#include "tpass-stream.h"
-#include "tpass-online-stream.h"
 #include "campplus-model.h"
-#include "speaker-diarization.h"
 #include "funasrruntime.h"
+#include "offline-stream.h"
+#include "paraformer-online.h"
+#include "speaker-diarization.h"
+#include "tpass-online-stream.h"
+#include "tpass-stream.h"

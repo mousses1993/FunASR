@@ -4,9 +4,9 @@
 #ifndef FST_SCRIPT_VERIFY_H_
 #define FST_SCRIPT_VERIFY_H_
 
-#include <fst/verify.h>
 #include <fst/script/arg-packs.h>
 #include <fst/script/fst-class.h>
+#include <fst/verify.h>
 
 namespace fst {
 namespace script {

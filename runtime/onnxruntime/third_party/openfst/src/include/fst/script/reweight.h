@@ -4,13 +4,13 @@
 #ifndef FST_SCRIPT_REWEIGHT_H_
 #define FST_SCRIPT_REWEIGHT_H_
 
-#include <tuple>
-#include <vector>
-
 #include <fst/reweight.h>
 #include <fst/script/fst-class.h>
 #include <fst/script/script-impl.h>
 #include <fst/script/weight-class.h>
+
+#include <tuple>
+#include <vector>
 
 namespace fst {
 namespace script {

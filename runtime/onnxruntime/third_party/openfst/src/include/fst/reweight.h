@@ -6,11 +6,10 @@
 #ifndef FST_REWEIGHT_H_
 #define FST_REWEIGHT_H_
 
-#include <vector>
 #include <fst/log.h>
-
 #include <fst/mutable-fst.h>
 
+#include <vector>
 
 namespace fst {
 

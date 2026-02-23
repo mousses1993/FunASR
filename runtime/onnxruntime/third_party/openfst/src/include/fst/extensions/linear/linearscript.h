@@ -4,18 +4,18 @@
 #ifndef FST_EXTENSIONS_LINEAR_LINEARSCRIPT_H_
 #define FST_EXTENSIONS_LINEAR_LINEARSCRIPT_H_
 
+#include <fst/compat.h>
+#include <fst/extensions/linear/linear-fst-data-builder.h>
+#include <fst/extensions/linear/linear-fst.h>
+#include <fst/script/arg-packs.h>
+#include <fst/script/script-impl.h>
+#include <fst/symbol-table.h>
+
+#include <fstream>
 #include <istream>
 #include <sstream>
 #include <string>
 #include <vector>
-
-#include <fst/compat.h>
-#include <fst/extensions/linear/linear-fst-data-builder.h>
-#include <fst/extensions/linear/linear-fst.h>
-#include <fstream>
-#include <fst/symbol-table.h>
-#include <fst/script/arg-packs.h>
-#include <fst/script/script-impl.h>
 
 DECLARE_string(delimiter);
 DECLARE_string(empty_symbol);

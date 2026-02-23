@@ -4,17 +4,17 @@
 #ifndef FST_SCRIPT_ISOMORPHIC_H_
 #define FST_SCRIPT_ISOMORPHIC_H_
 
-#include <tuple>
-
 #include <fst/isomorphic.h>
 #include <fst/script/arg-packs.h>
 #include <fst/script/fst-class.h>
 
+#include <tuple>
+
 namespace fst {
 namespace script {
 
-using IsomorphicInnerArgs = std::tuple<const FstClass &, const FstClass &,
-                                       float>;
+using IsomorphicInnerArgs =
+    std::tuple<const FstClass &, const FstClass &, float>;
 
 using IsomorphicArgs = WithReturnValue<bool, IsomorphicInnerArgs>;
 

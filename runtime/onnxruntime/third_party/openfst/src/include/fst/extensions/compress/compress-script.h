@@ -7,14 +7,14 @@
 #ifndef FST_EXTENSIONS_COMPRESS_COMPRESS_SCRIPT_H_
 #define FST_EXTENSIONS_COMPRESS_COMPRESS_SCRIPT_H_
 
+#include <fst/extensions/compress/compress.h>
+#include <fst/log.h>
+#include <fst/mutable-fst.h>
+#include <fst/script/fst-class.h>
+#include <fst/util.h>
+
 #include <string>
 #include <tuple>
-
-#include <fst/log.h>
-#include <fst/extensions/compress/compress.h>
-#include <fst/mutable-fst.h>
-#include <fst/util.h>
-#include <fst/script/fst-class.h>
 
 namespace fst {
 namespace script {
@@ -41,8 +41,7 @@ void Decompress(DecompressArgs *args) {
   MutableFst<Arc> *fst = std::get<1>(*args)->GetMutableFst<Arc>();
   const bool gzip = std::get<2>(*args);
 
-  if (!fst::Decompress(filename, fst, gzip))
-    FSTERROR() << "Decompress: failed";
+  if (!fst::Decompress(filename, fst, gzip)) FSTERROR() << "Decompress: failed";
 }
 
 void Decompress(const string &filename, MutableFstClass *fst, const bool gzip);

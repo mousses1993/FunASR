@@ -6,19 +6,17 @@
 #ifndef FST_ENCODE_H_
 #define FST_ENCODE_H_
 
+#include <fst/arc-map.h>
+#include <fst/log.h>
+#include <fst/rmfinalepsilon.h>
+
+#include <fstream>
 #include <iostream>
 #include <memory>
 #include <string>
 #include <unordered_map>
 #include <utility>
 #include <vector>
-
-#include <fst/log.h>
-#include <fstream>
-
-#include <fst/arc-map.h>
-#include <fst/rmfinalepsilon.h>
-
 
 namespace fst {
 
@@ -102,8 +100,8 @@ class EncodeTable {
   explicit EncodeTable(uint32 encode_flags)
       : flags_(encode_flags), encode_hash_(1024, TupleKey(encode_flags)) {}
 
-  using EncodeHash = std::unordered_map<const Tuple *, Label, TupleKey,
-                                        TupleEqual>;
+  using EncodeHash =
+      std::unordered_map<const Tuple *, Label, TupleKey, TupleEqual>;
 
   // Given an arc, encodes either input/output labels or input/costs or both.
   Label Encode(const Arc &arc) {
@@ -121,7 +119,7 @@ class EncodeTable {
     const Tuple tuple(arc.ilabel, flags_ & kEncodeLabels ? arc.olabel : 0,
                       flags_ & kEncodeWeights ? arc.weight : Weight::One());
     auto it = encode_hash_.find(&tuple);
-    return (it == encode_hash_.end()) ?  kNoLabel : it->second;
+    return (it == encode_hash_.end()) ? kNoLabel : it->second;
   }
 
   // Given an encoded arc label, decodes back to input/output labels and costs.
@@ -177,8 +175,7 @@ class EncodeTable {
 };
 
 template <class Arc>
-bool EncodeTable<Arc>::Write(std::ostream &strm,
-                                  const string &source) const {
+bool EncodeTable<Arc>::Write(std::ostream &strm, const string &source) const {
   WriteType(strm, kEncodeMagicNumber);
   WriteType(strm, flags_);
   const int64 size = encode_tuples_.size();
@@ -321,8 +318,7 @@ class EncodeMapper {
   }
 
   bool Write(const string &filename) const {
-    std::ofstream strm(filename,
-                             std::ios_base::out | std::ios_base::binary);
+    std::ofstream strm(filename, std::ios_base::out | std::ios_base::binary);
     if (!strm) {
       LOG(ERROR) << "EncodeMap: Can't open file: " << filename;
       return false;
@@ -331,15 +327,14 @@ class EncodeMapper {
   }
 
   static EncodeMapper<Arc> *Read(std::istream &strm, const string &source,
-                               EncodeType type = ENCODE) {
+                                 EncodeType type = ENCODE) {
     auto *table = internal::EncodeTable<Arc>::Read(strm, source);
     return table ? new EncodeMapper(table->Flags(), type, table) : nullptr;
   }
 
   static EncodeMapper<Arc> *Read(const string &filename,
                                  EncodeType type = ENCODE) {
-    std::ifstream strm(filename,
-                            std::ios_base::in | std::ios_base::binary);
+    std::ifstream strm(filename, std::ios_base::in | std::ios_base::binary);
     if (!strm) {
       LOG(ERROR) << "EncodeMap: Can't open file: " << filename;
       return nullptr;

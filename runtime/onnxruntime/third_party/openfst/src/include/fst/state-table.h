@@ -6,16 +6,14 @@
 #ifndef FST_STATE_TABLE_H_
 #define FST_STATE_TABLE_H_
 
-#include <deque>
-#include <utility>
-#include <vector>
-
-#include <fst/log.h>
-
 #include <fst/bi-table.h>
 #include <fst/expanded-fst.h>
 #include <fst/filter-state.h>
+#include <fst/log.h>
 
+#include <deque>
+#include <utility>
+#include <vector>
 
 namespace fst {
 
@@ -270,8 +268,7 @@ class DefaultComposeStateTuple<S, TrivialFilterState> {
   using StateId = S;
   using FilterState = TrivialFilterState;
 
-  DefaultComposeStateTuple()
-      : state_pair_(kNoStateId, kNoStateId) {}
+  DefaultComposeStateTuple() : state_pair_(kNoStateId, kNoStateId) {}
 
   DefaultComposeStateTuple(StateId s1, StateId s2, const FilterState &)
       : state_pair_(s1, s2) {}

@@ -6,27 +6,26 @@
 #ifndef FST_RANDGEN_H_
 #define FST_RANDGEN_H_
 
-#include <math.h>
-#include <stddef.h>
-#include <limits>
-#include <map>
-#include <memory>
-#include <random>
-#include <utility>
-#include <vector>
-
-#include <fst/log.h>
-
 #include <fst/accumulator.h>
 #include <fst/cache.h>
 #include <fst/dfs-visit.h>
 #include <fst/float-weight.h>
 #include <fst/fst-decl.h>
 #include <fst/fst.h>
+#include <fst/log.h>
 #include <fst/mutable-fst.h>
 #include <fst/properties.h>
 #include <fst/util.h>
 #include <fst/weight.h>
+#include <math.h>
+#include <stddef.h>
+
+#include <limits>
+#include <map>
+#include <memory>
+#include <random>
+#include <utility>
+#include <vector>
 
 namespace fst {
 
@@ -134,8 +133,8 @@ class FastLogProbArcSelector : public LogProbArcSelector<Arc> {
   // Constructs a selector with a non-deterministic seed.
   FastLogProbArcSelector() : LogProbArcSelector<Arc>() {}
   // Constructs a selector with a given seed.
-  explicit FastLogProbArcSelector(uint64 seed) : LogProbArcSelector<Arc>(
-      seed) {}
+  explicit FastLogProbArcSelector(uint64 seed)
+      : LogProbArcSelector<Arc>(seed) {}
 
   size_t operator()(const Fst<Arc> &fst, StateId s,
                     CacheLogAccumulator<Arc> *accumulator) const {
@@ -145,8 +144,8 @@ class FastLogProbArcSelector : public LogProbArcSelector<Arc> {
     const double sum =
         ToLogWeight(accumulator->Sum(fst.Final(s), &aiter, 0, fst.NumArcs(s)))
             .Value();
-    const double r = -log(std::uniform_real_distribution<>(0, 1)(
-        MutableRand()));
+    const double r =
+        -log(std::uniform_real_distribution<>(0, 1)(MutableRand()));
     Weight w = from_log_weight_(r + sum);
     aiter.Reset();
     return accumulator->LowerBound(w, &aiter);

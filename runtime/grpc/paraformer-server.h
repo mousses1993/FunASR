@@ -4,33 +4,34 @@
  */
 /* 2023 by burkliu(刘柏基) liubaiji@xverse.cn */
 
-#include <string>
-#include <thread>
-#include <mutex>
 #include <unistd.h>
 
+#include <mutex>
+#include <string>
+#include <thread>
+
+#include "com-define.h"
+#include "funasrruntime.h"
+#include "glog/logging.h"
 #include "grpcpp/server_builder.h"
 #include "paraformer.grpc.pb.h"
-#include "funasrruntime.h"
 #include "tclap/CmdLine.h"
-#include "com-define.h"
-#include "glog/logging.h"
 
-using paraformer::WavFormat;
+using paraformer::ASR;
 using paraformer::DecodeMode;
 using paraformer::Request;
 using paraformer::Response;
-using paraformer::ASR;
+using paraformer::WavFormat;
 
-typedef struct
-{
+typedef struct {
   std::string msg;
-  float  snippet_time;
+  float snippet_time;
 } FUNASR_RECOG_RESULT;
 
 class GrpcEngine {
  public:
-  GrpcEngine(grpc::ServerReaderWriter<Response, Request>* stream, std::shared_ptr<FUNASR_HANDLE> asr_handler);
+  GrpcEngine(grpc::ServerReaderWriter<Response, Request>* stream,
+             std::shared_ptr<FUNASR_HANDLE> asr_handler);
   void operator()();
 
  private:
@@ -54,15 +55,17 @@ class GrpcEngine {
   ASR_TYPE mode_ = ASR_TWO_PASS;
   int step_duration_ms_ = 100;
 
-  std::unique_ptr<std::mutex> p_mutex_= std::make_unique<std::mutex>(); // mutex is not moveable
+  std::unique_ptr<std::mutex> p_mutex_ =
+      std::make_unique<std::mutex>();  // mutex is not moveable
 };
 
 class GrpcService final : public ASR::Service {
-  public:
-    GrpcService(std::map<std::string, std::string>& config, int num_thread);
-    grpc::Status Recognize(grpc::ServerContext* context, grpc::ServerReaderWriter<Response, Request>* stream);
+ public:
+  GrpcService(std::map<std::string, std::string>& config, int num_thread);
+  grpc::Status Recognize(grpc::ServerContext* context,
+                         grpc::ServerReaderWriter<Response, Request>* stream);
 
-  private:
-    std::map<std::string, std::string> config_;
-    std::shared_ptr<FUNASR_HANDLE> asr_handler_;
+ private:
+  std::map<std::string, std::string> config_;
+  std::shared_ptr<FUNASR_HANDLE> asr_handler_;
 };

@@ -4,10 +4,10 @@
 #ifndef FST_SCRIPT_STATEITERATOR_CLASS_H_
 #define FST_SCRIPT_STATEITERATOR_CLASS_H_
 
-#include <memory>
-
 #include <fst/fstlib.h>
 #include <fst/script/fst-class.h>
+
+#include <memory>
 
 // Scripting API support for StateIterator.
 

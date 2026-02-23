@@ -1,5 +1,5 @@
-// Acknowledgement: this code is adapted from 
-// https://github.com/wenet-e2e/WeTextProcessing/blob/master/runtime/processor/processor.cc 
+// Acknowledgement: this code is adapted from
+// https://github.com/wenet-e2e/WeTextProcessing/blob/master/runtime/processor/processor.cc
 // Retrieved in Aug 2023.
 
 // Copyright (c) 2022 Zhendong Peng (pzd17@tsinghua.org.cn)
@@ -22,18 +22,17 @@
 using fst::StringTokenType;
 
 namespace funasr {
-ITNProcessor::ITNProcessor(){};
-ITNProcessor::~ITNProcessor(){};
+ITNProcessor::ITNProcessor() {};
+ITNProcessor::~ITNProcessor() {};
 
-void  ITNProcessor::InitITN(const std::string& tagger_path,
-                     const std::string& verbalizer_path, 
-                     int thread_num) {
-  try{
+void ITNProcessor::InitITN(const std::string& tagger_path,
+                           const std::string& verbalizer_path, int thread_num) {
+  try {
     tagger_.reset(StdVectorFst::Read(tagger_path));
     LOG(INFO) << "Successfully load model from " << tagger_path;
     verbalizer_.reset(StdVectorFst::Read(verbalizer_path));
     LOG(INFO) << "Successfully load model from " << verbalizer_path;
-  }catch(exception const &e){
+  } catch (exception const& e) {
     LOG(ERROR) << "Error loading itn models";
     exit(-1);
   }
@@ -60,7 +59,7 @@ std::string ITNProcessor::shortest_path(const StdVectorFst& lattice) {
 }
 
 std::string ITNProcessor::compose(const std::string& input,
-                               const StdVectorFst* fst) {
+                                  const StdVectorFst* fst) {
   StdVectorFst input_fst;
   compiler_->operator()(input, &input_fst);
 

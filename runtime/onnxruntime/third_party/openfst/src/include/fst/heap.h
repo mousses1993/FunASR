@@ -8,10 +8,10 @@
 #ifndef FST_HEAP_H_
 #define FST_HEAP_H_
 
+#include <fst/compat.h>
+
 #include <utility>
 #include <vector>
-
-#include <fst/compat.h>
 namespace fst {
 
 // A templated heap implementation that supports in-place update of values.
@@ -68,7 +68,7 @@ class Heap {
   // Returns the least value.
   Value Pop() {
     Value top = values_.front();
-    Swap(0, size_-1);
+    Swap(0, size_ - 1);
     size_--;
     Heapify(0);
     return top;

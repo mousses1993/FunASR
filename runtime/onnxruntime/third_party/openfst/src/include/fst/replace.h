@@ -6,22 +6,21 @@
 #ifndef FST_REPLACE_H_
 #define FST_REPLACE_H_
 
+#include <fst/cache.h>
+#include <fst/expanded-fst.h>
+#include <fst/fst-decl.h>  // For optional argument declarations.
+#include <fst/fst.h>
+#include <fst/log.h>
+#include <fst/matcher.h>
+#include <fst/replace-util.h>
+#include <fst/state-table.h>
+#include <fst/test-properties.h>
+
 #include <set>
 #include <string>
 #include <unordered_map>
 #include <utility>
 #include <vector>
-
-#include <fst/log.h>
-
-#include <fst/cache.h>
-#include <fst/expanded-fst.h>
-#include <fst/fst-decl.h>  // For optional argument declarations.
-#include <fst/fst.h>
-#include <fst/matcher.h>
-#include <fst/replace-util.h>
-#include <fst/state-table.h>
-#include <fst/test-properties.h>
 
 namespace fst {
 
@@ -120,7 +119,7 @@ class ReplaceFstStateFingerprint {
 template <typename S, typename P>
 class ReplaceHash {
  public:
-  size_t operator()(const ReplaceStateTuple<S, P>& t) const {
+  size_t operator()(const ReplaceStateTuple<S, P> &t) const {
     static constexpr size_t prime0 = 7853;
     static constexpr size_t prime1 = 7867;
     return t.prefix_id + t.fst_id * prime0 + t.fst_state * prime1;
@@ -252,7 +251,7 @@ class VectorHashReplaceStateTable {
     return prefix_table_.FindId(prefix);
   }
 
-  const StackPrefix& GetStackPrefix(PrefixId id) const {
+  const StackPrefix &GetStackPrefix(PrefixId id) const {
     return prefix_table_.FindEntry(id);
   }
 
@@ -372,7 +371,6 @@ struct ReplaceFstOptions : CacheImplOptions<CacheStore> {
         call_output_label(epsilon_replace_arc ? 0 : kNoLabel) {}
 };
 
-
 // Forward declaration.
 template <class Arc, class StateTable, class CacheStore>
 class ReplaceFstMatcher;
@@ -473,10 +471,10 @@ class ReplaceFstImpl
   using FstImpl<Arc>::InputSymbols;
   using FstImpl<Arc>::OutputSymbols;
 
-  using CacheImpl::PushArc;
   using CacheImpl::HasArcs;
   using CacheImpl::HasFinal;
   using CacheImpl::HasStart;
+  using CacheImpl::PushArc;
   using CacheImpl::SetArcs;
   using CacheImpl::SetFinal;
   using CacheImpl::SetStart;
@@ -995,8 +993,8 @@ class ReplaceFst
     if ((GetImpl()->ArcIteratorFlags() & kArcNoCache) &&
         ((match_type == MATCH_INPUT && Properties(kILabelSorted, false)) ||
          (match_type == MATCH_OUTPUT && Properties(kOLabelSorted, false)))) {
-      return new ReplaceFstMatcher<Arc, StateTable, CacheStore>
-          (this, match_type);
+      return new ReplaceFstMatcher<Arc, StateTable, CacheStore>(this,
+                                                                match_type);
     } else {
       VLOG(2) << "Not using replace matcher";
       return nullptr;
@@ -1120,7 +1118,7 @@ class ArcIterator<ReplaceFst<Arc, StateTable, CacheStore>> {
     if (local_data_.ref_count) --(*local_data_.ref_count);
   }
 
-  void ExpandAndCache() const  {
+  void ExpandAndCache() const {
     // TODO(allauzen): revisit this.
     // fst_.GetImpl()->Expand(s_, tuple_, local_data_);
     // (fst_.GetImpl())->CacheImpl<A>*>::InitArcIterator(s_,

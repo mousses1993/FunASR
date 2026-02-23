@@ -21,7 +21,6 @@
 
 #include <fstream>
 #include <functional>
- 
 
 #include "asio.hpp"
 #include "asr_sessions.h"
@@ -37,24 +36,18 @@ class ModelDecoder {
                std::map<std::string, std::string> &model_path, int thread_num)
       : io_decoder_(io_decoder) {
     asr_handle = initAsr(model_path, thread_num);
- 
   }
   void do_decoder(std::shared_ptr<FUNASR_MESSAGE> session_msg);
 
-  FUNASR_HANDLE initAsr(std::map<std::string, std::string> &model_path, int thread_num);
+  FUNASR_HANDLE initAsr(std::map<std::string, std::string> &model_path,
+                        int thread_num);
 
- 
- 
   asio::io_context &io_decoder_;  // threads for asr decoder
-  FUNASR_HANDLE get_asr_handle()
-  {
-    return asr_handle;
-  }
+  FUNASR_HANDLE get_asr_handle() { return asr_handle; }
+
  private:
- 
   FUNASR_HANDLE asr_handle;  // asr engine handle
   bool isonline = false;  // online or offline engine, now only support offline
 };
 
- 
 #endif  // MODEL_DECODER_SERVER_H_

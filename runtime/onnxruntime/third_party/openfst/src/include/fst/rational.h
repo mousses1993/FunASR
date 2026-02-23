@@ -7,14 +7,13 @@
 #ifndef FST_RATIONAL_H_
 #define FST_RATIONAL_H_
 
-#include <algorithm>
-#include <string>
-#include <vector>
-
 #include <fst/mutable-fst.h>
 #include <fst/replace.h>
 #include <fst/test-properties.h>
 
+#include <algorithm>
+#include <string>
+#include <vector>
 
 namespace fst {
 

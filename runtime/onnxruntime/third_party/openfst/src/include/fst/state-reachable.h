@@ -7,16 +7,14 @@
 #ifndef FST_STATE_REACHABLE_H_
 #define FST_STATE_REACHABLE_H_
 
-#include <vector>
-
-#include <fst/log.h>
-
 #include <fst/connect.h>
 #include <fst/dfs-visit.h>
 #include <fst/fst.h>
 #include <fst/interval-set.h>
+#include <fst/log.h>
 #include <fst/vector-fst.h>
 
+#include <vector>
 
 namespace fst {
 

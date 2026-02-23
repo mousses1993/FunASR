@@ -8,15 +8,13 @@
 #ifndef FST_ARC_MAP_H_
 #define FST_ARC_MAP_H_
 
+#include <fst/cache.h>
+#include <fst/log.h>
+#include <fst/mutable-fst.h>
+
 #include <string>
 #include <unordered_map>
 #include <utility>
-
-#include <fst/log.h>
-
-#include <fst/cache.h>
-#include <fst/mutable-fst.h>
-
 
 namespace fst {
 
@@ -198,8 +196,8 @@ void ArcMap(const Fst<A> &ifst, MutableFst<B> *ofst, C *mapper) {
   }
   const auto final_action = mapper->FinalAction();
   if (ifst.Properties(kExpanded, false)) {
-    ofst->ReserveStates(
-        CountStates(ifst) + (final_action == MAP_NO_SUPERFINAL ? 0 : 1));
+    ofst->ReserveStates(CountStates(ifst) +
+                        (final_action == MAP_NO_SUPERFINAL ? 0 : 1));
   }
   // Adds all states.
   for (StateIterator<Fst<A>> siter(ifst); !siter.Done(); siter.Next()) {
@@ -718,7 +716,8 @@ class SuperFinalMapper {
   using FromArc = A;
   using ToArc = A;
   using Label = typename FromArc::Label;
-  using Weight = typename FromArc::Weight;;
+  using Weight = typename FromArc::Weight;
+  ;
 
   // Arg allows setting super-final label.
   explicit SuperFinalMapper(Label final_label = 0)
@@ -749,8 +748,8 @@ class SuperFinalMapper {
     if (final_label_ == 0) {
       return props & kAddSuperFinalProperties;
     } else {
-      return props & kAddSuperFinalProperties &
-          kILabelInvariantProperties & kOLabelInvariantProperties;
+      return props & kAddSuperFinalProperties & kILabelInvariantProperties &
+             kOLabelInvariantProperties;
     }
   }
 
@@ -828,14 +827,14 @@ class ToGallicMapper {
     // Super-final arc.
     if (arc.nextstate == kNoStateId && arc.weight != AW::Zero()) {
       return ToArc(0, 0, GW(SW::One(), arc.weight), kNoStateId);
-    // Super-non-final arc.
+      // Super-non-final arc.
     } else if (arc.nextstate == kNoStateId) {
       return ToArc(0, 0, GW::Zero(), kNoStateId);
-    // Epsilon label.
+      // Epsilon label.
     } else if (arc.olabel == 0) {
       return ToArc(arc.ilabel, arc.ilabel, GW(SW::One(), arc.weight),
                    arc.nextstate);
-    // Regular label.
+      // Regular label.
     } else {
       return ToArc(arc.ilabel, arc.ilabel, GW(SW(arc.olabel), arc.weight),
                    arc.nextstate);
@@ -1193,10 +1192,10 @@ class RmWeightMapper {
   using ToWeight = typename ToArc::Weight;
 
   ToArc operator()(const FromArc &arc) const {
-    return ToArc(arc.ilabel, arc.olabel,
-                 arc.weight != FromWeight::Zero() ?
-                 ToWeight::One() : ToWeight::Zero(),
-                 arc.nextstate);
+    return ToArc(
+        arc.ilabel, arc.olabel,
+        arc.weight != FromWeight::Zero() ? ToWeight::One() : ToWeight::Zero(),
+        arc.nextstate);
   }
 
   constexpr MapFinalAction FinalAction() const { return MAP_NO_SUPERFINAL; }

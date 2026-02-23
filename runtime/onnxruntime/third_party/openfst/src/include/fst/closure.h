@@ -6,12 +6,11 @@
 #ifndef FST_CLOSURE_H_
 #define FST_CLOSURE_H_
 
-#include <algorithm>
-#include <vector>
-
 #include <fst/mutable-fst.h>
 #include <fst/rational.h>
 
+#include <algorithm>
+#include <vector>
 
 namespace fst {
 

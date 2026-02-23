@@ -17,13 +17,11 @@
 #ifndef FST_EXPECTATION_WEIGHT_H_
 #define FST_EXPECTATION_WEIGHT_H_
 
-#include <string>
-
 #include <fst/log.h>
-
 #include <fst/pair-weight.h>
 #include <fst/product-weight.h>
 
+#include <string>
 
 namespace fst {
 

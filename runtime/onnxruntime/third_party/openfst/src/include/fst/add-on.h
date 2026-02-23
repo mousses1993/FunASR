@@ -8,15 +8,13 @@
 #ifndef FST_ADD_ON_H_
 #define FST_ADD_ON_H_
 
+#include <fst/fst.h>
+#include <fst/log.h>
 #include <stddef.h>
+
 #include <memory>
 #include <string>
 #include <utility>
-
-#include <fst/log.h>
-
-#include <fst/fst.h>
-
 
 namespace fst {
 

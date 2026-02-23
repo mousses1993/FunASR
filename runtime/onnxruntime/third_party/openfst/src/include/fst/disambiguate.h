@@ -6,12 +6,6 @@
 #ifndef FST_DISAMBIGUATE_H_
 #define FST_DISAMBIGUATE_H_
 
-#include <list>
-#include <map>
-#include <set>
-#include <utility>
-#include <vector>
-
 #include <fst/arcsort.h>
 #include <fst/compose.h>
 #include <fst/connect.h>
@@ -24,6 +18,11 @@
 #include <fst/union-find.h>
 #include <fst/verify.h>
 
+#include <list>
+#include <map>
+#include <set>
+#include <utility>
+#include <vector>
 
 namespace fst {
 
@@ -393,7 +392,8 @@ void Disambiguator<Arc>::PreDisambiguate(const ExpandedFst<Arc> &ifst,
                                                    AnyArcFilter<Arc>(),
                                                    &odistance);
       Prune(dfst, ofst, popts);
-      } else */ {
+      } else */
+    {
       *ofst = DeterminizeFst<Arc>(ifst, nopts);
       Prune(ofst, opts.weight_threshold, opts.state_threshold);
     }

@@ -6,13 +6,12 @@
 #ifndef FST_UNION_H_
 #define FST_UNION_H_
 
-#include <algorithm>
-#include <utility>
-#include <vector>
-
 #include <fst/mutable-fst.h>
 #include <fst/rational.h>
 
+#include <algorithm>
+#include <utility>
+#include <vector>
 
 namespace fst {
 

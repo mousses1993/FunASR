@@ -25,9 +25,9 @@
 
 // Makes copy constructor and operator= private
 // Deprecated: now just use =delete.
-#define DISALLOW_COPY_AND_ASSIGN(type)    \
-  type(const type&);                      \
-  void operator=(const type&)
+#define DISALLOW_COPY_AND_ASSIGN(type) \
+  type(const type &);                  \
+  void operator=(const type &)
 
 #if defined(__GNUC__) || defined(__clang__)
 #define OPENFST_DEPRECATED(message) __attribute__((deprecated(message)))
@@ -38,11 +38,11 @@
 #endif
 
 #include <fst/config.h>
-#include <fst/types.h>
-#include <fst/lock.h>
 #include <fst/flags.h>
-#include <fst/log.h>
 #include <fst/icu.h>
+#include <fst/lock.h>
+#include <fst/log.h>
+#include <fst/types.h>
 
 using std::string;
 
@@ -50,7 +50,7 @@ void FailedNewHandler();
 
 #ifdef _MSC_VER
 #include <intrin.h>
-const char* basename(const char* path);
+const char *basename(const char *path);
 #define __builtin_popcount __popcnt
 
 #ifdef _M_X64
@@ -67,8 +67,9 @@ inline unsigned int __builtin_popcountll(std::uint64_t w) {
 }
 inline unsigned int __builtin_ctzll(std::uint64_t w) {
   unsigned long v;
-  return (_BitScanForward(&v, std::uint32_t(w)) ? v :
-          _BitScanForward(&v, std::uint32_t(w >> 32)) ? v + 32 : 0);
+  return (_BitScanForward(&v, std::uint32_t(w))         ? v
+          : _BitScanForward(&v, std::uint32_t(w >> 32)) ? v + 32
+                                                        : 0);
 }
 #endif  // _M_X64
 #endif  // _MSC_VER
@@ -76,8 +77,10 @@ inline unsigned int __builtin_ctzll(std::uint64_t w) {
 namespace fst {
 
 // Downcasting.
-template<typename To, typename From>
-inline To down_cast(From* f) { return static_cast<To>(f); }
+template <typename To, typename From>
+inline To down_cast(From *f) {
+  return static_cast<To>(f);
+}
 
 // Bitcasting.
 template <class Dest, class Source>
@@ -92,9 +95,7 @@ inline Dest bit_cast(const Source &source) {
 // Check sums
 class CheckSummer {
  public:
-  CheckSummer() : count_(0) {
-    check_sum_.resize(kCheckSumLength, '\0');
-  }
+  CheckSummer() : count_(0) { check_sum_.resize(kCheckSumLength, '\0'); }
 
   void Reset() {
     count_ = 0;

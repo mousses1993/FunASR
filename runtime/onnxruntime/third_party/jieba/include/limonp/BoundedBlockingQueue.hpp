@@ -5,15 +5,11 @@
 
 namespace limonp {
 
-template<typename T>
+template <typename T>
 class BoundedBlockingQueue : NonCopyable {
  public:
   explicit BoundedBlockingQueue(size_t maxSize)
-    : mutex_(),
-      notEmpty_(mutex_),
-      notFull_(mutex_),
-      queue_(maxSize) {
-  }
+      : mutex_(), notEmpty_(mutex_), notFull_(mutex_), queue_(maxSize) {}
 
   void Push(const T& x) {
     MutexLockGuard lock(mutex_);
@@ -51,17 +47,15 @@ class BoundedBlockingQueue : NonCopyable {
     return queue_.size();
   }
 
-  size_t capacity() const {
-    return queue_.capacity();
-  }
+  size_t capacity() const { return queue_.capacity(); }
 
  private:
-  mutable MutexLock          mutex_;
-  Condition                  notEmpty_;
-  Condition                  notFull_;
-  BoundedQueue<T>  queue_;
-}; // class BoundedBlockingQueue
+  mutable MutexLock mutex_;
+  Condition notEmpty_;
+  Condition notFull_;
+  BoundedQueue<T> queue_;
+};  // class BoundedBlockingQueue
 
-} // namespace limonp
+}  // namespace limonp
 
-#endif // LIMONP_BOUNDED_BLOCKING_QUEUE_HPP
+#endif  // LIMONP_BOUNDED_BLOCKING_QUEUE_HPP

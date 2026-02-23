@@ -4,11 +4,11 @@
 #ifndef FST_SCRIPT_INTERSECT_H_
 #define FST_SCRIPT_INTERSECT_H_
 
-#include <tuple>
-
 #include <fst/intersect.h>
 #include <fst/script/compose.h>
 #include <fst/script/fst-class.h>
+
+#include <tuple>
 
 namespace fst {
 namespace script {

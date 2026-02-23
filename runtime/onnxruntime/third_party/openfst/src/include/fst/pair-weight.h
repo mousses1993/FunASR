@@ -7,16 +7,14 @@
 #ifndef FST_PAIR_WEIGHT_H_
 #define FST_PAIR_WEIGHT_H_
 
+#include <fst/flags.h>
+#include <fst/log.h>
+#include <fst/weight.h>
+
 #include <climits>
 #include <stack>
 #include <string>
 #include <utility>
-
-#include <fst/flags.h>
-#include <fst/log.h>
-
-#include <fst/weight.h>
-
 
 namespace fst {
 

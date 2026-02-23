@@ -22,9 +22,10 @@
 #ifndef KALDI_FSTEXT_KALDI_FST_IO_H_
 #define KALDI_FSTEXT_KALDI_FST_IO_H_
 
-#include <fst/fstlib.h>
 #include <fst/fst-decl.h>
+#include <fst/fstlib.h>
 #include <fst/script/print-impl.h>
+
 #include "base/kaldi-common.h"
 
 // Some functions for writing Fsts.
@@ -65,22 +66,19 @@ void ReadFstKaldi(std::string rxfilename, VectorFst<StdArc> *ofst);
 // Write an FST using Kaldi I/O mechanisms (pipes, etc.)
 // On error, throws using KALDI_ERR.  For use only in code in fstbin/,
 // as it doesn't support the text-mode option.
-void WriteFstKaldi(const VectorFst<StdArc> &fst,
-                   std::string wxfilename);
+void WriteFstKaldi(const VectorFst<StdArc> &fst, std::string wxfilename);
 
 // This is a more general Kaldi-type-IO mechanism of writing FSTs to
 // streams, supporting binary or text-mode writing.  (note: we just
 // write the integers, symbol tables are not supported).
 // On error, throws using KALDI_ERR.
 template <class Arc>
-void WriteFstKaldi(std::ostream &os, bool binary,
-                   const VectorFst<Arc> &fst);
+void WriteFstKaldi(std::ostream &os, bool binary, const VectorFst<Arc> &fst);
 
 // A generic Kaldi-type-IO mechanism of reading FSTs from streams,
 // supporting binary or text-mode reading/writing.
 template <class Arc>
-void ReadFstKaldi(std::istream &is, bool binary,
-                  VectorFst<Arc> *fst);
+void ReadFstKaldi(std::istream &is, bool binary, VectorFst<Arc> *fst);
 
 // Read an FST file for LM (G.fst) and make it an acceptor,
 // and make sure it is sorted on labels
@@ -93,12 +91,12 @@ fst::VectorFst<fst::StdArc> *ReadAndPrepareLmFst(std::string rxfilename);
 // Originally it was only templated on T = VectorFst<StdArc>, but as the keyword
 // spotting stuff introduced more types of FSTs, we made it also templated on
 // the arc.
-template<class Arc>
+template <class Arc>
 class VectorFstTplHolder {
  public:
   typedef VectorFst<Arc> T;
 
-  VectorFstTplHolder(): t_(NULL) { }
+  VectorFstTplHolder() : t_(NULL) {}
 
   static bool Write(std::ostream &os, bool binary, const T &t);
 
@@ -130,9 +128,7 @@ class VectorFstTplHolder {
     }
   }
 
-  void Swap(VectorFstTplHolder<Arc> *other) {
-    std::swap(t_, other->t_);
-  }
+  void Swap(VectorFstTplHolder<Arc> *other) { std::swap(t_, other->t_); }
 
   bool ExtractRange(const VectorFstTplHolder<Arc> &other,
                     const std::string &range) {
@@ -148,11 +144,11 @@ class VectorFstTplHolder {
   T *t_;
 };
 
-// Now make the original VectorFstHolder as the typedef of VectorFstHolder<StdArc>.
+// Now make the original VectorFstHolder as the typedef of
+// VectorFstHolder<StdArc>.
 typedef VectorFstTplHolder<StdArc> VectorFstHolder;
 
-
-} // end namespace fst
+}  // end namespace fst
 
 #include "fstext/kaldi-fst-io-inl.h"
 #endif

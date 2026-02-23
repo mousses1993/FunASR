@@ -6,18 +6,17 @@
 #ifndef FST_ACCUMULATOR_H_
 #define FST_ACCUMULATOR_H_
 
-#include <algorithm>
-#include <functional>
-#include <unordered_map>
-#include <vector>
-
-#include <fst/log.h>
-
 #include <fst/arcfilter.h>
 #include <fst/arcsort.h>
 #include <fst/dfs-visit.h>
 #include <fst/expanded-fst.h>
+#include <fst/log.h>
 #include <fst/replace.h>
+
+#include <algorithm>
+#include <functional>
+#include <unordered_map>
+#include <vector>
 
 namespace fst {
 
@@ -328,13 +327,11 @@ class FastLogAccumulator {
 
  private:
   static double LogPosExp(double x) {
-    return x == FloatLimits<double>::PosInfinity() ? 0.0
-                                                   : log(1.0F + exp(-x));
+    return x == FloatLimits<double>::PosInfinity() ? 0.0 : log(1.0F + exp(-x));
   }
 
   static double LogMinusExp(double x) {
-    return x == FloatLimits<double>::PosInfinity() ? 0.0
-                                                   : log(1.0F - exp(-x));
+    return x == FloatLimits<double>::PosInfinity() ? 0.0 : log(1.0F - exp(-x));
   }
 
   Weight LogPlus(Weight w, Weight v) const {
@@ -553,9 +550,9 @@ class CacheLogAccumulator {
     auto pos = aiter->Position();
     if (weights_) {
       Extend(fst_->NumArcs(s_), aiter);
-      return std::lower_bound(weights_->begin() + pos + 1, weights_->end(),
-                              f, std::greater<double>()) -
-          weights_->begin() - 1;
+      return std::lower_bound(weights_->begin() + pos + 1, weights_->end(), f,
+                              std::greater<double>()) -
+             weights_->begin() - 1;
     } else {
       size_t n = 0;
       auto x = FloatLimits<double>::PosInfinity();
@@ -571,13 +568,11 @@ class CacheLogAccumulator {
 
  private:
   double LogPosExp(double x) {
-    return x == FloatLimits<double>::PosInfinity() ? 0.0
-                                                   : log(1.0F + exp(-x));
+    return x == FloatLimits<double>::PosInfinity() ? 0.0 : log(1.0F + exp(-x));
   }
 
   double LogMinusExp(double x) {
-    return x == FloatLimits<double>::PosInfinity() ? 0.0
-                                                   : log(1.0F - exp(-x));
+    return x == FloatLimits<double>::PosInfinity() ? 0.0 : log(1.0F - exp(-x));
   }
 
   Weight LogPlus(Weight w, Weight v) {
@@ -623,7 +618,6 @@ class CacheLogAccumulator {
       }
     }
   }
-
 
   const WeightConvert<Weight, Log64Weight> to_log_weight_{};
   const WeightConvert<Log64Weight, Weight> to_weight_{};

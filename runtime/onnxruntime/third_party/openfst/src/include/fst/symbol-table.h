@@ -6,20 +6,20 @@
 #ifndef FST_SYMBOL_TABLE_H_
 #define FST_SYMBOL_TABLE_H_
 
+#include <fst/compat.h>
+#include <fst/flags.h>
+#include <fst/log.h>
+
+#include <fstream>
 #include <functional>
 #include <ios>
 #include <iostream>
+#include <map>
 #include <memory>
 #include <sstream>
 #include <string>
 #include <utility>
 #include <vector>
-
-#include <fst/compat.h>
-#include <fst/flags.h>
-#include <fst/log.h>
-#include <fstream>
-#include <map>
 
 DECLARE_bool(fst_compat_symbols);
 
@@ -114,7 +114,7 @@ class SymbolTableImpl {
       std::istream &strm, const string &name,
       const SymbolTableTextOptions &opts = SymbolTableTextOptions());
 
-  static SymbolTableImpl* Read(std::istream &strm,
+  static SymbolTableImpl *Read(std::istream &strm,
                                const SymbolTableReadOptions &opts);
 
   bool Write(std::ostream &strm) const;
@@ -223,7 +223,8 @@ class SymbolTable {
   }
 
   // Reads a text representation of the symbol table.
-  static SymbolTable *ReadText(const string &filename,
+  static SymbolTable *ReadText(
+      const string &filename,
       const SymbolTableTextOptions &opts = SymbolTableTextOptions()) {
     std::ifstream strm(filename, std::ios_base::in);
     if (!strm.good()) {
@@ -235,24 +236,22 @@ class SymbolTable {
 
   // WARNING: Reading via symbol table read options should not be used. This is
   // a temporary work-around.
-  static SymbolTable* Read(std::istream &strm,
+  static SymbolTable *Read(std::istream &strm,
                            const SymbolTableReadOptions &opts) {
     auto *impl = internal::SymbolTableImpl::Read(strm, opts);
     return (impl) ? new SymbolTable(impl) : nullptr;
   }
 
   // Reads a binary dump of the symbol table from a stream.
-  static SymbolTable *Read(std::istream &strm,
-                           const string &source) {
+  static SymbolTable *Read(std::istream &strm, const string &source) {
     SymbolTableReadOptions opts;
     opts.source = source;
     return Read(strm, opts);
   }
 
   // Reads a binary dump of the symbol table.
-  static SymbolTable *Read(const string& filename) {
-    std::ifstream strm(filename,
-                            std::ios_base::in | std::ios_base::binary);
+  static SymbolTable *Read(const string &filename) {
+    std::ifstream strm(filename, std::ios_base::in | std::ios_base::binary);
     if (!strm.good()) {
       LOG(ERROR) << "SymbolTable::Read: Can't open file " << filename;
       return nullptr;
@@ -336,8 +335,7 @@ class SymbolTable {
   virtual bool Write(std::ostream &strm) const { return impl_->Write(strm); }
 
   virtual bool Write(const string &filename) const {
-    std::ofstream strm(filename,
-                             std::ios_base::out | std::ios_base::binary);
+    std::ofstream strm(filename, std::ios_base::out | std::ios_base::binary);
     if (!strm.good()) {
       LOG(ERROR) << "SymbolTable::Write: Can't open file " << filename;
       return false;
@@ -346,7 +344,8 @@ class SymbolTable {
   }
 
   // Dump a text representation of the symbol table via a stream.
-  virtual bool WriteText(std::ostream &strm,
+  virtual bool WriteText(
+      std::ostream &strm,
       const SymbolTableTextOptions &opts = SymbolTableTextOptions()) const;
 
   // Dump an text representation of the symbol table.
@@ -418,7 +417,8 @@ class SymbolTableIterator {
 // TODO(allauzen): consider adding options to allow for some form of implicit
 // identity relabeling.
 template <class Label>
-SymbolTable *RelabelSymbolTable(const SymbolTable *table,
+SymbolTable *RelabelSymbolTable(
+    const SymbolTable *table,
     const std::vector<std::pair<Label, Label>> &pairs) {
   auto *new_table = new SymbolTable(
       table->Name().empty() ? string()

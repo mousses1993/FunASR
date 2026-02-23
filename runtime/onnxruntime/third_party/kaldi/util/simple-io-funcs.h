@@ -21,6 +21,7 @@
 
 #include <string>
 #include <vector>
+
 #include "util/kaldi-io.h"
 
 // This header contains some utilities for reading some common, simple text
@@ -56,8 +57,6 @@ bool WriteIntegerVectorVectorSimple(const std::string &wxfilename,
 bool ReadIntegerVectorVectorSimple(const std::string &rxfilename,
                                    std::vector<std::vector<int32> > *v);
 
-
 }  // end namespace kaldi.
-
 
 #endif  // KALDI_UTIL_SIMPLE_IO_FUNCS_H_

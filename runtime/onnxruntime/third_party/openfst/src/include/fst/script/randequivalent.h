@@ -4,21 +4,21 @@
 #ifndef FST_SCRIPT_RANDEQUIVALENT_H_
 #define FST_SCRIPT_RANDEQUIVALENT_H_
 
-#include <climits>
-#include <ctime>
-
-#include <tuple>
-
 #include <fst/randequivalent.h>
 #include <fst/script/arg-packs.h>
 #include <fst/script/fst-class.h>
 #include <fst/script/script-impl.h>
 
+#include <climits>
+#include <ctime>
+#include <tuple>
+
 namespace fst {
 namespace script {
 
-using RandEquivalentInnerArgs = std::tuple<const FstClass &, const FstClass &,
-    int32, float, time_t, const RandGenOptions<RandArcSelection> &>;
+using RandEquivalentInnerArgs =
+    std::tuple<const FstClass &, const FstClass &, int32, float, time_t,
+               const RandGenOptions<RandArcSelection> &>;
 
 using RandEquivalentArgs = WithReturnValue<bool, RandEquivalentInnerArgs>;
 
@@ -57,9 +57,9 @@ void RandEquivalent(RandEquivalentArgs *args) {
 }
 
 bool RandEquivalent(const FstClass &fst1, const FstClass &fst2, int32 npath = 1,
-    float delta = kDelta, time_t seed = time(nullptr),
-    const RandGenOptions<RandArcSelection> &opts =
-        RandGenOptions<RandArcSelection>(UNIFORM_ARC_SELECTOR));
+                    float delta = kDelta, time_t seed = time(nullptr),
+                    const RandGenOptions<RandArcSelection> &opts =
+                        RandGenOptions<RandArcSelection>(UNIFORM_ARC_SELECTOR));
 
 }  // namespace script
 }  // namespace fst

@@ -6,14 +6,13 @@
 #ifndef FST_CONNECT_H_
 #define FST_CONNECT_H_
 
-#include <algorithm>
-#include <memory>
-#include <vector>
-
 #include <fst/dfs-visit.h>
 #include <fst/mutable-fst.h>
 #include <fst/union-find.h>
 
+#include <algorithm>
+#include <memory>
+#include <vector>
 
 namespace fst {
 

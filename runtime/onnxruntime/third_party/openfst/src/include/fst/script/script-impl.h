@@ -78,13 +78,12 @@
 // This file contains general-purpose templates which are used in the
 // implementation of the operations.
 
-#include <string>
-#include <utility>
-
 #include <fst/generic-register.h>
+#include <fst/log.h>
 #include <fst/script/fst-class.h>
 
-#include <fst/log.h>
+#include <string>
+#include <utility>
 
 namespace fst {
 namespace script {
@@ -147,18 +146,18 @@ struct Operation {
 
 // Macro for registering new types of operations.
 
-#define REGISTER_FST_OPERATION(Op, Arc, ArgPack)               \
-  static fst::script::Operation<ArgPack>::Registerer       \
-      arc_dispatched_operation_##ArgPack##Op##Arc##_registerer \
-      (std::make_pair(#Op, Arc::Type()), Op<Arc>)
+#define REGISTER_FST_OPERATION(Op, Arc, ArgPack)            \
+  static fst::script::Operation<ArgPack>::Registerer        \
+  arc_dispatched_operation_##ArgPack##Op##Arc##_registerer( \
+      std::make_pair(#Op, Arc::Type()), Op<Arc>)
 
 // Template function to apply an operation by name.
 
 template <class OpReg>
 void Apply(const string &op_name, const string &arc_type,
            typename OpReg::ArgPack *args) {
-  const auto op = OpReg::Register::GetRegister()->GetOperation(op_name,
-                                                               arc_type);
+  const auto op =
+      OpReg::Register::GetRegister()->GetOperation(op_name, arc_type);
   if (!op) {
     FSTERROR() << "No operation found for " << op_name << " on "
                << "arc type " << arc_type;
@@ -175,8 +174,8 @@ namespace internal {
 template <class M, class N>
 bool ArcTypesMatch(const M &m, const N &n, const string &op_name) {
   if (m.ArcType() != n.ArcType()) {
-    FSTERROR() << "Arguments with non-matching arc types passed to "
-               << op_name << ":\t" << m.ArcType() << " and " << n.ArcType();
+    FSTERROR() << "Arguments with non-matching arc types passed to " << op_name
+               << ":\t" << m.ArcType() << " and " << n.ArcType();
     return false;
   }
   return true;

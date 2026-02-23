@@ -8,16 +8,14 @@
 #ifndef FST_UNION_WEIGHT_H_
 #define FST_UNION_WEIGHT_H_
 
-#include <cstdlib>
+#include <fst/weight.h>
 
+#include <cstdlib>
 #include <iostream>
 #include <list>
 #include <sstream>
 #include <string>
 #include <utility>
-
-#include <fst/weight.h>
-
 
 namespace fst {
 
@@ -478,7 +476,8 @@ class WeightGenerate<UnionWeight<W, O>> {
 
   explicit WeightGenerate(bool allow_zero = true,
                           size_t num_random_weights = kNumRandomWeights)
-      : generate_(false), allow_zero_(allow_zero),
+      : generate_(false),
+        allow_zero_(allow_zero),
         num_random_weights_(num_random_weights) {}
 
   Weight operator()() const {

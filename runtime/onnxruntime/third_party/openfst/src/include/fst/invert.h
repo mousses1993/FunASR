@@ -9,7 +9,6 @@
 #include <fst/arc-map.h>
 #include <fst/mutable-fst.h>
 
-
 namespace fst {
 
 // Mapper to implement inversion of an arc.
@@ -24,9 +23,7 @@ struct InvertMapper {
     return ToArc(arc.olabel, arc.ilabel, arc.weight, arc.nextstate);
   }
 
-  constexpr MapFinalAction FinalAction() const {
-     return MAP_NO_SUPERFINAL;
-  }
+  constexpr MapFinalAction FinalAction() const { return MAP_NO_SUPERFINAL; }
 
   constexpr MapSymbolsAction InputSymbolsAction() const {
     return MAP_CLEAR_SYMBOLS;
@@ -36,9 +33,7 @@ struct InvertMapper {
     return MAP_CLEAR_SYMBOLS;
   }
 
-  uint64 Properties(uint64 props) const {
-    return InvertProperties(props);
-  }
+  uint64 Properties(uint64 props) const { return InvertProperties(props); }
 };
 
 // Inverts the transduction corresponding to an FST by exchanging the

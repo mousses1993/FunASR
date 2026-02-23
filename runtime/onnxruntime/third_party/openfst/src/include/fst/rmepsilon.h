@@ -6,25 +6,23 @@
 #ifndef FST_RMEPSILON_H_
 #define FST_RMEPSILON_H_
 
+#include <fst/arcfilter.h>
+#include <fst/cache.h>
+#include <fst/connect.h>
+#include <fst/factor-weight.h>
+#include <fst/invert.h>
+#include <fst/log.h>
+#include <fst/prune.h>
+#include <fst/queue.h>
+#include <fst/shortest-distance.h>
+#include <fst/topsort.h>
+
 #include <forward_list>
 #include <stack>
 #include <string>
 #include <unordered_map>
 #include <utility>
 #include <vector>
-
-#include <fst/log.h>
-
-#include <fst/arcfilter.h>
-#include <fst/cache.h>
-#include <fst/connect.h>
-#include <fst/factor-weight.h>
-#include <fst/invert.h>
-#include <fst/prune.h>
-#include <fst/queue.h>
-#include <fst/shortest-distance.h>
-#include <fst/topsort.h>
-
 
 namespace fst {
 

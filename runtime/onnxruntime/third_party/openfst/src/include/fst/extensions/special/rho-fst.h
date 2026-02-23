@@ -4,12 +4,12 @@
 #ifndef FST_EXTENSIONS_SPECIAL_RHO_FST_H_
 #define FST_EXTENSIONS_SPECIAL_RHO_FST_H_
 
-#include <memory>
-#include <string>
-
 #include <fst/const-fst.h>
 #include <fst/matcher-fst.h>
 #include <fst/matcher.h>
+
+#include <memory>
+#include <string>
 
 DECLARE_int64(rho_fst_rho_label);
 DECLARE_string(rho_fst_rewrite_mode);
@@ -29,7 +29,7 @@ class RhoFstMatcherData {
       : rho_label_(data.rho_label_), rewrite_mode_(data.rewrite_mode_) {}
 
   static RhoFstMatcherData<Label> *Read(std::istream &istrm,
-                                    const FstReadOptions &read) {
+                                        const FstReadOptions &read) {
     auto *data = new RhoFstMatcherData<Label>();
     ReadType(istrm, &data->rho_label_);
     int32 rewrite_mode;
@@ -137,30 +137,30 @@ using Log64RhoFst = MatcherFst<ConstFst<Log64Arc>,
                                RhoFstMatcher<SortedMatcher<ConstFst<Log64Arc>>>,
                                input_rho_fst_type>;
 
-using StdInputRhoFst =
-    MatcherFst<ConstFst<StdArc>, RhoFstMatcher<SortedMatcher<ConstFst<StdArc>>,
-                                               kRhoFstMatchInput>,
-               input_rho_fst_type>;
+using StdInputRhoFst = MatcherFst<
+    ConstFst<StdArc>,
+    RhoFstMatcher<SortedMatcher<ConstFst<StdArc>>, kRhoFstMatchInput>,
+    input_rho_fst_type>;
 
-using LogInputRhoFst =
-    MatcherFst<ConstFst<LogArc>, RhoFstMatcher<SortedMatcher<ConstFst<LogArc>>,
-                                               kRhoFstMatchInput>,
-               input_rho_fst_type>;
+using LogInputRhoFst = MatcherFst<
+    ConstFst<LogArc>,
+    RhoFstMatcher<SortedMatcher<ConstFst<LogArc>>, kRhoFstMatchInput>,
+    input_rho_fst_type>;
 
 using Log64InputRhoFst = MatcherFst<
     ConstFst<Log64Arc>,
     RhoFstMatcher<SortedMatcher<ConstFst<Log64Arc>>, kRhoFstMatchInput>,
     input_rho_fst_type>;
 
-using StdOutputRhoFst =
-    MatcherFst<ConstFst<StdArc>, RhoFstMatcher<SortedMatcher<ConstFst<StdArc>>,
-                                               kRhoFstMatchOutput>,
-               output_rho_fst_type>;
+using StdOutputRhoFst = MatcherFst<
+    ConstFst<StdArc>,
+    RhoFstMatcher<SortedMatcher<ConstFst<StdArc>>, kRhoFstMatchOutput>,
+    output_rho_fst_type>;
 
-using LogOutputRhoFst =
-    MatcherFst<ConstFst<LogArc>, RhoFstMatcher<SortedMatcher<ConstFst<LogArc>>,
-                                               kRhoFstMatchOutput>,
-               output_rho_fst_type>;
+using LogOutputRhoFst = MatcherFst<
+    ConstFst<LogArc>,
+    RhoFstMatcher<SortedMatcher<ConstFst<LogArc>>, kRhoFstMatchOutput>,
+    output_rho_fst_type>;
 
 using Log64OutputRhoFst = MatcherFst<
     ConstFst<Log64Arc>,

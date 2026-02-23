@@ -18,12 +18,11 @@
 // See the Apache 2 License for the specific language governing permissions and
 // limitations under the License.
 
-
 #ifndef KALDI_THREAD_KALDI_SEMAPHORE_H_
 #define KALDI_THREAD_KALDI_SEMAPHORE_H_ 1
 
-#include <mutex>
 #include <condition_variable>
+#include <mutex>
 
 namespace kaldi {
 
@@ -38,13 +37,13 @@ class Semaphore {
   void Signal();   ///< increase the counter
 
  private:
-  int32 count_;    ///< the semaphore counter, 0 means block on Wait()
+  int32 count_;  ///< the semaphore counter, 0 means block on Wait()
 
   std::mutex mutex_;
   std::condition_variable condition_variable_;
   KALDI_DISALLOW_COPY_AND_ASSIGN(Semaphore);
 };
 
-} //namespace
+}  // namespace kaldi
 
-#endif // KALDI_THREAD_KALDI_SEMAPHORE_H_
+#endif  // KALDI_THREAD_KALDI_SEMAPHORE_H_

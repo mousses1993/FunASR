@@ -95,7 +95,7 @@ std::vector<::asio::const_buffer> reply::to_buffers() {
   }
   buffers.push_back(asio::buffer(misc_strings::crlf));
   buffers.push_back(asio::buffer(content));
- 
+
   return buffers;
 }
 
@@ -221,7 +221,7 @@ std::string to_string(reply::status_type status) {
 reply reply::stock_reply(std::string jsonresult) {
   reply rep;
   rep.status = reply::ok;
-  rep.content = jsonresult+"\n";
+  rep.content = jsonresult + "\n";
   rep.headers.resize(2);
   rep.headers[0].name = "Content-Length";
   rep.headers[0].value = std::to_string(rep.content.size());

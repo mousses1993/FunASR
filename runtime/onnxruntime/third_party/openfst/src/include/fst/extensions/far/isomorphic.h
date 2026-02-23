@@ -4,11 +4,11 @@
 #ifndef FST_EXTENSIONS_FAR_ISOMORPHIC_H_
 #define FST_EXTENSIONS_FAR_ISOMORPHIC_H_
 
-#include <memory>
-#include <string>
-
 #include <fst/extensions/far/far.h>
 #include <fst/isomorphic.h>
+
+#include <memory>
+#include <string>
 
 namespace fst {
 

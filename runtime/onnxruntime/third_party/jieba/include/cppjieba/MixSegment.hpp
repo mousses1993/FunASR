@@ -2,26 +2,23 @@
 #define CPPJIEBA_MIXSEGMENT_H
 
 #include <cassert>
-#include "MPSegment.hpp"
+
 #include "HMMSegment.hpp"
-#include "limonp/StringUtil.hpp"
+#include "MPSegment.hpp"
 #include "PosTagger.hpp"
+#include "limonp/StringUtil.hpp"
 
 namespace cppjieba {
-class MixSegment: public SegmentTagged {
+class MixSegment : public SegmentTagged {
  public:
-  MixSegment(const string& mpSegDict, const string& hmmSegDict, 
-        const string& userDict = "") 
-    : mpSeg_(mpSegDict, userDict), 
-      hmmSeg_(hmmSegDict) {
-  }
-  MixSegment(const DictTrie* dictTrie, const HMMModel* model) 
-    : mpSeg_(dictTrie), hmmSeg_(model) {
-  }
+  MixSegment(const string& mpSegDict, const string& hmmSegDict,
+             const string& userDict = "")
+      : mpSeg_(mpSegDict, userDict), hmmSeg_(hmmSegDict) {}
+  MixSegment(const DictTrie* dictTrie, const HMMModel* model)
+      : mpSeg_(dictTrie), hmmSeg_(model) {}
   MixSegment() {}
-  ~MixSegment() {
-  }
-  void setRes(DictTrie *&dictTrie, HMMModel *&model) {
+  ~MixSegment() {}
+  void setRes(DictTrie*& dictTrie, HMMModel*& model) {
     mpSeg_.setRes(dictTrie);
     hmmSeg_.setRes(model);
   }
@@ -47,7 +44,8 @@ class MixSegment: public SegmentTagged {
     GetWordsFromWordRanges(sentence, wrs, words);
   }
 
-  void Cut(RuneStrArray::const_iterator begin, RuneStrArray::const_iterator end, vector<WordRange>& res, bool hmm) const {
+  void Cut(RuneStrArray::const_iterator begin, RuneStrArray::const_iterator end,
+           vector<WordRange>& res, bool hmm) const {
     if (!hmm) {
       mpSeg_.Cut(begin, end, res);
       return;
@@ -60,15 +58,19 @@ class MixSegment: public SegmentTagged {
     vector<WordRange> hmmRes;
     hmmRes.reserve(end - begin);
     for (size_t i = 0; i < words.size(); i++) {
-      //if mp Get a word, it's ok, put it into result
-      if (words[i].left != words[i].right || (words[i].left == words[i].right && mpSeg_.IsUserDictSingleChineseWord(words[i].left->rune))) {
+      // if mp Get a word, it's ok, put it into result
+      if (words[i].left != words[i].right ||
+          (words[i].left == words[i].right &&
+           mpSeg_.IsUserDictSingleChineseWord(words[i].left->rune))) {
         res.push_back(words[i]);
         continue;
       }
 
-      // if mp Get a single one and it is not in userdict, collect it in sequence
+      // if mp Get a single one and it is not in userdict, collect it in
+      // sequence
       size_t j = i;
-      while (j < words.size() && words[j].left == words[j].right && !mpSeg_.IsUserDictSingleChineseWord(words[j].left->rune)) {
+      while (j < words.size() && words[j].left == words[j].right &&
+             !mpSeg_.IsUserDictSingleChineseWord(words[j].left->rune)) {
         j++;
       }
 
@@ -76,28 +78,26 @@ class MixSegment: public SegmentTagged {
       assert(j - 1 >= i);
       // TODO
       hmmSeg_.Cut(words[i].left, words[j - 1].left + 1, hmmRes);
-      //put hmm result to result
+      // put hmm result to result
       for (size_t k = 0; k < hmmRes.size(); k++) {
         res.push_back(hmmRes[k]);
       }
 
-      //clear tmp vars
+      // clear tmp vars
       hmmRes.clear();
 
-      //let i jump over this piece
+      // let i jump over this piece
       i = j - 1;
     }
   }
 
-  const DictTrie* GetDictTrie() const {
-    return mpSeg_.GetDictTrie();
-  }
+  const DictTrie* GetDictTrie() const { return mpSeg_.GetDictTrie(); }
 
   bool Tag(const string& src, vector<pair<string, string> >& res) const {
     return tagger_.Tag(src, res, *this);
   }
 
-  string LookupTag(const string &str) const {
+  string LookupTag(const string& str) const {
     return tagger_.LookupTag(str, *this);
   }
 
@@ -106,8 +106,8 @@ class MixSegment: public SegmentTagged {
   HMMSegment hmmSeg_;
   PosTagger tagger_;
 
-}; // class MixSegment
+};  // class MixSegment
 
-} // namespace cppjieba
+}  // namespace cppjieba
 
 #endif

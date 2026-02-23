@@ -4,11 +4,11 @@
 #ifndef FST_SCRIPT_ARCITERATOR_CLASS_H_
 #define FST_SCRIPT_ARCITERATOR_CLASS_H_
 
-#include <memory>
-#include <utility>
-
 #include <fst/fstlib.h>
 #include <fst/script/fst-class.h>
+
+#include <memory>
+#include <utility>
 
 // Scripting API support for ArcIterator.
 //
@@ -123,8 +123,7 @@ class MutableArcIteratorImplBase : public ArcIteratorImplBase {
 
 // Templated implementation.
 template <class Arc>
-class MutableArcIteratorClassImpl
-    : public MutableArcIteratorImplBase {
+class MutableArcIteratorClassImpl : public MutableArcIteratorImplBase {
  public:
   explicit MutableArcIteratorClassImpl(MutableFst<Arc> *fst, int64 s)
       : aiter_(fst, s) {}

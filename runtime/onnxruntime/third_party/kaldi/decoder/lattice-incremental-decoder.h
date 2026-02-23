@@ -20,15 +20,15 @@
 #ifndef KALDI_DECODER_LATTICE_INCREMENTAL_DECODER_H_
 #define KALDI_DECODER_LATTICE_INCREMENTAL_DECODER_H_
 
-#include "util/stl-utils.h"
-#include "util/hash-list.h"
-#include "fst/fstlib.h"
-#include "itf/decodable-itf.h"
-#include "fstext/fstext-lib.h"
-#include "lat/determinize-lattice-pruned.h"
-#include "lat/kaldi-lattice.h"
 #include "decoder/grammar-fst.h"
 #include "decoder/lattice-faster-decoder.h"
+#include "fst/fstlib.h"
+#include "fstext/fstext-lib.h"
+#include "itf/decodable-itf.h"
+#include "lat/determinize-lattice-pruned.h"
+#include "lat/kaldi-lattice.h"
+#include "util/hash-list.h"
+#include "util/stl-utils.h"
 
 namespace kaldi {
 /**
@@ -111,11 +111,12 @@ struct LatticeIncrementalDecoderConfig {
   int32 min_active;
   BaseFloat lattice_beam;
   int32 prune_interval;
-  BaseFloat beam_delta; // has nothing to do with beam_ratio
+  BaseFloat beam_delta;  // has nothing to do with beam_ratio
   BaseFloat hash_ratio;
-  BaseFloat prune_scale; // Note: we don't make this configurable on the command line,
-                         // it's not a very important parameter.  It affects the
-                         // algorithm that prunes the tokens as we go.
+  BaseFloat
+      prune_scale;  // Note: we don't make this configurable on the command
+                    // line, it's not a very important parameter.  It affects
+                    // the algorithm that prunes the tokens as we go.
   // Most of the options inside det_opts are not actually queried by the
   // LatticeIncrementalDecoder class itself, but by the code that calls it, for
   // example in the function DecodeUtteranceLatticeIncremental.
@@ -129,7 +130,6 @@ struct LatticeIncrementalDecoderConfig {
   int32 determinize_max_delay;
   int32 determinize_min_chunk_size;
   int32 determinize_max_active;
-
 
   LatticeIncrementalDecoderConfig()
       : beam(16.0),
@@ -147,21 +147,24 @@ struct LatticeIncrementalDecoderConfig {
   }
   void Register(OptionsItf *opts) {
     det_opts.Register(opts);
-    opts->Register("beam", &beam, "Decoding beam.  Larger->slower, more accurate.");
+    opts->Register("beam", &beam,
+                   "Decoding beam.  Larger->slower, more accurate.");
     opts->Register("max-active", &max_active,
                    "Decoder max active states.  Larger->slower; "
                    "more accurate");
-    opts->Register("min-active", &min_active, "Decoder minimum #active states.");
+    opts->Register("min-active", &min_active,
+                   "Decoder minimum #active states.");
     opts->Register("lattice-beam", &lattice_beam,
                    "Lattice generation beam.  Larger->slower, "
                    "and deeper lattices");
     opts->Register("prune-interval", &prune_interval,
                    "Interval (in frames) at "
                    "which to prune tokens");
-    opts->Register("beam-delta", &beam_delta,
-                   "Increment used in decoding-- this "
-                   "parameter is obscure and relates to a speedup in the way the "
-                   "max-active constraint is applied.  Larger is more accurate.");
+    opts->Register(
+        "beam-delta", &beam_delta,
+        "Increment used in decoding-- this "
+        "parameter is obscure and relates to a speedup in the way the "
+        "max-active constraint is applied.  Larger is more accurate.");
     opts->Register("hash-ratio", &hash_ratio,
                    "Setting used in decoder to "
                    "control hash behavior");
@@ -172,25 +175,20 @@ struct LatticeIncrementalDecoderConfig {
                    "Minimum chunk size used in determinization");
     opts->Register("determinize-max-active", &determinize_max_active,
                    "Maximum number of active tokens to update determinization");
-
   }
   void Check() const {
     if (!(beam > 0.0 && max_active > 1 && lattice_beam > 0.0 &&
-          min_active <= max_active && prune_interval > 0 &&
-          beam_delta > 0.0 && hash_ratio >= 1.0 &&
-          prune_scale > 0.0 && prune_scale < 1.0 &&
+          min_active <= max_active && prune_interval > 0 && beam_delta > 0.0 &&
+          hash_ratio >= 1.0 && prune_scale > 0.0 && prune_scale < 1.0 &&
           determinize_max_delay > determinize_min_chunk_size &&
-          determinize_min_chunk_size > 0 &&
-          determinize_max_active >= 0))
-        KALDI_ERR << "Invalid options given to decoder";
+          determinize_min_chunk_size > 0 && determinize_max_active >= 0))
+      KALDI_ERR << "Invalid options given to decoder";
     /* Minimization of the chunks is not compatible withour algorithm (or at
        least, would require additional complexity to implement.) */
     if (det_opts.minimize || !det_opts.word_determinize)
       KALDI_ERR << "Invalid determinization options given to decoder.";
   }
 };
-
-
 
 /**
    This class is used inside LatticeIncrementalDecoderTpl; it handles
@@ -200,15 +198,14 @@ struct LatticeIncrementalDecoderConfig {
 */
 class LatticeIncrementalDeterminizer {
  public:
-  using Label = typename LatticeArc::Label;  /* Actualy the same labels appear
-                                                in both lattice and compact
-                                                lattice, so we don't use the
-                                                specific type all the time but
-                                                just say 'Label' */
-  LatticeIncrementalDeterminizer(
-      const TransitionInformation &trans_model,
-      const LatticeIncrementalDecoderConfig &config):
-      trans_model_(trans_model), config_(config) { }
+  using Label = typename LatticeArc::Label; /* Actualy the same labels appear
+                                               in both lattice and compact
+                                               lattice, so we don't use the
+                                               specific type all the time but
+                                               just say 'Label' */
+  LatticeIncrementalDeterminizer(const TransitionInformation &trans_model,
+                                 const LatticeIncrementalDecoderConfig &config)
+      : trans_model_(trans_model), config_(config) {}
 
   // Resets the lattice determinization data for new utterance
   void Init();
@@ -246,7 +243,8 @@ class LatticeIncrementalDeterminizer {
      Note: final-probs in `raw_fst` are treated specially: they are used to
      guide the pruned determinization, but when you call GetLattice() it will be
      -- except for pruning effects-- as if all nonzero final-probs in `raw_fst`
-     were: One() if final_costs == NULL; else the value present in `final_costs`.
+     were: One() if final_costs == NULL; else the value present in
+     `final_costs`.
 
        @param [in] raw_fst  (Consumed destructively).  The input
                   raw (state-level) lattice.  Would correspond to the
@@ -284,18 +282,22 @@ class LatticeIncrementalDeterminizer {
               we will treat all Tokens as final with probability One(),
               a warning will be printed (this should not happen.)
   */
-  void SetFinalCosts(const unordered_map<Label, BaseFloat> *token_label2final_cost = NULL);
+  void SetFinalCosts(
+      const unordered_map<Label, BaseFloat> *token_label2final_cost = NULL);
 
   const CompactLattice &GetLattice() { return clat_; }
 
   // kStateLabelOffset is what we add to state-ids in clat_ to produce labels
   // to identify them in the raw lattice chunk
-  // kTokenLabelOffset is where we start allocating labels corresponding to Tokens
-  // (these correspond with raw lattice states);
-  enum  { kStateLabelOffset = (int)1e8,  kTokenLabelOffset = (int)2e8, kMaxTokenLabel = (int)3e8 };
+  // kTokenLabelOffset is where we start allocating labels corresponding to
+  // Tokens (these correspond with raw lattice states);
+  enum {
+    kStateLabelOffset = (int)1e8,
+    kTokenLabelOffset = (int)2e8,
+    kMaxTokenLabel = (int)3e8
+  };
 
  private:
-
   // [called from AcceptRawLatticeChunk()]
   // Gets the final costs from token-final states in the raw lattice (see
   // glossary for definition).  These final costs will be subtracted after
@@ -305,8 +307,9 @@ class LatticeIncrementalDeterminizer {
   // token-final state will have the same label on all arcs entering it.
   //
   // `old_final_costs` is assumed to be empty at entry.
-  void GetRawLatticeFinalCosts(const Lattice &raw_fst,
-                               std::unordered_map<Label, BaseFloat> *old_final_costs);
+  void GetRawLatticeFinalCosts(
+      const Lattice &raw_fst,
+      std::unordered_map<Label, BaseFloat> *old_final_costs);
 
   // Sets up non_final_redet_states_.  See documentation for that variable.
   void GetNonFinalRedetStates();
@@ -323,10 +326,10 @@ class LatticeIncrementalDeterminizer {
       chunk_clat to the states corresponding to those redeterminized-states
       (i.e. the states in clat corresponding to the values it puts in
       `*state_map`).  It also modifies arcs_in_, mostly because there
-      are rare cases when we end up `merging` sets of those redeterminized-states,
-      because the determinization process mapped them to a single state,
-      and that means we need to reroute the arcs into members of that
-      set into one single member (which will appear as a value in
+      are rare cases when we end up `merging` sets of those
+     redeterminized-states, because the determinization process mapped them to a
+     single state, and that means we need to reroute the arcs into members of
+     that set into one single member (which will appear as a value in
       `*state_map`).
 
         @param [in] chunk_clat   The determinized chunk of lattice we are
@@ -337,7 +340,8 @@ class LatticeIncrementalDeterminizer {
   */
   bool ProcessArcsFromChunkStartState(
       const CompactLattice &chunk_clat,
-      std::unordered_map<CompactLattice::StateId, CompactLattice::StateId> *state_map);
+      std::unordered_map<CompactLattice::StateId, CompactLattice::StateId>
+          *state_map);
 
   /**
      This function, called from AcceptRawLatticeChunk(), transfers arcs from
@@ -364,13 +368,12 @@ class LatticeIncrementalDeterminizer {
                          they were just temporary.
    */
   void TransferArcsToClat(
-      const CompactLattice &chunk_clat,
-      bool is_first_chunk,
-      const std::unordered_map<CompactLattice::StateId, CompactLattice::StateId> &state_map,
-      const std::unordered_map<CompactLattice::StateId, Label> &chunk_state_to_token,
+      const CompactLattice &chunk_clat, bool is_first_chunk,
+      const std::unordered_map<CompactLattice::StateId, CompactLattice::StateId>
+          &state_map,
+      const std::unordered_map<CompactLattice::StateId, Label>
+          &chunk_state_to_token,
       const std::unordered_map<Label, BaseFloat> &old_final_costs);
-
-
 
   /**
      Adds one arc to `clat_`.  It's like clat_.AddArc(state, arc), except
@@ -379,7 +382,6 @@ class LatticeIncrementalDeterminizer {
   void AddArcToClat(CompactLattice::StateId state,
                     const CompactLatticeArc &arc);
   CompactLattice::StateId AddStateToClat();
-
 
   // Identifies token-final states in `chunk_clat`; see glossary above for
   // definition of `token-final`.  This function outputs a map from such states
@@ -390,7 +392,8 @@ class LatticeIncrementalDeterminizer {
   // construct the raw lattice.)
   void IdentifyTokenFinalStates(
       const CompactLattice &chunk_clat,
-      std::unordered_map<CompactLattice::StateId, CompactLatticeArc::Label> *token_map) const;
+      std::unordered_map<CompactLattice::StateId, CompactLatticeArc::Label>
+          *token_map) const;
 
   // trans_model_ is needed by DeterminizeLatticePhonePrunedWrapper() which this
   // class calls.
@@ -399,14 +402,12 @@ class LatticeIncrementalDeterminizer {
   // class calls.
   const LatticeIncrementalDecoderConfig &config_;
 
-
   // Contains the set of redeterminized-states which are not final in the
   // canonical appended lattice.  Since the final ones don't physically appear
   // in clat_, this means the set of redeterminized-states which are physically
   // in clat_.  In code terms, this means set of .first elements in final_arcs,
   // plus whatever other states in clat_ are reachable from such states.
   std::unordered_set<CompactLattice::StateId> non_final_redet_states_;
-
 
   // clat_ is the appended lattice (containing all chunks processed so
   // far), except its `final-arcs` (i.e. arcs which in the canonical
@@ -415,14 +416,14 @@ class LatticeIncrementalDeterminizer {
   // should have final-arcs leaving them will instead have a final-prob.
   CompactLattice clat_;
 
-
   // arcs_in_ is indexed by (state-id in clat_), and is a list of
   // arcs that come into this state, in the form (prev-state,
   // arc-index).  CAUTION: not all these input-arc records will always
   // be valid (some may be out-of-date, and may refer to an out-of-range
   // arc or an arc that does not point to this state).  But all
   // input arcs will always be listed.
-  std::vector<std::vector<std::pair<CompactLattice::StateId, int32> > > arcs_in_;
+  std::vector<std::vector<std::pair<CompactLattice::StateId, int32> > >
+      arcs_in_;
 
   // final_arcs_ contains arcs which would appear in the canonical appended
   // lattice but for implementation reasons are not physically present in clat_.
@@ -445,19 +446,20 @@ class LatticeIncrementalDeterminizer {
   KALDI_DISALLOW_COPY_AND_ASSIGN(LatticeIncrementalDeterminizer);
 };
 
-
 /** This is an extention to the "normal" lattice-generating decoder.
    See \ref lattices_generation \ref decoders_faster and \ref decoders_simple
     for more information.
 
    The main difference is the incremental determinization which will be
-   discussed in the function GetLattice().  This means that the work of determinizatin
-   isn't done all at once at the end of the file, but incrementally while decoding.
-   See the comment at the top of this file for more explanation.
+   discussed in the function GetLattice().  This means that the work of
+   determinizatin isn't done all at once at the end of the file, but
+   incrementally while decoding. See the comment at the top of this file for
+   more explanation.
 
    The decoder is templated on the FST type and the token type.  The token type
-   will normally be StdToken, but also may be BackpointerToken which is to support
-   quick lookup of the current best path (see lattice-faster-online-decoder.h)
+   will normally be StdToken, but also may be BackpointerToken which is to
+   support quick lookup of the current best path (see
+   lattice-faster-online-decoder.h)
 
    The FST you invoke this decoder with is expected to be of type
    Fst::Fst<fst::StdArc>, a.k.a. StdFst, or GrammarFst.  If you invoke it with
@@ -478,15 +480,19 @@ class LatticeIncrementalDecoderTpl {
   // Instantiate this class once for each thing you have to decode.
   // This version of the constructor does not take ownership of
   // 'fst'.
-  LatticeIncrementalDecoderTpl(const FST &fst, const TransitionInformation &trans_model,
+  LatticeIncrementalDecoderTpl(const FST &fst,
+                               const TransitionInformation &trans_model,
                                const LatticeIncrementalDecoderConfig &config);
 
   // This version of the constructor takes ownership of the fst, and will delete
   // it when this object is destroyed.
   LatticeIncrementalDecoderTpl(const LatticeIncrementalDecoderConfig &config,
-                               FST *fst, const TransitionInformation &trans_model);
+                               FST *fst,
+                               const TransitionInformation &trans_model);
 
-  void SetOptions(const LatticeIncrementalDecoderConfig &config) { config_ = config; }
+  void SetOptions(const LatticeIncrementalDecoderConfig &config) {
+    config_ = config;
+  }
 
   const LatticeIncrementalDecoderConfig &GetOptions() const { return config_; }
 
@@ -501,9 +507,9 @@ class LatticeIncrementalDecoderTpl {
      determinization. It decodes until there are no more frames left in the
      "decodable" object.
 
-     In this example, config_.determinize_max_delay, config_.determinize_min_chunk_size
-     and config_.determinize_max_active are used to determine the time to
-     call GetLattice().
+     In this example, config_.determinize_max_delay,
+     config_.determinize_min_chunk_size and config_.determinize_max_active are
+     used to determine the time to call GetLattice().
 
      Users will probably want to use appropriate combinations of
      AdvanceDecoding() and GetLattice() to build their application; this just
@@ -522,8 +528,9 @@ class LatticeIncrementalDecoderTpl {
 
   /**
      This decoder has no GetBestPath() function.
-     If you need that functionality you should probably use lattice-incremental-online-decoder.h,
-     which makes it very efficient to obtain the best path. */
+     If you need that functionality you should probably use
+     lattice-incremental-online-decoder.h, which makes it very efficient to
+     obtain the best path. */
 
   /**
      This GetLattice() function returns the lattice containing
@@ -588,8 +595,8 @@ class LatticeIncrementalDecoderTpl {
      If max_num_frames is specified, it specifies the maximum number of frames
      the function will decode before returning.
   */
-  void AdvanceDecoding(DecodableInterface *decodable, int32 max_num_frames = -1);
-
+  void AdvanceDecoding(DecodableInterface *decodable,
+                       int32 max_num_frames = -1);
 
   /** FinalRelativeCost() serves the same purpose as ReachedFinal(), but gives
       more information.  It returns the difference between the best (final-cost
@@ -613,24 +620,27 @@ class LatticeIncrementalDecoderTpl {
  protected:
   /* Some protected things are needed in LatticeIncrementalOnlineDecoderTpl. */
 
-  /** NOTE: for parts the internal implementation that are shared with LatticeFasterDecoer,
-      we have removed the comments.*/
+  /** NOTE: for parts the internal implementation that are shared with
+     LatticeFasterDecoer, we have removed the comments.*/
   inline static void DeleteForwardLinks(Token *tok);
   struct TokenList {
     Token *toks;
     bool must_prune_forward_links;
     bool must_prune_tokens;
-    int32 num_toks;  /* Note: you can only trust `num_toks` if must_prune_tokens
-                      * == false, because it is only set in
-                      * PruneTokensForFrame(). */
+    int32 num_toks; /* Note: you can only trust `num_toks` if must_prune_tokens
+                     * == false, because it is only set in
+                     * PruneTokensForFrame(). */
     TokenList()
-        : toks(NULL), must_prune_forward_links(true), must_prune_tokens(true),
+        : toks(NULL),
+          must_prune_forward_links(true),
+          must_prune_tokens(true),
           num_toks(-1) {}
   };
   using Elem = typename HashList<StateId, Token *>::Elem;
   void PossiblyResizeHash(size_t num_toks);
   inline Token *FindOrAddToken(StateId state, int32 frame_plus_one,
-                               BaseFloat tot_cost, Token *backpointer, bool *changed);
+                               BaseFloat tot_cost, Token *backpointer,
+                               bool *changed);
   void PruneForwardLinks(int32 frame_plus_one, bool *extra_costs_changed,
                          bool *links_pruned, BaseFloat delta);
   void ComputeFinalCosts(unordered_map<Token *, BaseFloat> *final_costs,
@@ -639,15 +649,15 @@ class LatticeIncrementalDecoderTpl {
   void PruneForwardLinksFinal();
   void PruneTokensForFrame(int32 frame_plus_one);
   void PruneActiveTokens(BaseFloat delta);
-  BaseFloat GetCutoff(Elem *list_head, size_t *tok_count, BaseFloat *adaptive_beam,
-                      Elem **best_elem);
+  BaseFloat GetCutoff(Elem *list_head, size_t *tok_count,
+                      BaseFloat *adaptive_beam, Elem **best_elem);
   BaseFloat ProcessEmitting(DecodableInterface *decodable);
   void ProcessNonemitting(BaseFloat cost_cutoff);
 
   HashList<StateId, Token *> toks_;
   std::vector<TokenList> active_toks_;  // indexed by frame.
-  std::vector<StateId> queue_;       // temp variable used in ProcessNonemitting,
-  std::vector<BaseFloat> tmp_array_; // used in GetCutoff.
+  std::vector<StateId> queue_;  // temp variable used in ProcessNonemitting,
+  std::vector<BaseFloat> tmp_array_;  // used in GetCutoff.
   const FST *fst_;
   bool delete_fst_;
   std::vector<BaseFloat> cost_offsets_;
@@ -668,9 +678,8 @@ class LatticeIncrementalDecoderTpl {
       the determinize_ object.  */
   LatticeIncrementalDeterminizer determinizer_;
 
-
   /* Just a temporary used in a function; stored here to avoid reallocation. */
-  unordered_map<Token*, StateId> temp_token_map_;
+  unordered_map<Token *, StateId> temp_token_map_;
 
   /** num_frames_in_lattice_ is the highest `num_frames_to_include_` argument
       for any prior call to GetLattice(). */
@@ -678,16 +687,15 @@ class LatticeIncrementalDecoderTpl {
 
   // A map from Token to its token_label.  Will contain an entry for
   // each Token in active_toks_[num_frames_in_lattice_].
-  unordered_map<Token*, Label> token2label_map_;
+  unordered_map<Token *, Label> token2label_map_;
 
   // A temporary used in a function, kept here to avoid reallocation.
-  unordered_map<Token*, Label> token2label_map_temp_;
+  unordered_map<Token *, Label> token2label_map_temp_;
 
   // we allocate a unique id for each Token
   Label next_token_label_;
 
   inline Label AllocateNewTokenLabel() { return next_token_label_++; }
-
 
   // There are various cleanup tasks... the the toks_ structure contains
   // singly linked lists of Token pointers, where Elem is the list type.
@@ -704,7 +712,6 @@ class LatticeIncrementalDecoderTpl {
 
   void ClearActiveTokens();
 
-
   // Returns the number of active tokens on frame `frame`.  Can be used as part
   // of a heuristic to decide which frame to determinize until, if you are not
   // at the end of an utterance.
@@ -713,14 +720,13 @@ class LatticeIncrementalDecoderTpl {
   /**
      UpdateLatticeDeterminization() ensures the work of determinization is kept
      up to date so that when you do need the lattice you can get it fast.  It
-     uses the configuration values `determinize_max_delay`, `determinize_min_chunk_size`
-     and `determinize_max_active`, to decide whether and when to call
-     GetLattice().  You can safely call this as often as you want (e.g.  after
-     each time you call AdvanceDecoding(); it won't do subtantially more work if
-     it is called frequently.
+     uses the configuration values `determinize_max_delay`,
+     `determinize_min_chunk_size` and `determinize_max_active`, to decide
+     whether and when to call GetLattice().  You can safely call this as often
+     as you want (e.g.  after each time you call AdvanceDecoding(); it won't do
+     subtantially more work if it is called frequently.
   */
   void UpdateLatticeDeterminization();
-
 
   KALDI_DISALLOW_COPY_AND_ASSIGN(LatticeIncrementalDecoderTpl);
 };
@@ -728,7 +734,6 @@ class LatticeIncrementalDecoderTpl {
 typedef LatticeIncrementalDecoderTpl<fst::StdFst, decoder::StdToken>
     LatticeIncrementalDecoder;
 
-
-} // end namespace kaldi.
+}  // end namespace kaldi.
 
 #endif

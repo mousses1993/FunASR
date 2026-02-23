@@ -6,16 +6,16 @@
 #ifndef FST_SCRIPT_COMPILE_IMPL_H_
 #define FST_SCRIPT_COMPILE_IMPL_H_
 
+#include <fst/fst.h>
+#include <fst/util.h>
+#include <fst/vector-fst.h>
+
 #include <iostream>
 #include <memory>
 #include <sstream>
 #include <string>
-#include <vector>
-
-#include <fst/fst.h>
-#include <fst/util.h>
-#include <fst/vector-fst.h>
 #include <unordered_map>
+#include <vector>
 
 DECLARE_string(fst_field_separator);
 
@@ -38,13 +38,13 @@ class FstCompiler {
   // const and therefore not changed.)
   FstCompiler(std::istream &istrm, const string &source,  // NOLINT
               const SymbolTable *isyms, const SymbolTable *osyms,
-              const SymbolTable *ssyms, bool accep, bool ikeep,
-              bool okeep, bool nkeep, bool allow_negative_labels = false) {
+              const SymbolTable *ssyms, bool accep, bool ikeep, bool okeep,
+              bool nkeep, bool allow_negative_labels = false) {
     std::unique_ptr<SymbolTable> misyms(isyms ? isyms->Copy() : nullptr);
     std::unique_ptr<SymbolTable> mosyms(osyms ? osyms->Copy() : nullptr);
     std::unique_ptr<SymbolTable> mssyms(ssyms ? ssyms->Copy() : nullptr);
-    Init(istrm, source, misyms.get(), mosyms.get(), mssyms.get(), accep,
-         ikeep, okeep, nkeep, allow_negative_labels, false);
+    Init(istrm, source, misyms.get(), mosyms.get(), mssyms.get(), accep, ikeep,
+         okeep, nkeep, allow_negative_labels, false);
   }
 
   FstCompiler(std::istream &istrm, const string &source,  // NOLINT
@@ -75,8 +75,7 @@ class FstCompiler {
       ++nline_;
       std::vector<char *> col;
       SplitString(line, separator.c_str(), &col, true);
-      if (col.empty() || col[0][0] == '\0')
-        continue;
+      if (col.empty() || col[0][0] == '\0') continue;
       if (col.size() > 5 || (col.size() > 4 && accep) ||
           (col.size() == 3 && !accep)) {
         FSTERROR() << "FstCompiler: Bad number of columns, source = " << source_

@@ -7,12 +7,11 @@
 #ifndef FST_SPARSE_POWER_WEIGHT_H_
 #define FST_SPARSE_POWER_WEIGHT_H_
 
-#include <climits>
-#include <string>
-
 #include <fst/sparse-tuple-weight.h>
 #include <fst/weight.h>
 
+#include <climits>
+#include <string>
 
 namespace fst {
 
@@ -94,8 +93,7 @@ class SparsePowerWeight : public SparseTupleWeight<W, K> {
 
 template <class W, class K, class M>
 inline SparsePowerWeight<W, K> SparsePowerWeightMap(
-    const SparsePowerWeight<W, K> &w1,
-    const SparsePowerWeight<W, K> &w2,
+    const SparsePowerWeight<W, K> &w1, const SparsePowerWeight<W, K> &w2,
     const M &operator_mapper) {
   SparsePowerWeight<W, K> result;
   SparseTupleWeightMap(&result, w1, w2, operator_mapper);
@@ -187,8 +185,7 @@ class WeightGenerate<SparsePowerWeight<W, K>> {
   using Weight = SparsePowerWeight<W, K>;
   using Generate = WeightGenerate<W>;
 
-  explicit WeightGenerate(bool allow_zero = true,
-                          size_t sparse_power_rank = 3)
+  explicit WeightGenerate(bool allow_zero = true, size_t sparse_power_rank = 3)
       : generate_(allow_zero), sparse_power_rank_(sparse_power_rank) {}
 
   Weight operator()() const {

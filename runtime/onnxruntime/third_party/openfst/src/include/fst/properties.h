@@ -6,10 +6,10 @@
 #ifndef FST_PROPERTIES_H_
 #define FST_PROPERTIES_H_
 
-#include <sys/types.h>
-#include <vector>
-
 #include <fst/compat.h>
+#include <sys/types.h>
+
+#include <vector>
 
 namespace fst {
 
@@ -290,12 +290,12 @@ constexpr uint64 kTrinaryProperties = 0x0000ffffffff0000ULL;
 // COMPUTED PROPERTIES
 
 // 1st bit of trinary properties.
-constexpr uint64 kPosTrinaryProperties = kTrinaryProperties &
-    0x5555555555555555ULL;
+constexpr uint64 kPosTrinaryProperties =
+    kTrinaryProperties & 0x5555555555555555ULL;
 
 // 2nd bit of trinary properties.
-constexpr uint64 kNegTrinaryProperties = kTrinaryProperties &
-    0xaaaaaaaaaaaaaaaaULL;
+constexpr uint64 kNegTrinaryProperties =
+    kTrinaryProperties & 0xaaaaaaaaaaaaaaaaULL;
 
 // All properties.
 constexpr uint64 kFstProperties = kBinaryProperties | kTrinaryProperties;
@@ -414,8 +414,8 @@ uint64 SetFinalProperties(uint64 inprops, const Weight &old_weight,
 /// \param prev_arc the previously-added (or "last") arc of state s, or nullptr
 //                  if s currently has no arcs.
 template <typename Arc>
-uint64 AddArcProperties(uint64 inprops, typename Arc::StateId s,
-                        const Arc &arc, const Arc *prev_arc) {
+uint64 AddArcProperties(uint64 inprops, typename Arc::StateId s, const Arc &arc,
+                        const Arc *prev_arc) {
   using Weight = typename Arc::Weight;
   auto outprops = inprops;
   if (arc.ilabel != arc.olabel) {

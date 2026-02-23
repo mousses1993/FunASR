@@ -17,14 +17,12 @@
 // See the Apache 2 License for the specific language governing permissions and
 // limitations under the License.
 
-
 #ifndef KALDI_LAT_KALDI_LATTICE_H_
 #define KALDI_LAT_KALDI_LATTICE_H_
 
-#include "fstext/fstext-lib.h"
 #include "base/kaldi-common.h"
-//#include "util/common-utils.h"
-
+#include "fstext/fstext-lib.h"
+// #include "util/common-utils.h"
 
 namespace kaldi {
 // will import some things above...
@@ -35,7 +33,7 @@ typedef fst::LatticeWeightTpl<BaseFloat> LatticeWeight;
 typedef fst::CompactLatticeWeightTpl<LatticeWeight, int32> CompactLatticeWeight;
 
 typedef fst::CompactLatticeWeightCommonDivisorTpl<LatticeWeight, int32>
-  CompactLatticeWeightCommonDivisor;
+    CompactLatticeWeightCommonDivisor;
 
 typedef fst::ArcTpl<LatticeWeight> LatticeArc;
 
@@ -53,18 +51,14 @@ typedef fst::VectorFst<CompactLatticeArc> CompactLattice;
 
 bool WriteCompactLattice(std::ostream &os, bool binary,
                          const CompactLattice &clat);
-bool WriteLattice(std::ostream &os, bool binary,
-                  const Lattice &lat);
+bool WriteLattice(std::ostream &os, bool binary, const Lattice &lat);
 
 // the following function requires that *clat be
 // NULL when called.
-bool ReadCompactLattice(std::istream &is, bool binary,
-                        CompactLattice **clat);
+bool ReadCompactLattice(std::istream &is, bool binary, CompactLattice **clat);
 // the following function requires that *lat be
 // NULL when called.
-bool ReadLattice(std::istream &is, bool binary,
-                 Lattice **lat);
-
+bool ReadLattice(std::istream &is, bool binary, Lattice **lat);
 
 class CompactLatticeHolder {
  public:
@@ -88,18 +82,21 @@ class CompactLatticeHolder {
     return *t_;
   }
 
-  void Clear() { delete t_; t_ = NULL; }
-
-  void Swap(CompactLatticeHolder *other) {
-    std::swap(t_, other->t_);
+  void Clear() {
+    delete t_;
+    t_ = NULL;
   }
 
-  bool ExtractRange(const CompactLatticeHolder &other, const std::string &range) {
+  void Swap(CompactLatticeHolder *other) { std::swap(t_, other->t_); }
+
+  bool ExtractRange(const CompactLatticeHolder &other,
+                    const std::string &range) {
     KALDI_ERR << "ExtractRange is not defined for this type of holder.";
     return false;
   }
 
   ~CompactLatticeHolder() { Clear(); }
+
  private:
   T *t_;
 };
@@ -126,11 +123,12 @@ class LatticeHolder {
     return *t_;
   }
 
-  void Clear() {  delete t_; t_ = NULL; }
-
-  void Swap(LatticeHolder *other) {
-    std::swap(t_, other->t_);
+  void Clear() {
+    delete t_;
+    t_ = NULL;
   }
+
+  void Swap(LatticeHolder *other) { std::swap(t_, other->t_); }
 
   bool ExtractRange(const LatticeHolder &other, const std::string &range) {
     KALDI_ERR << "ExtractRange is not defined for this type of holder.";
@@ -138,19 +136,21 @@ class LatticeHolder {
   }
 
   ~LatticeHolder() { Clear(); }
+
  private:
   T *t_;
 };
 
-//typedef TableWriter<LatticeHolder> LatticeWriter;
-//typedef SequentialTableReader<LatticeHolder> SequentialLatticeReader;
-//typedef RandomAccessTableReader<LatticeHolder> RandomAccessLatticeReader;
+// typedef TableWriter<LatticeHolder> LatticeWriter;
+// typedef SequentialTableReader<LatticeHolder> SequentialLatticeReader;
+// typedef RandomAccessTableReader<LatticeHolder> RandomAccessLatticeReader;
 //
-//typedef TableWriter<CompactLatticeHolder> CompactLatticeWriter;
-//typedef SequentialTableReader<CompactLatticeHolder> SequentialCompactLatticeReader;
-//typedef RandomAccessTableReader<CompactLatticeHolder> RandomAccessCompactLatticeReader;
+// typedef TableWriter<CompactLatticeHolder> CompactLatticeWriter;
+// typedef SequentialTableReader<CompactLatticeHolder>
+// SequentialCompactLatticeReader; typedef
+// RandomAccessTableReader<CompactLatticeHolder>
+// RandomAccessCompactLatticeReader;
 
-
-} // namespace kaldi
+}  // namespace kaldi
 
 #endif  // KALDI_LAT_KALDI_LATTICE_H_

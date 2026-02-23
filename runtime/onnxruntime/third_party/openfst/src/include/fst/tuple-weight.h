@@ -6,17 +6,15 @@
 #ifndef FST_TUPLE_WEIGHT_H_
 #define FST_TUPLE_WEIGHT_H_
 
+#include <fst/flags.h>
+#include <fst/log.h>
+#include <fst/weight.h>
+
 #include <algorithm>
 #include <array>
 #include <functional>
 #include <string>
 #include <vector>
-
-#include <fst/flags.h>
-#include <fst/log.h>
-
-#include <fst/weight.h>
-
 
 namespace fst {
 
@@ -71,8 +69,7 @@ class TupleWeight {
   }
 
   bool Member() const {
-    return std::all_of(values_.begin(), values_.end(),
-                       std::mem_fn(&W::Member));
+    return std::all_of(values_.begin(), values_.end(), std::mem_fn(&W::Member));
   }
 
   size_t Hash() const {

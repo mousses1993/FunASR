@@ -4,10 +4,10 @@
 #ifndef FST_EXTENSIONS_PDT_GETTERS_H_
 #define FST_EXTENSIONS_PDT_GETTERS_H_
 
-#include <string>
-
 #include <fst/extensions/pdt/compose.h>
 #include <fst/extensions/pdt/replace.h>
+
+#include <string>
 
 namespace fst {
 namespace script {

@@ -4,14 +4,12 @@
 #ifndef FST_SYMBOL_TABLE_OPS_H_
 #define FST_SYMBOL_TABLE_OPS_H_
 
-#include <string>
-#include <unordered_set>
-#include <vector>
-
-
 #include <fst/fst.h>
 #include <fst/symbol-table.h>
 
+#include <string>
+#include <unordered_set>
+#include <vector>
 
 namespace fst {
 
@@ -69,8 +67,8 @@ SymbolTable *FstReadSymbols(const string &filename, bool input);
 // Adds a contiguous range of symbols to a symbol table using a simple prefix
 // for the string, returning false if the inserted symbol string clashes with
 // any currently present.
-bool AddAuxiliarySymbols(const string &prefix, int64 start_label,
-                         int64 nlabels, SymbolTable *syms);
+bool AddAuxiliarySymbols(const string &prefix, int64 start_label, int64 nlabels,
+                         SymbolTable *syms);
 
 }  // namespace fst
 #endif  // FST_SYMBOL_TABLE_OPS_H_

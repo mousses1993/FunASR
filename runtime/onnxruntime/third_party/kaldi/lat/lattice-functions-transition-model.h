@@ -28,9 +28,9 @@
 
 #include "base/kaldi-common.h"
 #include "fstext/fstext-lib.h"
-#include "hmm/transition-model.h"
 #include "hmm/hmm-utils.h"
 #include "hmm/posterior.h"
+#include "hmm/transition-model.h"
 #include "itf/decodable-itf.h"
 #include "lat/kaldi-lattice.h"
 #include "lat/word-align-lattice-lexicon.h"
@@ -38,11 +38,11 @@
 namespace kaldi {
 
 /**
-   This function can be used to compute posteriors for MMI, with a positive contribution
-   for the numerator and a negative one for the denominator.  This function is not actually
-   used in our normal MMI training recipes, where it's instead done using various command
-   line programs that each do a part of the job.  This function was written for use in
-   neural-net MMI training.
+   This function can be used to compute posteriors for MMI, with a positive
+   contribution for the numerator and a negative one for the denominator.  This
+   function is not actually used in our normal MMI training recipes, where it's
+   instead done using various command line programs that each do a part of the
+   job.  This function was written for use in neural-net MMI training.
 
    @param [in] trans    The transition model. Used to map the
                         transition-ids to phones or pdfs.
@@ -63,14 +63,11 @@ namespace kaldi {
                         and denominator posteriors.
 
    It returns the forward-backward likelihood of the lattice. */
-BaseFloat LatticeForwardBackwardMmi(
-    const TransitionModel &trans,
-    const Lattice &lat,
-    const std::vector<int32> &num_ali,
-    bool drop_frames,
-    bool convert_to_pdf_ids,
-    bool cancel,
-    Posterior *arc_post);
+BaseFloat LatticeForwardBackwardMmi(const TransitionModel &trans,
+                                    const Lattice &lat,
+                                    const std::vector<int32> &num_ali,
+                                    bool drop_frames, bool convert_to_pdf_ids,
+                                    bool cancel, Posterior *arc_post);
 
 /// This function takes a CompactLattice that should only contain a single
 /// linear sequence (e.g. derived from lattice-1best), and that should have been
@@ -83,22 +80,19 @@ BaseFloat LatticeForwardBackwardMmi(
 /// This function will print a warning and return false, if the lattice
 /// did not have the correct format (e.g. if it is empty or it is not
 /// linear).
-bool CompactLatticeToWordProns(
-    const TransitionModel &tmodel,
-    const CompactLattice &clat,
-    std::vector<int32> *words,
-    std::vector<int32> *begin_times,
-    std::vector<int32> *lengths,
-    std::vector<std::vector<int32> > *prons,
-    std::vector<std::vector<int32> > *phone_lengths);
-
+bool CompactLatticeToWordProns(const TransitionModel &tmodel,
+                               const CompactLattice &clat,
+                               std::vector<int32> *words,
+                               std::vector<int32> *begin_times,
+                               std::vector<int32> *lengths,
+                               std::vector<std::vector<int32> > *prons,
+                               std::vector<std::vector<int32> > *phone_lengths);
 
 bool TestWordAlignedLattice(const WordAlignLatticeLexiconInfo &lexicon_info,
-                            const TransitionModel &tmodel,
-                            CompactLattice clat,
+                            const TransitionModel &tmodel, CompactLattice clat,
                             CompactLattice aligned_clat,
                             bool allow_duplicate_paths);
 
 }  // namespace kaldi
 
-#endif // KALDI_LAT_LATTICE_FUNCTIONS_TRANSITION_MODEL_H_
+#endif  // KALDI_LAT_LATTICE_FUNCTIONS_TRANSITION_MODEL_H_

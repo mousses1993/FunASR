@@ -2,20 +2,19 @@
 #define LIMONP_BLOCKINGQUEUE_HPP
 
 #include <queue>
+
 #include "Condition.hpp"
 
 namespace limonp {
-template<class T>
-class BlockingQueue: NonCopyable {
+template <class T>
+class BlockingQueue : NonCopyable {
  public:
-  BlockingQueue()
-    : mutex_(), notEmpty_(mutex_), queue_() {
-  }
+  BlockingQueue() : mutex_(), notEmpty_(mutex_), queue_() {}
 
   void Push(const T& x) {
     MutexLockGuard lock(mutex_);
     queue_.push(x);
-    notEmpty_.Notify(); // Wait morphing saves us
+    notEmpty_.Notify();  // Wait morphing saves us
   }
 
   T Pop() {
@@ -34,16 +33,14 @@ class BlockingQueue: NonCopyable {
     MutexLockGuard lock(mutex_);
     return queue_.size();
   }
-  bool Empty() const {
-    return Size() == 0;
-  }
+  bool Empty() const { return Size() == 0; }
 
  private:
   mutable MutexLock mutex_;
-  Condition         notEmpty_;
-  std::queue<T>     queue_;
-}; // class BlockingQueue
+  Condition notEmpty_;
+  std::queue<T> queue_;
+};  // class BlockingQueue
 
-} // namespace limonp
+}  // namespace limonp
 
-#endif // LIMONP_BLOCKINGQUEUE_HPP
+#endif  // LIMONP_BLOCKINGQUEUE_HPP

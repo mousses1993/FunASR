@@ -7,8 +7,8 @@
 #ifndef FST_EXTENSIONS_FAR_GETTERS_H_
 #define FST_EXTENSIONS_FAR_GETTERS_H_
 
-#include <fst/flags.h>
 #include <fst/extensions/far/far.h>
+#include <fst/flags.h>
 
 namespace fst {
 namespace script {

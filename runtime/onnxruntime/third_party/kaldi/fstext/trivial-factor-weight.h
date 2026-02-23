@@ -39,10 +39,8 @@
 // Copyright 2005-2010 Google, Inc.
 // Author: allauzen@google.com (Cyril Allauzen)
 
-
 #ifndef KALDI_FSTEXT_TRIVIAL_FACTOR_WEIGHT_H_
 #define KALDI_FSTEXT_TRIVIAL_FACTOR_WEIGHT_H_
-
 
 // TrivialFactorWeight.h This is an extension to factor-weight.h in the OpenFst
 // code.  It is a version of FactorWeight that creates separate states (with
@@ -55,16 +53,15 @@
 #include <unordered_map>
 using std::unordered_map;
 
+#include <fst/cache.h>
+#include <fst/test-properties.h>
+
 #include <algorithm>
 #include <string>
 #include <utility>
 #include <vector>
 
-#include <fst/cache.h>
-#include <fst/test-properties.h>
-
 namespace fst {
-
 
 template <class Arc>
 struct TrivialFactorWeightOptions : CacheOptions {
@@ -73,24 +70,22 @@ struct TrivialFactorWeightOptions : CacheOptions {
   Label extra_ilabel;  // input label of extra arcs
   Label extra_olabel;  // output label of extra arcs
 
-  TrivialFactorWeightOptions(const CacheOptions &opts, float d,
-                      Label il = 0, Label ol = 0)
+  TrivialFactorWeightOptions(const CacheOptions &opts, float d, Label il = 0,
+                             Label ol = 0)
       : CacheOptions(opts), delta(d), extra_ilabel(il), extra_olabel(ol) {}
 
-  explicit TrivialFactorWeightOptions(
-      float d, Label il = 0, Label ol = 0)
+  explicit TrivialFactorWeightOptions(float d, Label il = 0, Label ol = 0)
       : delta(d), extra_ilabel(il), extra_olabel(ol) {}
 
-  TrivialFactorWeightOptions(): delta(kDelta), extra_ilabel(0), extra_olabel(0) {}
-
+  TrivialFactorWeightOptions()
+      : delta(kDelta), extra_ilabel(0), extra_olabel(0) {}
 };
 
 namespace internal {
 
 // Implementation class for TrivialFactorWeight
 template <class A, class F>
-class TrivialFactorWeightFstImpl
-    : public CacheImpl<A> {
+class TrivialFactorWeightFstImpl : public CacheImpl<A> {
  public:
   using CacheImpl<A>::PushArc;
   using FstImpl<A>::SetType;
@@ -99,9 +94,9 @@ class TrivialFactorWeightFstImpl
   using FstImpl<A>::SetInputSymbols;
   using FstImpl<A>::SetOutputSymbols;
 
-  using CacheBaseImpl< CacheState<A> >::HasStart;
-  using CacheBaseImpl< CacheState<A> >::HasFinal;
-  using CacheBaseImpl< CacheState<A> >::HasArcs;
+  using CacheBaseImpl<CacheState<A>>::HasStart;
+  using CacheBaseImpl<CacheState<A>>::HasFinal;
+  using CacheBaseImpl<CacheState<A>>::HasArcs;
 
   typedef A Arc;
   typedef typename A::Label Label;
@@ -117,11 +112,12 @@ class TrivialFactorWeightFstImpl
 
     Element(StateId s, Weight w) : state(s), weight(w) {}
 
-    StateId state;     // Input state Id
-    Weight weight;     // Residual weight
+    StateId state;  // Input state Id
+    Weight weight;  // Residual weight
   };
 
-  TrivialFactorWeightFstImpl(const Fst<A> &fst, const TrivialFactorWeightOptions<A> &opts)
+  TrivialFactorWeightFstImpl(const Fst<A> &fst,
+                             const TrivialFactorWeightOptions<A> &opts)
       : CacheImpl<A>(opts),
         fst_(fst.Copy()),
         delta_(opts.delta),
@@ -150,8 +146,7 @@ class TrivialFactorWeightFstImpl
   StateId Start() {
     if (!HasStart()) {
       StateId s = fst_->Start();
-      if (s == kNoStateId)
-        return kNoStateId;
+      if (s == kNoStateId) return kNoStateId;
       StateId start = this->FindState(Element(fst_->Start(), Weight::One()));
       this->SetStart(start);
     }
@@ -162,10 +157,11 @@ class TrivialFactorWeightFstImpl
     if (!HasFinal(s)) {
       const Element &e = elements_[s];
       Weight w;
-      if (e.state == kNoStateId) {  // extra state inserted to represent final weights.
+      if (e.state ==
+          kNoStateId) {  // extra state inserted to represent final weights.
         FactorIterator fit(e.weight);
         if (fit.Done()) {  // cannot be factored.
-          w = e.weight;  // so it's final
+          w = e.weight;    // so it's final
         } else {
           w = Weight::Zero();  // need another transition.
         }
@@ -175,7 +171,8 @@ class TrivialFactorWeightFstImpl
         } else {  // corresponds to a "real" state.
           w = fst_->Final(e.state);
           FactorIterator fit(w);
-          if (!fit.Done()) // we would have intermediate states representing this final state.
+          if (!fit.Done())  // we would have intermediate states representing
+                            // this final state.
             w = Weight::Zero();
         }
       }
@@ -187,29 +184,24 @@ class TrivialFactorWeightFstImpl
   }
 
   size_t NumArcs(StateId s) {
-    if (!HasArcs(s))
-      Expand(s);
+    if (!HasArcs(s)) Expand(s);
     return CacheImpl<A>::NumArcs(s);
   }
 
   size_t NumInputEpsilons(StateId s) {
-    if (!HasArcs(s))
-      Expand(s);
+    if (!HasArcs(s)) Expand(s);
     return CacheImpl<A>::NumInputEpsilons(s);
   }
 
   size_t NumOutputEpsilons(StateId s) {
-    if (!HasArcs(s))
-      Expand(s);
+    if (!HasArcs(s)) Expand(s);
     return CacheImpl<A>::NumOutputEpsilons(s);
   }
 
   void InitArcIterator(StateId s, ArcIteratorData<A> *data) {
-    if (!HasArcs(s))
-      Expand(s);
+    if (!HasArcs(s)) Expand(s);
     CacheImpl<A>::InitArcIterator(s, data);
   }
-
 
   // Find state corresponding to an element. Create new state
   // if element not found.
@@ -232,11 +224,12 @@ class TrivialFactorWeightFstImpl
     Element e = elements_[s];
     if (e.weight != Weight::One()) {
       FactorIterator fit(e.weight);
-      if (fit.Done()) {  // Cannot be factored-> create a link to dest state directly
+      if (fit.Done()) {  // Cannot be factored-> create a link to dest state
+                         // directly
         if (e.state != kNoStateId) {
           StateId dest = FindState(Element(e.state, Weight::One()));
           PushArc(s, Arc(extra_ilabel_, extra_olabel_, e.weight, dest));
-        } // else we're done.  This is a final state.
+        }  // else we're done.  This is a final state.
       } else {  // Can be factored.
         const std::pair<Weight, Weight> &p = fit.Value();
         StateId dest = FindState(Element(e.state, p.second.Quantize(delta_)));
@@ -244,9 +237,7 @@ class TrivialFactorWeightFstImpl
       }
     } else {  // Unit weight.  This corresponds to a "real" state.
       CHECK(e.state != kNoStateId);
-      for (ArcIterator< Fst<A> > ait(*fst_, e.state);
-           !ait.Done();
-           ait.Next()) {
+      for (ArcIterator<Fst<A>> ait(*fst_, e.state); !ait.Done(); ait.Next()) {
         const A &arc = ait.Value();
         FactorIterator fit(arc.weight);
         if (fit.Done()) {  // cannot be factored->just link directly to dest.
@@ -254,17 +245,20 @@ class TrivialFactorWeightFstImpl
           PushArc(s, Arc(arc.ilabel, arc.olabel, arc.weight, dest));
         } else {
           const std::pair<Weight, Weight> &p = fit.Value();
-          StateId dest = FindState(Element(arc.nextstate, p.second.Quantize(delta_)));
+          StateId dest =
+              FindState(Element(arc.nextstate, p.second.Quantize(delta_)));
           PushArc(s, Arc(arc.ilabel, arc.olabel, p.first, dest));
         }
       }
-      // See if we have to add arcs for final-states [only if final-weight is factorable].
+      // See if we have to add arcs for final-states [only if final-weight is
+      // factorable].
       Weight final_w = fst_->Final(e.state);
       if (final_w != Weight::Zero()) {
         FactorIterator fit(final_w);
         if (!fit.Done()) {
           const std::pair<Weight, Weight> &p = fit.Value();
-          StateId dest = FindState(Element(kNoStateId, p.second.Quantize(delta_)));
+          StateId dest =
+              FindState(Element(kNoStateId, p.second.Quantize(delta_)));
           PushArc(s, Arc(extra_ilabel_, extra_olabel_, p.first, dest));
         }
       }
@@ -287,6 +281,7 @@ class TrivialFactorWeightFstImpl
     size_t operator()(const Element &x) const {
       return static_cast<size_t>(x.state * kPrime + x.weight.Hash());
     }
+
    private:
     static const int kPrime = 7853;
   };
@@ -295,12 +290,11 @@ class TrivialFactorWeightFstImpl
 
   std::unique_ptr<const Fst<A>> fst_;
   float delta_;
-  uint32 mode_;               // factoring arc and/or final weights
-  Label extra_ilabel_;        // ilabel of arc created when factoring final w's
-  Label extra_olabel_;        // olabel of arc created when factoring final w's
+  uint32 mode_;         // factoring arc and/or final weights
+  Label extra_ilabel_;  // ilabel of arc created when factoring final w's
+  Label extra_olabel_;  // olabel of arc created when factoring final w's
   std::vector<Element> elements_;  // mapping Fst state to Elements
-  ElementMap element_map_;    // mapping Elements to Fst state
-
+  ElementMap element_map_;         // mapping Elements to Fst state
 };
 
 }  // namespace internal
@@ -320,13 +314,12 @@ class TrivialFactorWeightFstImpl
 /// Note that the code below was modified from factor-weight.h by just
 /// search-and-replacing "FactorWeight" by "TrivialFactorWeight".
 
-
 template <class A, class F>
-class TrivialFactorWeightFst :
-    public ImplToFst<internal::TrivialFactorWeightFstImpl<A, F>> {
+class TrivialFactorWeightFst
+    : public ImplToFst<internal::TrivialFactorWeightFstImpl<A, F>> {
  public:
-  friend class ArcIterator< TrivialFactorWeightFst<A, F> >;
-  friend class StateIterator< TrivialFactorWeightFst<A, F> >;
+  friend class ArcIterator<TrivialFactorWeightFst<A, F>>;
+  friend class StateIterator<TrivialFactorWeightFst<A, F>>;
 
   typedef A Arc;
   typedef typename A::Weight Weight;
@@ -336,16 +329,19 @@ class TrivialFactorWeightFst :
   typedef internal::TrivialFactorWeightFstImpl<A, F> Impl;
 
   explicit TrivialFactorWeightFst(const Fst<A> &fst)
-      : ImplToFst<Impl>(std::make_shared<Impl>(fst, TrivialFactorWeightOptions<A>())) {}
+      : ImplToFst<Impl>(
+            std::make_shared<Impl>(fst, TrivialFactorWeightOptions<A>())) {}
 
-  TrivialFactorWeightFst(const Fst<A> &fst,  const TrivialFactorWeightOptions<A> &opts)
+  TrivialFactorWeightFst(const Fst<A> &fst,
+                         const TrivialFactorWeightOptions<A> &opts)
       : ImplToFst<Impl>(std::make_shared<Impl>(fst, opts)) {}
 
   // See Fst<>::Copy() for doc.
   TrivialFactorWeightFst(const TrivialFactorWeightFst<A, F> &fst, bool copy)
       : ImplToFst<Impl>(fst, copy) {}
 
-  // Get a copy of this TrivialFactorWeightFst. See Fst<>::Copy() for further doc.
+  // Get a copy of this TrivialFactorWeightFst. See Fst<>::Copy() for further
+  // doc.
   TrivialFactorWeightFst<A, F> *Copy(bool copy = false) const override {
     return new TrivialFactorWeightFst<A, F>(*this, copy);
   }
@@ -363,26 +359,26 @@ class TrivialFactorWeightFst :
   TrivialFactorWeightFst &operator=(const TrivialFactorWeightFst &fst) = delete;
 };
 
-
 // Specialization for TrivialFactorWeightFst.
-template<class A, class F>
-class StateIterator< TrivialFactorWeightFst<A, F> >
-    : public CacheStateIterator< TrivialFactorWeightFst<A, F> > {
+template <class A, class F>
+class StateIterator<TrivialFactorWeightFst<A, F>>
+    : public CacheStateIterator<TrivialFactorWeightFst<A, F>> {
  public:
   explicit StateIterator(const TrivialFactorWeightFst<A, F> &fst)
-      : CacheStateIterator< TrivialFactorWeightFst<A, F> >(fst, fst.GetMutableImpl()) {}
+      : CacheStateIterator<TrivialFactorWeightFst<A, F>>(
+            fst, fst.GetMutableImpl()) {}
 };
-
 
 // Specialization for TrivialFactorWeightFst.
 template <class A, class F>
-class ArcIterator< TrivialFactorWeightFst<A, F> >
-    : public CacheArcIterator< TrivialFactorWeightFst<A, F> > {
+class ArcIterator<TrivialFactorWeightFst<A, F>>
+    : public CacheArcIterator<TrivialFactorWeightFst<A, F>> {
  public:
   typedef typename A::StateId StateId;
 
   ArcIterator(const TrivialFactorWeightFst<A, F> &fst, StateId s)
-      : CacheArcIterator< TrivialFactorWeightFst<A, F>>(fst.GetMutableImpl(), s) {
+      : CacheArcIterator<TrivialFactorWeightFst<A, F>>(fst.GetMutableImpl(),
+                                                       s) {
     if (!fst.GetImpl()->HasArcs(s)) fst.GetMutableImpl()->Expand(s);
   }
 };
@@ -390,11 +386,8 @@ class ArcIterator< TrivialFactorWeightFst<A, F> >
 template <class A, class F>
 inline void TrivialFactorWeightFst<A, F>::InitStateIterator(
     StateIteratorData<A> *data) const {
-  data->base = new StateIterator< TrivialFactorWeightFst<A, F> >(*this);
+  data->base = new StateIterator<TrivialFactorWeightFst<A, F>>(*this);
 }
-
-
-
 
 }  // namespace fst
 

@@ -18,11 +18,10 @@
 #include <memory>
 #include <string>
 #include <thread>
-#include <utility>
 #include <unordered_map>
+#include <utility>
 #define ASIO_STANDALONE 1  // not boost
 #include <glog/logging.h>
-#include "util/text-utils.h"
 
 #include <fstream>
 #include <functional>
@@ -35,6 +34,7 @@
 #include "funasrruntime.h"
 #include "nlohmann/json.hpp"
 #include "tclap/CmdLine.h"
+#include "util/text-utils.h"
 typedef websocketpp::server<websocketpp::config::asio> server;
 typedef websocketpp::server<websocketpp::config::asio_tls> wss_server;
 typedef server::message_ptr message_ptr;
@@ -48,19 +48,20 @@ typedef websocketpp::lib::shared_ptr<websocketpp::lib::asio::ssl::context>
     context_ptr;
 
 typedef struct {
-    std::string msg="";
-    std::string stamp="";
-    std::string stamp_sents;
-    std::string tpass_msg="";
-    float snippet_time=0;
+  std::string msg = "";
+  std::string stamp = "";
+  std::string stamp_sents;
+  std::string tpass_msg = "";
+  float snippet_time = 0;
 } FUNASR_RECOG_RESULT;
 
 typedef struct {
   nlohmann::json msg;
   std::shared_ptr<std::vector<char>> samples;
-  std::shared_ptr<std::vector<std::vector<float>>> hotwords_embedding=nullptr;
-  std::shared_ptr<websocketpp::lib::mutex> thread_lock; // lock for each connection
-  FUNASR_DEC_HANDLE decoder_handle=nullptr;
+  std::shared_ptr<std::vector<std::vector<float>>> hotwords_embedding = nullptr;
+  std::shared_ptr<websocketpp::lib::mutex>
+      thread_lock;  // lock for each connection
+  FUNASR_DEC_HANDLE decoder_handle = nullptr;
 } FUNASR_MESSAGE;
 
 // See https://wiki.mozilla.org/Security/Server_Side_TLS for more details about
@@ -74,7 +75,7 @@ class WebSocketServer {
       : io_decoder_(io_decoder),
         is_ssl(is_ssl),
         server_(server),
-        wss_server_(wss_server){
+        wss_server_(wss_server) {
     if (is_ssl) {
       std::cout << "certfile path is " << s_certfile << std::endl;
       wss_server->set_tls_init_handler(
@@ -114,19 +115,15 @@ class WebSocketServer {
     }
   }
   void do_decoder(const std::vector<char>& buffer,
-                  websocketpp::connection_hdl& hdl, 
-                  nlohmann::json& msg,
+                  websocketpp::connection_hdl& hdl, nlohmann::json& msg,
                   websocketpp::lib::mutex& thread_lock,
-                  std::vector<std::vector<float>> &hotwords_embedding,
-                  std::string wav_name, 
-                  bool itn,
-                  int audio_fs,
-                  std::string wav_format,
-                  FUNASR_DEC_HANDLE& decoder_handle,
-                  std::string svs_lang,
-                  bool sys_itn);
+                  std::vector<std::vector<float>>& hotwords_embedding,
+                  std::string wav_name, bool itn, int audio_fs,
+                  std::string wav_format, FUNASR_DEC_HANDLE& decoder_handle,
+                  std::string svs_lang, bool sys_itn);
 
-  void initAsr(std::map<std::string, std::string>& model_path, int thread_num, bool use_gpu=false, int batch_size=1);
+  void initAsr(std::map<std::string, std::string>& model_path, int thread_num,
+               bool use_gpu = false, int batch_size = 1);
   void on_message(websocketpp::connection_hdl hdl, message_ptr msg);
   void on_open(websocketpp::connection_hdl hdl);
   void on_close(websocketpp::connection_hdl hdl);
@@ -152,5 +149,6 @@ class WebSocketServer {
   websocketpp::lib::mutex m_lock;  // mutex for sample_map
 };
 
-// std::unordered_map<std::string, int>& hws_map, int fst_inc_wts, std::string& nn_hotwords
+// std::unordered_map<std::string, int>& hws_map, int fst_inc_wts, std::string&
+// nn_hotwords
 #endif  // WEBSOCKET_SERVER_H_

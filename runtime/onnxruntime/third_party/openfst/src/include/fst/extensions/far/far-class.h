@@ -6,17 +6,16 @@
 #ifndef FST_EXTENSIONS_FAR_FAR_CLASS_H_
 #define FST_EXTENSIONS_FAR_FAR_CLASS_H_
 
-#include <memory>
-#include <string>
-#include <vector>
-
 #include <fst/extensions/far/far.h>
 #include <fst/script/arg-packs.h>
 #include <fst/script/fstscript.h>
 
+#include <memory>
+#include <string>
+#include <vector>
+
 namespace fst {
 namespace script {
-
 
 // FarReader API.
 
@@ -75,7 +74,6 @@ class FarReaderClassImpl : public FarReaderImplBase {
   std::unique_ptr<FarReader<Arc>> impl_;
   mutable std::unique_ptr<FstClass> fstc_;
 };
-
 
 class FarReaderClass;
 
@@ -159,7 +157,6 @@ class FarWriterImplBase {
   virtual ~FarWriterImplBase() {}
 };
 
-
 // Templated implementation.
 template <class Arc>
 class FarWriterClassImpl : public FarWriterImplBase {
@@ -191,7 +188,6 @@ class FarWriterClassImpl : public FarWriterImplBase {
  private:
   std::unique_ptr<FarWriter<Arc>> impl_;
 };
-
 
 class FarWriterClass;
 

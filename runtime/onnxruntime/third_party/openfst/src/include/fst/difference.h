@@ -6,13 +6,11 @@
 #ifndef FST_DIFFERENCE_H_
 #define FST_DIFFERENCE_H_
 
-#include <memory>
-
-
 #include <fst/cache.h>
 #include <fst/complement.h>
 #include <fst/compose.h>
 
+#include <memory>
 
 namespace fst {
 

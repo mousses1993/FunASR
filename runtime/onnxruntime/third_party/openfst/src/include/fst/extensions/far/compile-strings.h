@@ -10,14 +10,13 @@
 #include <fst/compat.h>
 #endif
 
+#include <fst/extensions/far/far.h>
+#include <fst/string.h>
+
 #include <fstream>
 #include <istream>
 #include <string>
 #include <vector>
-
-#include <fst/extensions/far/far.h>
-#include <fstream>
-#include <fst/string.h>
 
 namespace fst {
 
@@ -193,9 +192,10 @@ void FarCompileStrings(const std::vector<string> &in_fnames,
                  << " set the --generate_keys flags.";
       return;
     }
-    int key_size =
-        generate_keys ? generate_keys : (entry_type == StringReader<Arc>::FILE
-                                             ? 1 : KeySize(in_fname.c_str()));
+    int key_size = generate_keys ? generate_keys
+                                 : (entry_type == StringReader<Arc>::FILE
+                                        ? 1
+                                        : KeySize(in_fname.c_str()));
     std::ifstream fstrm;
     if (!in_fname.empty()) {
       fstrm.open(in_fname);
@@ -206,9 +206,9 @@ void FarCompileStrings(const std::vector<string> &in_fnames,
     }
     std::istream &istrm = fstrm.is_open() ? fstrm : std::cin;
     bool keep_syms = keep_symbols;
-    for (StringReader<Arc> reader(
-             istrm, in_fname.empty() ? "stdin" : in_fname, entry_type,
-             token_type, allow_negative_labels, syms.get(), unknown_label);
+    for (StringReader<Arc> reader(istrm, in_fname.empty() ? "stdin" : in_fname,
+                                  entry_type, token_type, allow_negative_labels,
+                                  syms.get(), unknown_label);
          !reader.Done(); reader.Next()) {
       ++n;
       std::unique_ptr<const Fst<Arc>> fst;

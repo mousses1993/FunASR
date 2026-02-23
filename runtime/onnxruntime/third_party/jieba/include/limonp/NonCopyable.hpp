@@ -7,15 +7,14 @@ namespace limonp {
 
 class NonCopyable {
  protected:
-  NonCopyable() {
-  }
-  ~NonCopyable() {
-  }
+  NonCopyable() {}
+  ~NonCopyable() {}
+
  private:
-  NonCopyable(const NonCopyable& );
-  const NonCopyable& operator=(const NonCopyable& );
-}; // class NonCopyable
+  NonCopyable(const NonCopyable&);
+  const NonCopyable& operator=(const NonCopyable&);
+};  // class NonCopyable
 
-} // namespace limonp
+}  // namespace limonp
 
-#endif // LIMONP_NONCOPYABLE_H
+#endif  // LIMONP_NONCOPYABLE_H

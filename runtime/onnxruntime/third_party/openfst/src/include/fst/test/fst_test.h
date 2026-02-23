@@ -7,10 +7,11 @@
 #define FST_TEST_FST_TEST_H_
 
 #include <fst/equal.h>
-#include <fstream>
 #include <fst/matcher.h>
 #include <fst/vector-fst.h>
 #include <fst/verify.h>
+
+#include <fstream>
 
 DECLARE_string(tmpdir);
 

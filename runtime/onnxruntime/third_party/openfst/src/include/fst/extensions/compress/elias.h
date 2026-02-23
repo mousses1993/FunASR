@@ -6,10 +6,10 @@
 #ifndef FST_EXTENSIONS_COMPRESS_ELIAS_H_
 #define FST_EXTENSIONS_COMPRESS_ELIAS_H_
 
+#include <fst/compat.h>
+
 #include <stack>
 #include <vector>
-
-#include <fst/compat.h>
 namespace fst {
 
 template <class Var>

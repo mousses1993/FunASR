@@ -6,14 +6,14 @@
 #ifndef FST_EXTENSIONS_PDT_PDT_H_
 #define FST_EXTENSIONS_PDT_PDT_H_
 
+#include <fst/compat.h>
+#include <fst/fst.h>
+#include <fst/log.h>
+#include <fst/state-table.h>
+
 #include <map>
 #include <set>
 #include <unordered_map>
-
-#include <fst/compat.h>
-#include <fst/log.h>
-#include <fst/fst.h>
-#include <fst/state-table.h>
 
 namespace fst {
 

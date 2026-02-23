@@ -7,12 +7,12 @@
 #ifndef FST_EXTENSIONS_MPDT_READ_WRITE_UTILS_H_
 #define FST_EXTENSIONS_MPDT_READ_WRITE_UTILS_H_
 
+#include <fst/test-properties.h>
+
+#include <fstream>
 #include <string>
 #include <utility>
 #include <vector>
-
-#include <fstream>
-#include <fst/test-properties.h>
 
 namespace fst {
 

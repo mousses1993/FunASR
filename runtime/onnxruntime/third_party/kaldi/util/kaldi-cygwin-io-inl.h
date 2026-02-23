@@ -44,32 +44,30 @@ namespace kaldi {
 
 static bool prefixp(const std::string& pfx, const std::string& str) {
   return pfx.length() <= str.length() &&
-    std::equal(pfx.begin(), pfx.end(), str.begin());
+         std::equal(pfx.begin(), pfx.end(), str.begin());
 }
 
 static std::string cygprefix("/cygdrive/");
 
-static std::string MapCygwinPathNoTmp(const std::string &filename) {
+static std::string MapCygwinPathNoTmp(const std::string& filename) {
   // UNC(?), relative, native Windows and empty paths are ok already.
-  if (prefixp("//", filename) || !prefixp("/", filename))
-    return filename;
+  if (prefixp("//", filename) || !prefixp("/", filename)) return filename;
 
   // /dev/...
-  if (filename == "/dev/null")
-    return "\\\\.\\nul";
+  if (filename == "/dev/null") return "\\\\.\\nul";
   if (prefixp("/dev/", filename)) {
-      KALDI_ERR << "Unable to resolve path '" << filename
-                << "' - only have /dev/null here.";
-      return "\\\\.\\invalid";
+    KALDI_ERR << "Unable to resolve path '" << filename
+              << "' - only have /dev/null here.";
+    return "\\\\.\\invalid";
   }
 
   // /cygdrive/?[/....]
   int preflen = cygprefix.size();
-  if (prefixp(cygprefix, filename)
-      && filename.size() >= preflen + 1 && isalpha(filename[preflen])
-      && (filename.size() == preflen + 1 || filename[preflen + 1] == '/')) {
+  if (prefixp(cygprefix, filename) && filename.size() >= preflen + 1 &&
+      isalpha(filename[preflen]) &&
+      (filename.size() == preflen + 1 || filename[preflen + 1] == '/')) {
     return std::string() + filename[preflen] + ':' +
-       (filename.size() > preflen + 1 ? filename.substr(preflen + 1) : "/");
+           (filename.size() > preflen + 1 ? filename.substr(preflen + 1) : "/");
   }
 
   KALDI_WARN << "Unable to resolve path '" << filename
@@ -79,14 +77,13 @@ static std::string MapCygwinPathNoTmp(const std::string &filename) {
 }
 
 // extern for unit testing.
-std::string MapCygwinPath(const std::string &filename) {
+std::string MapCygwinPath(const std::string& filename) {
   // /tmp[/....]
   if (filename != "/tmp" && !prefixp("/tmp/", filename)) {
     return MapCygwinPathNoTmp(filename);
   }
-  char *tmpdir = std::getenv("TMP");
-  if (tmpdir == nullptr)
-    tmpdir = std::getenv("TEMP");
+  char* tmpdir = std::getenv("TMP");
+  if (tmpdir == nullptr) tmpdir = std::getenv("TEMP");
   if (tmpdir == nullptr) {
     KALDI_ERR << "Unable to resolve path '" << filename
               << "' - unable to find temporary directory. Set TMP.";
@@ -107,7 +104,7 @@ std::string MapCygwinPath(const std::string &filename) {
 // variable. Unfortunately, it adds a hardcoded " /c " to it, so we cannot
 // just substitute the environment variable COMSPEC to point to bash.exe.
 // Instead, quote the command and pass it to bash via its -c switch.
-static FILE *CygwinCompatPopen(const char* command, const char* mode) {
+static FILE* CygwinCompatPopen(const char* command, const char* mode) {
   // To speed up command launch marginally, optionally accept full path
   // to bash.exe. This will not work if the path contains spaces, but
   // no sane person would install cygwin into a space-ridden path.
@@ -115,8 +112,7 @@ static FILE *CygwinCompatPopen(const char* command, const char* mode) {
   std::string qcmd(bash_exe != nullptr ? bash_exe : "bash.exe");
   qcmd += " -c \"";
   for (; *command; ++command) {
-    if (*command == '\"')
-      qcmd += '\"';
+    if (*command == '\"') qcmd += '\"';
     qcmd += *command;
   }
   qcmd += '\"';

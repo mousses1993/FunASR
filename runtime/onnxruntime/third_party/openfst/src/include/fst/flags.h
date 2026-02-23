@@ -18,16 +18,15 @@
 #ifndef FST_LIB_FLAGS_H_
 #define FST_LIB_FLAGS_H_
 
-#include <cstdlib>
+#include <fst/lock.h>
+#include <fst/types.h>
 
+#include <cstdlib>
 #include <iostream>
 #include <map>
 #include <set>
 #include <sstream>
 #include <string>
-
-#include <fst/types.h>
-#include <fst/lock.h>
 
 #include "gflags/gflags.h"
 #include "glog/logging.h"
@@ -59,13 +58,13 @@ using std::string;
 
 template <typename T>
 struct FlagDescription {
-  FlagDescription(T *addr, const char *doc, const char *type,
-      const char *file, const T val)
+  FlagDescription(T *addr, const char *doc, const char *type, const char *file,
+                  const T val)
       : address(addr),
-    doc_string(doc),
-    type_name(type),
-    file_name(file),
-    default_value(val) {}
+        doc_string(doc),
+        type_name(type),
+        file_name(file),
+        default_value(val) {}
 
   T *address;
   const char *doc_string;
@@ -88,8 +87,7 @@ class FlagRegister {
     return it != flag_table_.end() ? it->second : 0;
   }
 
-  void SetDescription(const string &name,
-                      const FlagDescription<T> &desc) {
+  void SetDescription(const string &name, const FlagDescription<T> &desc) {
     fst::MutexLock l(&flag_lock_);
     flag_table_.insert(make_pair(name, desc));
   }
@@ -101,8 +99,7 @@ class FlagRegister {
     } else if (val == "false" || val == "0") {
       *address = false;
       return true;
-    }
-    else {
+    } else {
       return false;
     }
   }
@@ -131,14 +128,12 @@ class FlagRegister {
   }
 
   bool SetFlag(const string &arg, const string &val) const {
-    for (typename std::map< string, FlagDescription<T> >::const_iterator it =
-           flag_table_.begin();
-         it != flag_table_.end();
-         ++it) {
+    for (typename std::map<string, FlagDescription<T>>::const_iterator it =
+             flag_table_.begin();
+         it != flag_table_.end(); ++it) {
       const string &name = it->first;
       const FlagDescription<T> &desc = it->second;
-      if (arg == name)
-        return SetFlag(val, desc.address);
+      if (arg == name) return SetFlag(val, desc.address);
     }
     return false;
   }
@@ -173,7 +168,7 @@ class FlagRegister {
     return strm.str();
   }
 
-  mutable fst::Mutex flag_lock_;        // Multithreading lock.
+  mutable fst::Mutex flag_lock_;  // Multithreading lock.
   std::map<string, FlagDescription<T>> flag_table_;
 };
 
@@ -190,15 +185,11 @@ class FlagRegisterer {
   FlagRegisterer &operator=(const FlagRegisterer &) = delete;
 };
 
-
-#define DEFINE_VAR(type, name, value, doc)                                \
-  type FLAGS_ ## name = value;                                            \
-  static FlagRegisterer<type>                                             \
-  name ## _flags_registerer(#name, FlagDescription<type>(&FLAGS_ ## name, \
-                                                         doc,             \
-                                                         #type,           \
-                                                         __FILE__,        \
-                                                         value))
+#define DEFINE_VAR(type, name, value, doc)             \
+  type FLAGS_##name = value;                           \
+  static FlagRegisterer<type> name##_flags_registerer( \
+      #name,                                           \
+      FlagDescription<type>(&FLAGS_##name, doc, #type, __FILE__, value))
 
 // #define DEFINE_bool(name, value, doc) DEFINE_VAR(bool, name, value, doc)
 // #define DEFINE_string(name, value, doc) \
@@ -207,7 +198,6 @@ class FlagRegisterer {
 // #define DEFINE_int64(name, value, doc) DEFINE_VAR(int64, name, value, doc)
 // #define DEFINE_double(name, value, doc) DEFINE_VAR(double, name, value, doc)
 
-
 // Temporary directory.
 DECLARE_string(tmpdir);
 
@@ -215,7 +205,7 @@ void SetFlags(const char *usage, int *argc, char ***argv, bool remove_flags,
               const char *src = "");
 
 #define SET_FLAGS(usage, argc, argv, rmflags) \
-gflags::ParseCommandLineFlags(argc, argv, true)
+  gflags::ParseCommandLineFlags(argc, argv, true)
 // SetFlags(usage, argc, argv, rmflags, __FILE__)
 
 // Deprecated; for backward compatibility.

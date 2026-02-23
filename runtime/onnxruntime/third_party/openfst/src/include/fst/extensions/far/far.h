@@ -6,15 +6,15 @@
 #ifndef FST_EXTENSIONS_FAR_FAR_H_
 #define FST_EXTENSIONS_FAR_FAR_H_
 
-#include <iostream>
-#include <sstream>
-
-#include <fst/log.h>
 #include <fst/extensions/far/stlist.h>
 #include <fst/extensions/far/sttable.h>
 #include <fst/fst.h>
+#include <fst/log.h>
 #include <fst/vector-fst.h>
+
 #include <fstream>
+#include <iostream>
+#include <sstream>
 
 namespace fst {
 
@@ -53,8 +53,7 @@ class FarHeader {
       arctype_ = fsthdr.ArcType().empty() ? "unknown" : fsthdr.ArcType();
       return true;
     } else if (IsFst(filename)) {  // Checks if FST.
-      std::ifstream istrm(filename,
-                               std::ios_base::in | std::ios_base::binary);
+      std::ifstream istrm(filename, std::ios_base::in | std::ios_base::binary);
       fsthdr.Read(istrm, filename);
       fartype_ = "fst";
       arctype_ = fsthdr.ArcType().empty() ? "unknown" : fsthdr.ArcType();

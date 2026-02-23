@@ -4,13 +4,13 @@
 #ifndef FST_SCRIPT_ENCODEMAPPER_CLASS_H_
 #define FST_SCRIPT_ENCODEMAPPER_CLASS_H_
 
-#include <memory>
-#include <string>
-#include <iostream>
-
 #include <fst/fstlib.h>
 #include <fst/script/arc-class.h>
 #include <fst/script/fst-class.h>
+
+#include <iostream>
+#include <memory>
+#include <string>
 
 // Scripting API support for EncodeMapper.
 

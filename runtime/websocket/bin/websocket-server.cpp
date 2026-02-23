@@ -30,7 +30,7 @@ context_ptr WebSocketServer::on_tls_init(tls_mode mode,
   LOG(INFO) << "using TLS mode: "
             << (mode == MOZILLA_MODERN ? "Mozilla Modern"
                                        : "Mozilla Intermediate");
-                                       
+
   context_ptr ctx = websocketpp::lib::make_shared<asio::ssl::context>(
       asio::ssl::context::sslv23);
 
@@ -58,40 +58,34 @@ context_ptr WebSocketServer::on_tls_init(tls_mode mode,
 }
 
 // feed buffer to asr engine for decoder
-void WebSocketServer::do_decoder(const std::vector<char>& buffer,
-                                 websocketpp::connection_hdl& hdl,
-                                 nlohmann::json& msg,
-                                 websocketpp::lib::mutex& thread_lock,
-                                 std::vector<std::vector<float>> &hotwords_embedding,
-                                 std::string wav_name,
-                                 bool itn,
-                                 int audio_fs,
-                                 std::string wav_format,
-                                 FUNASR_DEC_HANDLE& decoder_handle,
-                                 std::string svs_lang,
-                                 bool sys_itn) {
+void WebSocketServer::do_decoder(
+    const std::vector<char>& buffer, websocketpp::connection_hdl& hdl,
+    nlohmann::json& msg, websocketpp::lib::mutex& thread_lock,
+    std::vector<std::vector<float>>& hotwords_embedding, std::string wav_name,
+    bool itn, int audio_fs, std::string wav_format,
+    FUNASR_DEC_HANDLE& decoder_handle, std::string svs_lang, bool sys_itn) {
   try {
     int num_samples = buffer.size();  // the size of the buf
 
     if (!buffer.empty() && hotwords_embedding.size() > 0) {
-      std::string asr_result="";
-      std::string stamp_res="";
-      std::string stamp_sents="";
-      try{
+      std::string asr_result = "";
+      std::string stamp_res = "";
+      std::string stamp_sents = "";
+      try {
         FUNASR_RESULT Result = FunOfflineInferBuffer(
-            asr_handle, buffer.data(), buffer.size(), RASR_NONE, nullptr, 
+            asr_handle, buffer.data(), buffer.size(), RASR_NONE, nullptr,
             hotwords_embedding, audio_fs, wav_format, itn, decoder_handle,
             svs_lang, sys_itn);
-        if (Result != nullptr){
+        if (Result != nullptr) {
           asr_result = FunASRGetResult(Result, 0);  // get decode result
           stamp_res = FunASRGetStamp(Result);
           stamp_sents = FunASRGetStampSents(Result);
           FunASRFreeResult(Result);
-        } else{
+        } else {
           std::this_thread::sleep_for(std::chrono::milliseconds(20));
           LOG(ERROR) << "FUNASR_RESULT is nullptr.";
         }
-      }catch (std::exception const& e) {
+      } catch (std::exception const& e) {
         LOG(ERROR) << e.what();
       }
 
@@ -99,17 +93,16 @@ void WebSocketServer::do_decoder(const std::vector<char>& buffer,
       nlohmann::json jsonresult;        // result json
       jsonresult["text"] = asr_result;  // put result in 'text'
       jsonresult["mode"] = "offline";
-	    jsonresult["is_final"] = false;
-      if(stamp_res != ""){
+      jsonresult["is_final"] = false;
+      if (stamp_res != "") {
         jsonresult["timestamp"] = stamp_res;
       }
-      if(stamp_sents != ""){
-        try{
+      if (stamp_sents != "") {
+        try {
           nlohmann::json json_stamp = nlohmann::json::parse(stamp_sents);
           jsonresult["stamp_sents"] = json_stamp;
-        }catch (std::exception const &e)
-        {
-          LOG(ERROR)<<e.what();
+        } catch (std::exception const& e) {
+          LOG(ERROR) << e.what();
           jsonresult["stamp_sents"] = "";
         }
       }
@@ -124,14 +117,15 @@ void WebSocketServer::do_decoder(const std::vector<char>& buffer,
                       ec);
       }
 
-      LOG(INFO) << "buffer.size=" << buffer.size() << ",result json=" << jsonresult.dump();
-    }else{
+      LOG(INFO) << "buffer.size=" << buffer.size()
+                << ",result json=" << jsonresult.dump();
+    } else {
       LOG(INFO) << "Sent empty msg";
       websocketpp::lib::error_code ec;
-      nlohmann::json jsonresult;        // result json
-      jsonresult["text"] = "";  // put result in 'text'
+      nlohmann::json jsonresult;  // result json
+      jsonresult["text"] = "";    // put result in 'text'
       jsonresult["mode"] = "offline";
-	    jsonresult["is_final"] = false;
+      jsonresult["is_final"] = false;
       jsonresult["wav_name"] = wav_name;
 
       // send the json to client
@@ -148,11 +142,11 @@ void WebSocketServer::do_decoder(const std::vector<char>& buffer,
     std::cerr << "Error: " << e.what() << std::endl;
   }
   scoped_lock guard(thread_lock);
-  msg["access_num"]=(int)msg["access_num"]-1;
+  msg["access_num"] = (int)msg["access_num"] - 1;
 }
 
 void WebSocketServer::on_open(websocketpp::connection_hdl hdl) {
-  scoped_lock guard(m_lock);     // for threads safty
+  scoped_lock guard(m_lock);  // for threads safty
   std::shared_ptr<FUNASR_MESSAGE> data_msg =
       std::make_shared<FUNASR_MESSAGE>();  // put a new data vector for new
                                            // connection
@@ -162,13 +156,14 @@ void WebSocketServer::on_open(websocketpp::connection_hdl hdl) {
   data_msg->msg["wav_format"] = "pcm";
   data_msg->msg["wav_name"] = "wav-default-id";
   data_msg->msg["itn"] = true;
-  data_msg->msg["audio_fs"] = 16000; // default is 16k
-  data_msg->msg["access_num"] = 0; // the number of access for this object, when it is 0, we can free it saftly
-  data_msg->msg["is_eof"]=false;
-  data_msg->msg["svs_lang"]="auto";
-  data_msg->msg["svs_itn"]=true;
-  FUNASR_DEC_HANDLE decoder_handle =
-    FunASRWfstDecoderInit(asr_handle, ASR_OFFLINE, global_beam_, lattice_beam_, am_scale_);
+  data_msg->msg["audio_fs"] = 16000;  // default is 16k
+  data_msg->msg["access_num"] = 0;    // the number of access for this object,
+                                      // when it is 0, we can free it saftly
+  data_msg->msg["is_eof"] = false;
+  data_msg->msg["svs_lang"] = "auto";
+  data_msg->msg["svs_itn"] = true;
+  FUNASR_DEC_HANDLE decoder_handle = FunASRWfstDecoderInit(
+      asr_handle, ASR_OFFLINE, global_beam_, lattice_beam_, am_scale_);
   data_msg->decoder_handle = decoder_handle;
   data_map.emplace(hdl, data_msg);
   LOG(INFO) << "on_open, active connections: " << data_map.size();
@@ -185,7 +180,7 @@ void WebSocketServer::on_close(websocketpp::connection_hdl hdl) {
     return;
   }
   unique_lock guard_decoder(*(data_msg->thread_lock));
-  data_msg->msg["is_eof"]=true;
+  data_msg->msg["is_eof"] = true;
   guard_decoder.unlock();
 
   LOG(INFO) << "on_close, active connections: " << data_map.size();
@@ -203,24 +198,24 @@ void remove_hdl(
     return;
   }
   unique_lock guard_decoder(*(data_msg->thread_lock));
-  if (data_msg->msg["access_num"]==0 && data_msg->msg["is_eof"]==true) {
+  if (data_msg->msg["access_num"] == 0 && data_msg->msg["is_eof"] == true) {
     FunWfstDecoderUnloadHwsRes(data_msg->decoder_handle);
     FunASRWfstDecoderUninit(data_msg->decoder_handle);
     data_msg->decoder_handle = nullptr;
-	  data_map.erase(hdl);
+    data_map.erase(hdl);
     LOG(INFO) << "remove one connection";
   }
   guard_decoder.unlock();
 }
 
 void WebSocketServer::check_and_clean_connection() {
-  while(true){
+  while (true) {
     std::this_thread::sleep_for(std::chrono::milliseconds(5000));
     std::vector<websocketpp::connection_hdl> to_remove;  // remove list
     auto iter = data_map.begin();
     while (iter != data_map.end()) {  // loop to find closed connection
       websocketpp::connection_hdl hdl = iter->first;
-      try{
+      try {
         if (is_ssl) {
           wss_server::connection_ptr con = wss_server_->get_con_from_hdl(hdl);
           if (con->get_state() != 1) {  // session::state::open ==1
@@ -232,23 +227,20 @@ void WebSocketServer::check_and_clean_connection() {
             to_remove.push_back(hdl);
           }
         }
-      }
-      catch (std::exception const &e)
-      {
+      } catch (std::exception const& e) {
         // if connection is close, we set is_eof = true
         std::shared_ptr<FUNASR_MESSAGE> data_msg = nullptr;
         auto it_data = data_map.find(hdl);
         if (it_data != data_map.end()) {
           data_msg = it_data->second;
         } else {
-            continue;
+          continue;
         }
         unique_lock guard_decoder(*(data_msg->thread_lock));
-        data_msg->msg["is_eof"]=true;
+        data_msg->msg["is_eof"] = true;
         guard_decoder.unlock();
         to_remove.push_back(hdl);
-        LOG(INFO)<<"connection is closed.";
-        
+        LOG(INFO) << "connection is closed.";
       }
       iter++;
     }
@@ -271,17 +263,18 @@ void WebSocketServer::on_message(websocketpp::connection_hdl hdl,
   auto it_data = data_map.find(hdl);
   if (it_data != data_map.end()) {
     msg_data = it_data->second;
-    if(msg_data->msg["is_eof"]){
+    if (msg_data->msg["is_eof"]) {
       lock.unlock();
       return;
     }
-  } else{
+  } else {
     lock.unlock();
     return;
   }
 
   std::shared_ptr<std::vector<char>> sample_data_p = msg_data->samples;
-  std::shared_ptr<websocketpp::lib::mutex> thread_lock_p = msg_data->thread_lock;
+  std::shared_ptr<websocketpp::lib::mutex> thread_lock_p =
+      msg_data->thread_lock;
 
   lock.unlock();
   if (sample_data_p == nullptr) {
@@ -290,16 +283,15 @@ void WebSocketServer::on_message(websocketpp::connection_hdl hdl,
   }
 
   const std::string& payload = msg->get_payload();  // get msg type
-  unique_lock guard_decoder(*(thread_lock_p)); // mutex for one connection
+  unique_lock guard_decoder(*(thread_lock_p));      // mutex for one connection
   switch (msg->get_opcode()) {
     case websocketpp::frame::opcode::text: {
       nlohmann::json jsonresult;
-      try{
+      try {
         jsonresult = nlohmann::json::parse(payload);
-      }catch (std::exception const &e)
-      {
-        LOG(ERROR)<<e.what();
-        msg_data->msg["is_eof"]=true;
+      } catch (std::exception const& e) {
+        LOG(ERROR) << e.what();
+        msg_data->msg["is_eof"] = true;
         guard_decoder.unlock();
         return;
       }
@@ -312,28 +304,29 @@ void WebSocketServer::on_message(websocketpp::connection_hdl hdl,
       }
 
       // hotwords: fst/nn
-      if(msg_data->hotwords_embedding == nullptr){
+      if (msg_data->hotwords_embedding == nullptr) {
         std::unordered_map<std::string, int> merged_hws_map;
         std::string nn_hotwords = "";
 
         if (jsonresult["hotwords"] != nullptr) {
           std::string json_string = jsonresult["hotwords"];
-          if (!json_string.empty()){
+          if (!json_string.empty()) {
             nlohmann::json json_fst_hws;
-            try{
+            try {
               json_fst_hws = nlohmann::json::parse(json_string);
-              if(json_fst_hws.type() == nlohmann::json::value_t::object){
+              if (json_fst_hws.type() == nlohmann::json::value_t::object) {
                 // fst
-                try{
-                  std::unordered_map<std::string, int> client_hws_map = json_fst_hws;
-                  merged_hws_map.insert(client_hws_map.begin(), client_hws_map.end());
+                try {
+                  std::unordered_map<std::string, int> client_hws_map =
+                      json_fst_hws;
+                  merged_hws_map.insert(client_hws_map.begin(),
+                                        client_hws_map.end());
                 } catch (const std::exception& e) {
                   LOG(INFO) << e.what();
                 }
               }
-            } catch (std::exception const &e)
-            {
-              LOG(ERROR)<<e.what();
+            } catch (std::exception const& e) {
+              LOG(ERROR) << e.what();
               // nn
               std::string client_nn_hws = jsonresult["hotwords"];
               nn_hotwords += " " + client_nn_hws;
@@ -346,15 +339,18 @@ void WebSocketServer::on_message(websocketpp::connection_hdl hdl,
         // fst
         LOG(INFO) << "hotwords: ";
         for (const auto& pair : merged_hws_map) {
-            nn_hotwords += " " + pair.first;
-            LOG(INFO) << pair.first << " : " << pair.second;
+          nn_hotwords += " " + pair.first;
+          LOG(INFO) << pair.first << " : " << pair.second;
         }
-        FunWfstDecoderLoadHwsRes(msg_data->decoder_handle, fst_inc_wts_, merged_hws_map);
+        FunWfstDecoderLoadHwsRes(msg_data->decoder_handle, fst_inc_wts_,
+                                 merged_hws_map);
 
         // nn
-        std::vector<std::vector<float>> new_hotwords_embedding= CompileHotwordEmbedding(asr_handle, nn_hotwords);
+        std::vector<std::vector<float>> new_hotwords_embedding =
+            CompileHotwordEmbedding(asr_handle, nn_hotwords);
         msg_data->hotwords_embedding =
-            std::make_shared<std::vector<std::vector<float>>>(new_hotwords_embedding);
+            std::make_shared<std::vector<std::vector<float>>>(
+                new_hotwords_embedding);
       }
       if (jsonresult.contains("audio_fs")) {
         msg_data->msg["audio_fs"] = jsonresult["audio_fs"];
@@ -369,27 +365,24 @@ void WebSocketServer::on_message(websocketpp::connection_hdl hdl,
         msg_data->msg["svs_itn"] = jsonresult["svs_itn"];
       }
       if ((jsonresult["is_speaking"] == false ||
-          jsonresult["is_finished"] == true) && 
-          msg_data->msg["is_eof"] != true && 
+           jsonresult["is_finished"] == true) &&
+          msg_data->msg["is_eof"] != true &&
           msg_data->hotwords_embedding != nullptr) {
         LOG(INFO) << "client done";
         // for offline, send all receive data to decoder engine
-        std::vector<std::vector<float>> hotwords_embedding_(*(msg_data->hotwords_embedding));
-        asio::post(io_decoder_,
-                    std::bind(&WebSocketServer::do_decoder, this,
-                              std::move(*(sample_data_p.get())),
-                              std::move(hdl), 
-                              std::ref(msg_data->msg),
-                              std::ref(*thread_lock_p),
-                              std::move(hotwords_embedding_),
-                              msg_data->msg["wav_name"],
-                              msg_data->msg["itn"],
-                              msg_data->msg["audio_fs"],
-                              msg_data->msg["wav_format"],
-                              std::ref(msg_data->decoder_handle),
-                              msg_data->msg["svs_lang"],
-                              msg_data->msg["svs_itn"]));
-        msg_data->msg["access_num"]=(int)(msg_data->msg["access_num"])+1;
+        std::vector<std::vector<float>> hotwords_embedding_(
+            *(msg_data->hotwords_embedding));
+        asio::post(
+            io_decoder_,
+            std::bind(&WebSocketServer::do_decoder, this,
+                      std::move(*(sample_data_p.get())), std::move(hdl),
+                      std::ref(msg_data->msg), std::ref(*thread_lock_p),
+                      std::move(hotwords_embedding_), msg_data->msg["wav_name"],
+                      msg_data->msg["itn"], msg_data->msg["audio_fs"],
+                      msg_data->msg["wav_format"],
+                      std::ref(msg_data->decoder_handle),
+                      msg_data->msg["svs_lang"], msg_data->msg["svs_itn"]));
+        msg_data->msg["access_num"] = (int)(msg_data->msg["access_num"]) + 1;
       }
       break;
     }
@@ -421,9 +414,10 @@ void WebSocketServer::initAsr(std::map<std::string, std::string>& model_path,
 
     asr_handle = FunOfflineInit(model_path, thread_num, use_gpu, batch_size);
     LOG(INFO) << "model successfully inited";
-    
+
     LOG(INFO) << "initAsr run check_and_clean_connection";
-    std::thread clean_thread(&WebSocketServer::check_and_clean_connection,this);  
+    std::thread clean_thread(&WebSocketServer::check_and_clean_connection,
+                             this);
     clean_thread.detach();
     LOG(INFO) << "initAsr run check_and_clean_connection finished";
 

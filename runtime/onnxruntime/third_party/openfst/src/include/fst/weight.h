@@ -6,18 +6,16 @@
 #ifndef FST_WEIGHT_H_
 #define FST_WEIGHT_H_
 
+#include <fst/compat.h>
+#include <fst/log.h>
+#include <fst/util.h>
+
 #include <cctype>
 #include <cmath>
 #include <iostream>
 #include <sstream>
 #include <type_traits>
 #include <utility>
-
-#include <fst/compat.h>
-#include <fst/log.h>
-
-#include <fst/util.h>
-
 
 DECLARE_string(fst_weight_parentheses);
 DECLARE_string(fst_weight_separator);
@@ -142,8 +140,9 @@ struct WeightPropertiesThunk {
 };
 
 template <class W, uint64 props>
-using TestWeightProperties = std::integral_constant<bool,
-        (WeightPropertiesThunk<W>::Properties & props) == props>;
+using TestWeightProperties =
+    std::integral_constant<bool, (WeightPropertiesThunk<W>::Properties &
+                                  props) == props>;
 }  // namespace bug
 
 template <class W>
@@ -151,7 +150,6 @@ using IsIdempotent = bug::TestWeightProperties<W, kIdempotent>;
 
 template <class W>
 using IsPath = bug::TestWeightProperties<W, kPath>;
-
 
 // Determines direction of division.
 enum DivideType {
@@ -182,7 +180,7 @@ enum DivideType {
 
 template <class W>
 class NaturalLess {
-public:
+ public:
   using Weight = W;
 
   NaturalLess() {
@@ -209,7 +207,7 @@ Weight Power(const Weight &weight, size_t n) {
 template <class Weight>
 class Adder {
  public:
-  explicit Adder(Weight w = Weight::Zero()) : sum_(w) { }
+  explicit Adder(Weight w = Weight::Zero()) : sum_(w) {}
 
   Weight Add(const Weight &w) {
     sum_ = Plus(sum_, w);

@@ -7,21 +7,21 @@
 #ifndef FST_EXTENSIONS_FAR_FARSCRIPT_H_
 #define FST_EXTENSIONS_FAR_FARSCRIPT_H_
 
-#include <string>
-#include <vector>
-
-#include <fst/types.h>
 #include <fst/extensions/far/compile-strings.h>
 #include <fst/extensions/far/create.h>
 #include <fst/extensions/far/equal.h>
 #include <fst/extensions/far/extract.h>
-#include <fst/extensions/far/far.h>
 #include <fst/extensions/far/far-class.h>
+#include <fst/extensions/far/far.h>
 #include <fst/extensions/far/info.h>
 #include <fst/extensions/far/isomorphic.h>
 #include <fst/extensions/far/print-strings.h>
 #include <fst/extensions/far/script-impl.h>
 #include <fst/script/arg-packs.h>
+#include <fst/types.h>
+
+#include <string>
+#include <vector>
 
 namespace fst {
 namespace script {
@@ -144,9 +144,9 @@ using FarExtractArgs =
 template <class Arc>
 void FarExtract(FarExtractArgs *args) {
   fst::FarExtract<Arc>(std::get<0>(*args), std::get<1>(*args),
-                           std::get<2>(*args), std::get<3>(*args),
-                           std::get<4>(*args), std::get<5>(*args),
-                           std::get<6>(*args));
+                       std::get<2>(*args), std::get<3>(*args),
+                       std::get<4>(*args), std::get<5>(*args),
+                       std::get<6>(*args));
 }
 
 void FarExtract(const std::vector<string> &ifilenames, const string &arc_type,
@@ -159,8 +159,8 @@ using FarInfoArgs = std::tuple<const std::vector<string> &, const string &,
 
 template <class Arc>
 void FarInfo(FarInfoArgs *args) {
-  fst::FarInfo<Arc>(std::get<0>(*args), std::get<1>(*args),
-                        std::get<2>(*args), std::get<3>(*args));
+  fst::FarInfo<Arc>(std::get<0>(*args), std::get<1>(*args), std::get<2>(*args),
+                    std::get<3>(*args));
 }
 
 void FarInfo(const std::vector<string> &filenames, const string &arc_type,
@@ -173,8 +173,8 @@ using GetFarInfoArgs = std::tuple<const std::vector<string> &, const string &,
 template <class Arc>
 void GetFarInfo(GetFarInfoArgs *args) {
   fst::GetFarInfo<Arc>(std::get<0>(*args), std::get<1>(*args),
-                           std::get<2>(*args), std::get<3>(*args),
-                           std::get<4>(*args));
+                       std::get<2>(*args), std::get<3>(*args),
+                       std::get<4>(*args));
 }
 
 void GetFarInfo(const std::vector<string> &filenames, const string &arc_type,

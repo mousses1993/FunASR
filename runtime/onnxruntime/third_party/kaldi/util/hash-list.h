@@ -18,16 +18,15 @@
 // See the Apache 2 License for the specific language governing permissions and
 // limitations under the License.
 
-
 #ifndef KALDI_UTIL_HASH_LIST_H_
 #define KALDI_UTIL_HASH_LIST_H_
-#include <vector>
-#include <set>
 #include <algorithm>
-#include <limits>
 #include <cassert>
-#include "util/stl-utils.h"
+#include <limits>
+#include <set>
+#include <vector>
 
+#include "util/stl-utils.h"
 
 /* This header provides utilities for a structure that's used in a decoder (but
    is quite generic in nature so we implement and test it separately).
@@ -44,10 +43,10 @@
    See hash-list-test.cc for an example of how to use this object.
 */
 
-
 namespace kaldi {
 
-template<class I, class T> class HashList {
+template <class I, class T>
+class HashList {
  public:
   struct Elem {
     I key;
@@ -113,16 +112,16 @@ template<class I, class T> class HashList {
   inline size_t Size() { return hash_size_; }
 
   ~HashList();
- private:
 
+ private:
   struct HashBucket {
     size_t prev_bucket;  // index to next bucket (-1 if list tail).  Note:
     // list of buckets goes in opposite direction to list of Elems.
     Elem *last_elem;  // pointer to last element in this bucket (NULL if empty)
-    inline HashBucket(size_t i, Elem *e): prev_bucket(i), last_elem(e) {}
+    inline HashBucket(size_t i, Elem *e) : prev_bucket(i), last_elem(e) {}
   };
 
-  Elem *list_head_;  // head of currently stored list.
+  Elem *list_head_;          // head of currently stored list.
   size_t bucket_list_tail_;  // tail of list of active hash buckets.
 
   size_t hash_size_;  // number of hash buckets.
@@ -132,13 +131,12 @@ template<class I, class T> class HashList {
   Elem *freed_head_;  // head of list of currently freed elements. [ready for
   // allocation]
 
-  std::vector<Elem*> allocated_;  // list of allocated blocks.
+  std::vector<Elem *> allocated_;  // list of allocated blocks.
 
   static const size_t allocate_block_size_ = 1024;  // Number of Elements to
   // allocate in one block.  Must be largish so storing allocated_ doesn't
   // become a problem.
 };
-
 
 }  // end namespace kaldi
 

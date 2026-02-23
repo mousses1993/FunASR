@@ -6,17 +6,14 @@
 #ifndef FST_REGISTER_H_
 #define FST_REGISTER_H_
 
-#include <string>
-#include <type_traits>
-
-
 #include <fst/compat.h>
 #include <fst/generic-register.h>
+#include <fst/log.h>
+#include <fst/types.h>
 #include <fst/util.h>
 
-
-#include <fst/types.h>
-#include <fst/log.h>
+#include <string>
+#include <type_traits>
 
 namespace fst {
 
@@ -28,7 +25,8 @@ struct FstReadOptions;
 // This class represents a single entry in a FstRegister
 template <class Arc>
 struct FstRegisterEntry {
-  using Reader = Fst<Arc> *(*)(std::istream &istrm, const FstReadOptions &opts);
+  using Reader = Fst<Arc> *(*)(std::istream & istrm,
+                               const FstReadOptions &opts);
   using Converter = Fst<Arc> *(*)(const Fst<Arc> &fst);
 
   Reader reader;
@@ -79,8 +77,7 @@ class FstRegisterer : public GenericRegisterer<FstRegister<typename FST::Arc>> {
                                                           BuildEntry()) {}
 
  private:
-  static Fst<Arc> *ReadGeneric(
-      std::istream &strm, const FstReadOptions &opts) {
+  static Fst<Arc> *ReadGeneric(std::istream &strm, const FstReadOptions &opts) {
     static_assert(std::is_base_of<Fst<Arc>, FST>::value,
                   "FST class does not inherit from Fst<Arc>");
     return FST::Read(strm, opts);

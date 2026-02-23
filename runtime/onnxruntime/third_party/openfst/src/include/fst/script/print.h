@@ -4,11 +4,11 @@
 #ifndef FST_SCRIPT_PRINT_H_
 #define FST_SCRIPT_PRINT_H_
 
-#include <ostream>
-
 #include <fst/flags.h>
 #include <fst/script/fst-class.h>
 #include <fst/script/print-impl.h>
+
+#include <ostream>
 
 DECLARE_string(fst_field_separator);
 

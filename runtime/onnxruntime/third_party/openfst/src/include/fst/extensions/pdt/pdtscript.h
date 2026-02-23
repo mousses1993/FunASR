@@ -7,24 +7,22 @@
 #ifndef FST_EXTENSIONS_PDT_PDTSCRIPT_H_
 #define FST_EXTENSIONS_PDT_PDTSCRIPT_H_
 
-#include <algorithm>
-#include <utility>
-#include <vector>
-
-#include <fst/log.h>
 #include <fst/compose.h>  // for ComposeOptions
-#include <fst/util.h>
-
-#include <fst/script/arg-packs.h>
-#include <fst/script/fstscript.h>
-#include <fst/script/shortest-path.h>
-
 #include <fst/extensions/pdt/compose.h>
 #include <fst/extensions/pdt/expand.h>
 #include <fst/extensions/pdt/info.h>
 #include <fst/extensions/pdt/replace.h>
 #include <fst/extensions/pdt/reverse.h>
 #include <fst/extensions/pdt/shortest-path.h>
+#include <fst/log.h>
+#include <fst/script/arg-packs.h>
+#include <fst/script/fstscript.h>
+#include <fst/script/shortest-path.h>
+#include <fst/util.h>
+
+#include <algorithm>
+#include <utility>
+#include <vector>
 
 namespace fst {
 namespace script {
@@ -54,9 +52,8 @@ void PdtCompose(PdtComposeArgs *args) {
 }
 
 void PdtCompose(const FstClass &ifst1, const FstClass &ifst2,
-                const std::vector<LabelPair> &parens,
-                MutableFstClass *ofst, const PdtComposeOptions &opts,
-                bool left_pdt);
+                const std::vector<LabelPair> &parens, MutableFstClass *ofst,
+                const PdtComposeOptions &opts, bool left_pdt);
 
 struct PdtExpandOptions {
   bool connect;
@@ -185,29 +182,30 @@ void PdtShortestPath(PdtShortestPathArgs *args) {
     case FIFO_QUEUE: {
       using Queue = FifoQueue<typename Arc::StateId>;
       fst::PdtShortestPathOptions<Arc, Queue> spopts(opts.keep_parentheses,
-                                                         opts.path_gc);
+                                                     opts.path_gc);
       ShortestPath(fst, typed_parens, ofst, spopts);
       return;
     }
     case LIFO_QUEUE: {
       using Queue = LifoQueue<typename Arc::StateId>;
       fst::PdtShortestPathOptions<Arc, Queue> spopts(opts.keep_parentheses,
-                                                         opts.path_gc);
+                                                     opts.path_gc);
       ShortestPath(fst, typed_parens, ofst, spopts);
       return;
     }
     case STATE_ORDER_QUEUE: {
       using Queue = StateOrderQueue<typename Arc::StateId>;
       fst::PdtShortestPathOptions<Arc, Queue> spopts(opts.keep_parentheses,
-                                                         opts.path_gc);
+                                                     opts.path_gc);
       ShortestPath(fst, typed_parens, ofst, spopts);
       return;
     }
   }
 }
 
-void PdtShortestPath(const FstClass &ifst,
-    const std::vector<LabelPair> &parens, MutableFstClass *ofst,
+void PdtShortestPath(
+    const FstClass &ifst, const std::vector<LabelPair> &parens,
+    MutableFstClass *ofst,
     const PdtShortestPathOptions &opts = PdtShortestPathOptions());
 
 // PRINT INFO

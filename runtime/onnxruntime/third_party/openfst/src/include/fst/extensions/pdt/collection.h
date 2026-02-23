@@ -6,11 +6,11 @@
 #ifndef FST_EXTENSIONS_PDT_COLLECTION_H_
 #define FST_EXTENSIONS_PDT_COLLECTION_H_
 
+#include <fst/bi-table.h>
+#include <fst/log.h>
+
 #include <functional>
 #include <vector>
-
-#include <fst/log.h>
-#include <fst/bi-table.h>
 
 namespace fst {
 

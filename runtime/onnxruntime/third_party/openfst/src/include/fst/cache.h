@@ -6,17 +6,15 @@
 #ifndef FST_CACHE_H_
 #define FST_CACHE_H_
 
+#include <fst/flags.h>
+#include <fst/log.h>
+#include <fst/vector-fst.h>
+
 #include <algorithm>
 #include <functional>
 #include <list>
-#include <vector>
-
-#include <fst/flags.h>
-#include <fst/log.h>
-
-#include <fst/vector-fst.h>
-
 #include <unordered_map>
+#include <vector>
 
 DECLARE_bool(fst_default_cache_gc);
 DECLARE_int64(fst_default_cache_gc_limit);
@@ -140,7 +138,7 @@ class CacheState {
 
   // Adds one arc at a time with delayed book-keeping; finalize with SetArcs().
   template <class... T>
-  void EmplaceArc(T &&... ctor_args) {
+  void EmplaceArc(T &&...ctor_args) {
     arcs_.emplace_back(std::forward<T>(ctor_args)...);
   }
 
@@ -412,8 +410,8 @@ class HashCacheStore {
 
   using StateMap =
       std::unordered_map<StateId, State *, std::hash<StateId>,
-                          std::equal_to<StateId>,
-                          PoolAllocator<std::pair<const StateId, State *>>>;
+                         std::equal_to<StateId>,
+                         PoolAllocator<std::pair<const StateId, State *>>>;
 
   // Required constructors/assignment operators.
   explicit HashCacheStore(const CacheOptions &opts) {
@@ -863,8 +861,9 @@ class CacheBaseImpl : public FstImpl<typename State::Arc> {
         max_expanded_state_id_(-1),
         cache_gc_(opts.gc),
         cache_limit_(opts.gc_limit),
-        cache_store_(opts.store ? opts.store : new CacheStore(CacheOptions(
-                                                   opts.gc, opts.gc_limit))),
+        cache_store_(
+            opts.store ? opts.store
+                       : new CacheStore(CacheOptions(opts.gc, opts.gc_limit))),
         new_cache_store_(!opts.store),
         own_cache_store_(opts.store ? opts.own_store : true) {}
 
@@ -894,7 +893,9 @@ class CacheBaseImpl : public FstImpl<typename State::Arc> {
     }
   }
 
-  ~CacheBaseImpl() override { if (own_cache_store_) delete cache_store_; }
+  ~CacheBaseImpl() override {
+    if (own_cache_store_) delete cache_store_;
+  }
 
   void SetStart(StateId s) {
     cache_start_ = s;
@@ -943,7 +944,7 @@ class CacheBaseImpl : public FstImpl<typename State::Arc> {
   // be called when all PushArc and EmplaceArc calls at a state are complete.
   // Do not mix with calls to AddArc.
   template <class... T>
-  void EmplaceArc(StateId s, T &&... ctor_args) {
+  void EmplaceArc(StateId s, T &&...ctor_args) {
     auto *state = cache_store_->GetMutableState(s);
     state->EmplaceArc(std::forward<T>(ctor_args)...);
   }

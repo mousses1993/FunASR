@@ -4,10 +4,10 @@
 #ifndef FST_SCRIPT_PROJECT_H_
 #define FST_SCRIPT_PROJECT_H_
 
-#include <utility>
-
 #include <fst/project.h>
 #include <fst/script/fst-class.h>
+
+#include <utility>
 
 namespace fst {
 namespace script {

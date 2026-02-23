@@ -13,7 +13,7 @@
 Microphone::Microphone() {
   PaError err = Pa_Initialize();
   if (err != paNoError) {
-    LOG(ERROR)<<"portaudio error: " << Pa_GetErrorText(err);
+    LOG(ERROR) << "portaudio error: " << Pa_GetErrorText(err);
     exit(-1);
   }
 }
@@ -21,7 +21,7 @@ Microphone::Microphone() {
 Microphone::~Microphone() {
   PaError err = Pa_Terminate();
   if (err != paNoError) {
-    LOG(ERROR)<<"portaudio error: " << Pa_GetErrorText(err);
+    LOG(ERROR) << "portaudio error: " << Pa_GetErrorText(err);
     exit(-1);
   }
 }

@@ -23,7 +23,6 @@
 #ifndef FST_FSTLIB_H_
 #define FST_FSTLIB_H_
 
-
 // Abstract FST classes.
 #include <fst/expanded-fst.h>
 #include <fst/fst.h>
@@ -125,6 +124,5 @@
 #include <fst/symbol-table.h>
 #include <fst/test-properties.h>
 #include <fst/util.h>
-
 
 #endif  // FST_FSTLIB_H_

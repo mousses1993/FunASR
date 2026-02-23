@@ -6,10 +6,10 @@
 #ifndef FST_FST_DECL_H_
 #define FST_FST_DECL_H_
 
-#include <sys/types.h>
-#include <memory>  // for allocator<>
-
 #include <fst/types.h>
+#include <sys/types.h>
+
+#include <memory>  // for allocator<>
 
 namespace fst {
 
@@ -61,8 +61,9 @@ class DefaultCacheStore;
 // FST templates.
 
 template <class A, class ArcCompactor, class Unsigned = uint32,
-    class CompactStore = DefaultCompactStore<typename ArcCompactor::Element, Unsigned>,
-    class CacheStore = DefaultCacheStore<A>>
+          class CompactStore =
+              DefaultCompactStore<typename ArcCompactor::Element, Unsigned>,
+          class CacheStore = DefaultCacheStore<A>>
 class CompactFst;
 
 template <class Arc, class U = uint32>

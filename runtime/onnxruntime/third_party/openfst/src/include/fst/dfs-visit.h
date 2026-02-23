@@ -7,12 +7,11 @@
 #ifndef FST_DFS_VISIT_H_
 #define FST_DFS_VISIT_H_
 
-#include <stack>
-#include <vector>
-
 #include <fst/arcfilter.h>
 #include <fst/fst.h>
 
+#include <stack>
+#include <vector>
 
 namespace fst {
 

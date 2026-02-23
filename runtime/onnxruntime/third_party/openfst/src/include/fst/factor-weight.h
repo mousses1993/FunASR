@@ -6,17 +6,15 @@
 #ifndef FST_FACTOR_WEIGHT_H_
 #define FST_FACTOR_WEIGHT_H_
 
+#include <fst/cache.h>
+#include <fst/log.h>
+#include <fst/test-properties.h>
+
 #include <algorithm>
 #include <string>
 #include <unordered_map>
 #include <utility>
 #include <vector>
-
-#include <fst/log.h>
-
-#include <fst/cache.h>
-#include <fst/test-properties.h>
-
 
 namespace fst {
 

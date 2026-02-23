@@ -6,6 +6,12 @@
 #ifndef FST_UTIL_H_
 #define FST_UTIL_H_
 
+#include <fst/compat.h>
+#include <fst/flags.h>
+#include <fst/log.h>
+#include <fst/types.h>
+
+#include <fstream>
 #include <iostream>
 #include <iterator>
 #include <list>
@@ -19,21 +25,11 @@
 #include <utility>
 #include <vector>
 
-#include <fst/compat.h>
-#include <fst/types.h>
-#include <fst/log.h>
-#include <fstream>
-
-#include <fst/flags.h>
-#include <unordered_map>
-
-
 // Utility for error handling.
 
 DECLARE_bool(fst_error_fatal);
 
-#define FSTERROR() \
-  (FLAGS_fst_error_fatal ? LOG(FATAL) : LOG(ERROR))
+#define FSTERROR() (FLAGS_fst_error_fatal ? LOG(FATAL) : LOG(ERROR))
 
 namespace fst {
 
@@ -43,16 +39,16 @@ namespace fst {
 
 // Generic case.
 template <class T,
-    typename std::enable_if<std::is_class<T>::value, T>::type* = nullptr>
+          typename std::enable_if<std::is_class<T>::value, T>::type * = nullptr>
 inline std::istream &ReadType(std::istream &strm, T *t) {
   return t->Read(strm);
 }
 
 // Numeric (boolean, integral, floating-point) case.
-template <class T,
-    typename std::enable_if<std::is_arithmetic<T>::value, T>::type* = nullptr>
+template <class T, typename std::enable_if<std::is_arithmetic<T>::value,
+                                           T>::type * = nullptr>
 inline std::istream &ReadType(std::istream &strm, T *t) {
-  return strm.read(reinterpret_cast<char *>(t), sizeof(T)); \
+  return strm.read(reinterpret_cast<char *>(t), sizeof(T));
 }
 
 // String case.
@@ -101,34 +97,35 @@ std::istream &ReadContainerType(std::istream &strm, C *c, ReserveFn reserve) {
 }  // namespace internal
 
 template <typename T, typename A>
-std::istream &ReadType(std::istream &strm, std::vector<T,A> *c) {
+std::istream &ReadType(std::istream &strm, std::vector<T, A> *c) {
   return internal::ReadContainerType(
       strm, c, [](decltype(c) v, int n) { v->reserve(n); });
 }
 
 template <typename T, typename A>
-std::istream &ReadType(std::istream &strm, std::list<T,A> *c) {
+std::istream &ReadType(std::istream &strm, std::list<T, A> *c) {
   return internal::ReadContainerType(strm, c, [](decltype(c) v, int n) {});
 }
 
 template <typename T, typename L, typename A>
-std::istream &ReadType(std::istream &strm, std::set<T,L,A> *c) {
+std::istream &ReadType(std::istream &strm, std::set<T, L, A> *c) {
   return internal::ReadContainerType(strm, c, [](decltype(c) v, int n) {});
 }
 
 template <typename K, typename V, typename L, typename A>
-std::istream &ReadType(std::istream &strm, std::map<K,V,L,A> *c) {
+std::istream &ReadType(std::istream &strm, std::map<K, V, L, A> *c) {
   return internal::ReadContainerType(strm, c, [](decltype(c) v, int n) {});
 }
 
 template <typename T, typename H, typename E, typename A>
-std::istream &ReadType(std::istream &strm, std::unordered_set<T,H,E,A> *c) {
+std::istream &ReadType(std::istream &strm, std::unordered_set<T, H, E, A> *c) {
   return internal::ReadContainerType(
       strm, c, [](decltype(c) v, int n) { v->reserve(n); });
 }
 
 template <typename K, typename V, typename H, typename E, typename A>
-std::istream &ReadType(std::istream &strm, std::unordered_map<K,V,H,E,A> *c) {
+std::istream &ReadType(std::istream &strm,
+                       std::unordered_map<K, V, H, E, A> *c) {
   return internal::ReadContainerType(
       strm, c, [](decltype(c) v, int n) { v->reserve(n); });
 }
@@ -137,15 +134,15 @@ std::istream &ReadType(std::istream &strm, std::unordered_map<K,V,H,E,A> *c) {
 
 // Generic case.
 template <class T,
-    typename std::enable_if<std::is_class<T>::value, T>::type* = nullptr>
+          typename std::enable_if<std::is_class<T>::value, T>::type * = nullptr>
 inline std::ostream &WriteType(std::ostream &strm, const T t) {
   t.Write(strm);
   return strm;
 }
 
 // Numeric (boolean, integral, floating-point) case.
-template <class T,
-    typename std::enable_if<std::is_arithmetic<T>::value, T>::type* = nullptr>
+template <class T, typename std::enable_if<std::is_arithmetic<T>::value,
+                                           T>::type * = nullptr>
 inline std::ostream &WriteType(std::ostream &strm, const T t) {
   return strm.write(reinterpret_cast<const char *>(&t), sizeof(T));
 }
@@ -179,32 +176,34 @@ std::ostream &WriteContainer(std::ostream &strm, const C &c) {
 }  // namespace internal
 
 template <typename T, typename A>
-std::ostream &WriteType(std::ostream &strm, const std::vector<T,A> &c) {
+std::ostream &WriteType(std::ostream &strm, const std::vector<T, A> &c) {
   return internal::WriteContainer(strm, c);
 }
 
 template <typename T, typename A>
-std::ostream &WriteType(std::ostream &strm, const std::list<T,A> &c) {
+std::ostream &WriteType(std::ostream &strm, const std::list<T, A> &c) {
   return internal::WriteContainer(strm, c);
 }
 
 template <typename T, typename L, typename A>
-std::ostream &WriteType(std::ostream &strm, const std::set<T,L,A> &c) {
+std::ostream &WriteType(std::ostream &strm, const std::set<T, L, A> &c) {
   return internal::WriteContainer(strm, c);
 }
 
 template <typename K, typename V, typename L, typename A>
-std::ostream &WriteType(std::ostream &strm, const std::map<K,V,L,A> &c) {
+std::ostream &WriteType(std::ostream &strm, const std::map<K, V, L, A> &c) {
   return internal::WriteContainer(strm, c);
 }
 
 template <typename T, typename H, typename E, typename A>
-std::ostream &WriteType(std::ostream &strm, const std::unordered_set<T,H,E,A> &c) {
+std::ostream &WriteType(std::ostream &strm,
+                        const std::unordered_set<T, H, E, A> &c) {
   return internal::WriteContainer(strm, c);
 }
 
 template <typename K, typename V, typename H, typename E, typename A>
-std::ostream &WriteType(std::ostream &strm, const std::unordered_map<K,V,H,E,A> &c) {
+std::ostream &WriteType(std::ostream &strm,
+                        const std::unordered_map<K, V, H, E, A> &c) {
   return internal::WriteContainer(strm, c);
 }
 

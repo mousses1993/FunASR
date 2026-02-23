@@ -6,20 +6,18 @@
 #ifndef FST_QUEUE_H_
 #define FST_QUEUE_H_
 
+#include <fst/arcfilter.h>
+#include <fst/connect.h>
+#include <fst/heap.h>
+#include <fst/log.h>
+#include <fst/topsort.h>
+#include <fst/weight.h>
+
 #include <deque>
 #include <memory>
 #include <type_traits>
 #include <utility>
 #include <vector>
-
-#include <fst/log.h>
-
-#include <fst/arcfilter.h>
-#include <fst/connect.h>
-#include <fst/heap.h>
-#include <fst/topsort.h>
-#include <fst/weight.h>
-
 
 namespace fst {
 
@@ -760,7 +758,7 @@ class NaturalAStarEstimate {
   NaturalAStarEstimate(const std::vector<Weight> &beta) : beta_(beta) {}
 
   const Weight &operator()(StateId s) const {
-     return (s < beta_.size()) ? beta_[s] : kZero;
+    return (s < beta_.size()) ? beta_[s] : kZero;
   }
 
  private:
@@ -802,7 +800,8 @@ class AStarWeightCompare {
 
 // A* queue discipline templated on StateId, Weight, and Estimate.
 template <typename S, typename Weight, typename Estimate>
-class NaturalAStarQueue : public ShortestFirstQueue<
+class NaturalAStarQueue
+    : public ShortestFirstQueue<
           S, AStarWeightCompare<S, NaturalLess<Weight>, Estimate>> {
  public:
   using StateId = S;

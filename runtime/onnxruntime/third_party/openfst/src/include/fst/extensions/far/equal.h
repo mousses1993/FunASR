@@ -4,11 +4,11 @@
 #ifndef FST_EXTENSIONS_FAR_EQUAL_H_
 #define FST_EXTENSIONS_FAR_EQUAL_H_
 
+#include <fst/equal.h>
+#include <fst/extensions/far/far.h>
+
 #include <memory>
 #include <string>
-
-#include <fst/extensions/far/far.h>
-#include <fst/equal.h>
 
 namespace fst {
 

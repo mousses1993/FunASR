@@ -4,13 +4,13 @@
 #ifndef FST_SCRIPT_CONVERT_H_
 #define FST_SCRIPT_CONVERT_H_
 
-#include <memory>
-#include <string>
-#include <utility>
-
 #include <fst/register.h>
 #include <fst/script/arg-packs.h>
 #include <fst/script/fst-class.h>
+
+#include <memory>
+#include <string>
+#include <utility>
 
 namespace fst {
 namespace script {

@@ -7,15 +7,13 @@
 #ifndef FST_RANDEQUIVALENT_H_
 #define FST_RANDEQUIVALENT_H_
 
-#include <fst/log.h>
-
 #include <fst/arcsort.h>
 #include <fst/compose.h>
+#include <fst/log.h>
 #include <fst/project.h>
 #include <fst/randgen.h>
 #include <fst/shortest-distance.h>
 #include <fst/vector-fst.h>
-
 
 namespace fst {
 
@@ -28,9 +26,8 @@ namespace fst {
 // generated path and checks that these two values are within a user-specified
 // delta. Returns optional error value (when FLAGS_error_fatal = false).
 template <class Arc, class ArcSelector>
-bool RandEquivalent(const Fst<Arc> &fst1, const Fst<Arc> &fst2,
-                    int32 num_paths, float delta,
-                    const RandGenOptions<ArcSelector> &opts,
+bool RandEquivalent(const Fst<Arc> &fst1, const Fst<Arc> &fst2, int32 num_paths,
+                    float delta, const RandGenOptions<ArcSelector> &opts,
                     bool *error = nullptr) {
   using Weight = typename Arc::Weight;
   if (error) *error = false;

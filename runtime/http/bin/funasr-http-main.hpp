@@ -10,11 +10,7 @@
 #include "model-decoder.h"
 #include "server.hpp"
 namespace http {
-namespace server2 {
+namespace server2 {}  // namespace server2
+}  // namespace http
 
- 
-
-} // namespace server2
-} // namespace http
-
-#endif // HTTP_SERVER2_MAIN_HPP
+#endif  // HTTP_SERVER2_MAIN_HPP

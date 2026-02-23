@@ -6,6 +6,15 @@
 #ifndef FST_EXTENSIONS_COMPRESS_COMPRESS_H_
 #define FST_EXTENSIONS_COMPRESS_COMPRESS_H_
 
+#include <fst/compat.h>
+#include <fst/encode.h>
+#include <fst/extensions/compress/elias.h>
+#include <fst/extensions/compress/gzfile.h>
+#include <fst/fst.h>
+#include <fst/log.h>
+#include <fst/mutable-fst.h>
+#include <fst/statesort.h>
+
 #include <algorithm>
 #include <cstdio>
 #include <iostream>
@@ -15,15 +24,6 @@
 #include <string>
 #include <utility>
 #include <vector>
-
-#include <fst/compat.h>
-#include <fst/log.h>
-#include <fst/extensions/compress/elias.h>
-#include <fst/extensions/compress/gzfile.h>
-#include <fst/encode.h>
-#include <fst/fst.h>
-#include <fst/mutable-fst.h>
-#include <fst/statesort.h>
 
 namespace fst {
 
@@ -845,8 +845,7 @@ bool Compress(const Fst<Arc> &fst, const string &file_name,
   } else if (file_name.empty()) {
     Compress(fst, std::cout);
   } else {
-    std::ofstream strm(file_name,
-                             std::ios_base::out | std::ios_base::binary);
+    std::ofstream strm(file_name, std::ios_base::out | std::ios_base::binary);
     if (!strm) {
       LOG(ERROR) << "Compress: Can't open file: " << file_name;
       return false;
@@ -890,8 +889,7 @@ bool Decompress(const string &file_name, MutableFst<Arc> *fst,
   } else if (file_name.empty()) {
     Decompress(std::cin, "stdin", fst);
   } else {
-    std::ifstream strm(file_name,
-                            std::ios_base::in | std::ios_base::binary);
+    std::ifstream strm(file_name, std::ios_base::in | std::ios_base::binary);
     if (!strm) {
       LOG(ERROR) << "Decompress: Can't open file: " << file_name;
       return false;

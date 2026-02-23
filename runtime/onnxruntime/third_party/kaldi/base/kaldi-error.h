@@ -72,22 +72,22 @@ struct LogMessageEnvelope {
   /// SetVerboseLevel() has been called to set logging level to at least the
   /// corresponding value.
   enum Severity {
-    kAssertFailed = -3, //!< Assertion failure. abort() will be called.
-    kError = -2,        //!< Fatal error. KaldiFatalError will be thrown.
-    kWarning = -1,      //!< Indicates a recoverable but abnormal condition.
-    kInfo = 0,          //!< Informational message.
+    kAssertFailed = -3,  //!< Assertion failure. abort() will be called.
+    kError = -2,         //!< Fatal error. KaldiFatalError will be thrown.
+    kWarning = -1,       //!< Indicates a recoverable but abnormal condition.
+    kInfo = 0,           //!< Informational message.
   };
-  int severity;     //!< A Severity value, or positive verbosity level.
-  const char *func; //!< Name of the function invoking the logging.
-  const char *file; //!< Source file name with up to 1 leading directory.
-  int32 line;       //<! Line number in the source file.
+  int severity;      //!< A Severity value, or positive verbosity level.
+  const char *func;  //!< Name of the function invoking the logging.
+  const char *file;  //!< Source file name with up to 1 leading directory.
+  int32 line;        //<! Line number in the source file.
 };
 
 /// Kaldi fatal runtime error exception. This exception is thrown from any use
 /// of the KALDI_ERR logging macro after the logging function, either set by
 /// SetLogHandler(), or the Kaldi's internal one, has returned.
 class KaldiFatalError : public std::runtime_error {
-public:
+ public:
   explicit KaldiFatalError(const std::string &message)
       : std::runtime_error(message) {}
   explicit KaldiFatalError(const char *message) : std::runtime_error(message) {}
@@ -107,7 +107,7 @@ public:
 // provided. Then, in case of the error, throws a KaldiFatalError exception, or
 // in case of failed KALDI_ASSERT, calls std::abort().
 class MessageLogger {
-public:
+ public:
   /// The constructor stores the message's "envelope", a set of data which
   // identifies the location in source which is sending the message to log.
   // The pointers to strings are stored internally, and not owned or copied,
@@ -116,7 +116,8 @@ public:
                 const char *file, int32 line);
 
   // The stream insertion operator, used in e.g. 'KALDI_LOG << "Message"'.
-  template <typename T> MessageLogger &operator<<(const T &val) {
+  template <typename T>
+  MessageLogger &operator<<(const T &val) {
     ss_ << val;
     return *this;
   }
@@ -135,7 +136,7 @@ public:
     }
   };
 
-private:
+ private:
   std::string GetMessage() const { return ss_.str(); }
   void LogMessage() const;
 
@@ -144,19 +145,19 @@ private:
 };
 
 // Logging macros.
-#define KALDI_ERR                                                              \
-  ::kaldi::MessageLogger::LogAndThrow() = ::kaldi::MessageLogger(              \
+#define KALDI_ERR                                                 \
+  ::kaldi::MessageLogger::LogAndThrow() = ::kaldi::MessageLogger( \
       ::kaldi::LogMessageEnvelope::kError, __func__, __FILE__, __LINE__)
-#define KALDI_WARN                                                             \
-  ::kaldi::MessageLogger::Log() = ::kaldi::MessageLogger(                      \
+#define KALDI_WARN                                        \
+  ::kaldi::MessageLogger::Log() = ::kaldi::MessageLogger( \
       ::kaldi::LogMessageEnvelope::kWarning, __func__, __FILE__, __LINE__)
-#define KALDI_LOG                                                              \
-  ::kaldi::MessageLogger::Log() = ::kaldi::MessageLogger(                      \
+#define KALDI_LOG                                         \
+  ::kaldi::MessageLogger::Log() = ::kaldi::MessageLogger( \
       ::kaldi::LogMessageEnvelope::kInfo, __func__, __FILE__, __LINE__)
-#define KALDI_VLOG(v)                                                          \
-  if ((v) <= ::kaldi::GetVerboseLevel())                                       \
-  ::kaldi::MessageLogger::Log() =                                              \
-      ::kaldi::MessageLogger((::kaldi::LogMessageEnvelope::Severity)(v),       \
+#define KALDI_VLOG(v)                                                    \
+  if ((v) <= ::kaldi::GetVerboseLevel())                                 \
+  ::kaldi::MessageLogger::Log() =                                        \
+      ::kaldi::MessageLogger((::kaldi::LogMessageEnvelope::Severity)(v), \
                              __func__, __FILE__, __LINE__)
 
 /***** KALDI ASSERTS *****/
@@ -182,12 +183,12 @@ private:
 // KALDI_ASSERT_IS_INTEGER_TYPE and KALDI_ASSERT_IS_FLOATING_TYPE, also defined
 // there.
 #ifndef NDEBUG
-#define KALDI_ASSERT(cond)                                                     \
-  do {                                                                         \
-    if (cond)                                                                  \
-      (void)0;                                                                 \
-    else                                                                       \
-      ::kaldi::KaldiAssertFailure_(__func__, __FILE__, __LINE__, #cond);       \
+#define KALDI_ASSERT(cond)                                               \
+  do {                                                                   \
+    if (cond)                                                            \
+      (void)0;                                                           \
+    else                                                                 \
+      ::kaldi::KaldiAssertFailure_(__func__, __FILE__, __LINE__, #cond); \
   } while (0)
 #else
 #define KALDI_ASSERT(cond) (void)0
@@ -195,12 +196,12 @@ private:
 
 // Some more expensive asserts only checked if this defined.
 #ifdef KALDI_PARANOID
-#define KALDI_PARANOID_ASSERT(cond)                                            \
-  do {                                                                         \
-    if (cond)                                                                  \
-      (void)0;                                                                 \
-    else                                                                       \
-      ::kaldi::KaldiAssertFailure_(__func__, __FILE__, __LINE__, #cond);       \
+#define KALDI_PARANOID_ASSERT(cond)                                      \
+  do {                                                                   \
+    if (cond)                                                            \
+      (void)0;                                                           \
+    else                                                                 \
+      ::kaldi::KaldiAssertFailure_(__func__, __FILE__, __LINE__, #cond); \
   } while (0)
 #else
 #define KALDI_PARANOID_ASSERT(cond) (void)0
@@ -222,10 +223,10 @@ LogHandler SetLogHandler(LogHandler);
 /// @} end "addtogroup error_group"
 
 //// Functions within internal is exported for testing only, do not use.
-//namespace internal {
-//bool LocateSymbolRange(const std::string &trace_name, size_t *begin,
-//                       size_t *end);
-//} // namespace internal
-} // namespace kaldi
+// namespace internal {
+// bool LocateSymbolRange(const std::string &trace_name, size_t *begin,
+//                        size_t *end);
+// } // namespace internal
+}  // namespace kaldi
 
-#endif // KALDI_BASE_KALDI_ERROR_H_
+#endif  // KALDI_BASE_KALDI_ERROR_H_

@@ -4,13 +4,13 @@
 #ifndef FST_SCRIPT_SHORTEST_PATH_H_
 #define FST_SCRIPT_SHORTEST_PATH_H_
 
-#include <memory>
-#include <vector>
-
-#include <fst/shortest-path.h>
 #include <fst/script/fst-class.h>
 #include <fst/script/shortest-distance.h>
 #include <fst/script/weight-class.h>
+#include <fst/shortest-path.h>
+
+#include <memory>
+#include <vector>
 
 namespace fst {
 namespace script {
@@ -72,9 +72,8 @@ void ShortestPath(const Fst<Arc> &ifst, MutableFst<Arc> *ofst,
       return;
     }
     case SHORTEST_FIRST_QUEUE: {
-      ShortestPath<Arc, NaturalShortestFirstQueue<StateId, Weight>>(ifst, ofst,
-                                                                    &distance,
-                                                                    opts);
+      ShortestPath<Arc, NaturalShortestFirstQueue<StateId, Weight>>(
+          ifst, ofst, &distance, opts);
       return;
     }
     case STATE_ORDER_QUEUE: {
@@ -86,8 +85,7 @@ void ShortestPath(const Fst<Arc> &ifst, MutableFst<Arc> *ofst,
       return;
     }
     default: {
-      FSTERROR() << "ShortestPath: Unknown queue type: "
-                 << opts.queue_type;
+      FSTERROR() << "ShortestPath: Unknown queue type: " << opts.queue_type;
       ofst->SetProperties(kError, kError);
       return;
     }

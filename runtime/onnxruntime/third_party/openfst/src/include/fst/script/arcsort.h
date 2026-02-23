@@ -4,18 +4,15 @@
 #ifndef FST_SCRIPT_ARCSORT_H_
 #define FST_SCRIPT_ARCSORT_H_
 
-#include <utility>
-
 #include <fst/arcsort.h>
 #include <fst/script/fst-class.h>
+
+#include <utility>
 
 namespace fst {
 namespace script {
 
-enum ArcSortType {
-  ILABEL_SORT,
-  OLABEL_SORT
-};
+enum ArcSortType { ILABEL_SORT, OLABEL_SORT };
 
 using ArcSortArgs = std::pair<MutableFstClass *, ArcSortType>;
 

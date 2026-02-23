@@ -6,13 +6,12 @@
 #ifndef FST_FILTER_STATE_H_
 #define FST_FILTER_STATE_H_
 
-#include <forward_list>
-#include <utility>
-
 #include <fst/fst-decl.h>  // For optional argument declarations
 #include <fst/fst.h>
 #include <fst/matcher.h>
 
+#include <forward_list>
+#include <utility>
 
 namespace fst {
 

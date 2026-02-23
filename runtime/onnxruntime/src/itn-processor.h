@@ -1,5 +1,5 @@
-// Acknowledgement: this code is adapted from 
-// https://github.com/wenet-e2e/WeTextProcessing/blob/master/runtime/processor/processor.h 
+// Acknowledgement: this code is adapted from
+// https://github.com/wenet-e2e/WeTextProcessing/blob/master/runtime/processor/processor.h
 // Retrieved in Aug 2023.
 
 // Copyright (c) 2022 Zhendong Peng (pzd17@tsinghua.org.cn)
@@ -21,8 +21,8 @@
 #define ITN_PROCESSOR_H_
 
 #include "fst/fstlib.h"
-#include "precomp.h"
 #include "itn-token-parser.h"
+#include "precomp.h"
 
 using fst::StdArc;
 using fst::StdVectorFst;
@@ -33,7 +33,8 @@ namespace funasr {
 class ITNProcessor : public ITNModel {
  public:
   ITNProcessor();
-  void InitITN(const std::string &itn_tagger, const std::string &itn_verbalizer, int thread_num);
+  void InitITN(const std::string& itn_tagger, const std::string& itn_verbalizer,
+               int thread_num);
   ~ITNProcessor();
 
   std::string tag(const std::string& input);

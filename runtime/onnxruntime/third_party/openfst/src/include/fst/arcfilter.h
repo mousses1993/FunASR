@@ -6,10 +6,8 @@
 #ifndef FST_ARCFILTER_H_
 #define FST_ARCFILTER_H_
 
-
 #include <fst/fst.h>
 #include <fst/util.h>
-
 
 namespace fst {
 

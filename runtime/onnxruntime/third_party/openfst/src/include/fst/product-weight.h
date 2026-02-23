@@ -6,12 +6,11 @@
 #ifndef FST_PRODUCT_WEIGHT_H_
 #define FST_PRODUCT_WEIGHT_H_
 
-#include <string>
-#include <utility>
-
 #include <fst/pair-weight.h>
 #include <fst/weight.h>
 
+#include <string>
+#include <utility>
 
 namespace fst {
 
@@ -91,8 +90,8 @@ inline ProductWeight<W1, W2> Divide(const ProductWeight<W1, W2> &w1,
 // for the template weight types, like all other pair weight types. This is
 // intended primarily for testing.
 template <class W1, class W2>
-class WeightGenerate<ProductWeight<W1, W2>> :
-    public WeightGenerate<PairWeight<W1, W2>> {
+class WeightGenerate<ProductWeight<W1, W2>>
+    : public WeightGenerate<PairWeight<W1, W2>> {
  public:
   using Weight = ProductWeight<W1, W2>;
   using Generate = WeightGenerate<PairWeight<W1, W2>>;

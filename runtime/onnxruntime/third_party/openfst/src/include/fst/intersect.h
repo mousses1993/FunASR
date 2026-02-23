@@ -6,14 +6,12 @@
 #ifndef FST_INTERSECT_H_
 #define FST_INTERSECT_H_
 
-#include <algorithm>
-#include <vector>
-
-#include <fst/log.h>
-
 #include <fst/cache.h>
 #include <fst/compose.h>
+#include <fst/log.h>
 
+#include <algorithm>
+#include <vector>
 
 namespace fst {
 

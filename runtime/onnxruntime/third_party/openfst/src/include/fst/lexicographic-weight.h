@@ -13,15 +13,12 @@
 #ifndef FST_LEXICOGRAPHIC_WEIGHT_H_
 #define FST_LEXICOGRAPHIC_WEIGHT_H_
 
-#include <cstdlib>
-
-#include <string>
-
 #include <fst/log.h>
-
 #include <fst/pair-weight.h>
 #include <fst/weight.h>
 
+#include <cstdlib>
+#include <string>
 
 namespace fst {
 
@@ -148,7 +145,8 @@ class WeightGenerate<LexicographicWeight<W1, W2>> {
   explicit WeightGenerate(bool allow_zero = true,
                           size_t num_random_weights = kNumRandomWeights)
       : generator1_(false, num_random_weights),
-        generator2_(false, num_random_weights), allow_zero_(allow_zero),
+        generator2_(false, num_random_weights),
+        allow_zero_(allow_zero),
         num_random_weights_(num_random_weights) {}
 
   Weight operator()() const {

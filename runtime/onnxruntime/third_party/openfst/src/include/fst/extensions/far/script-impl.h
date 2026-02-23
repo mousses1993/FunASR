@@ -7,9 +7,9 @@
 #ifndef FST_EXTENSIONS_FAR_SCRIPT_IMPL_H_
 #define FST_EXTENSIONS_FAR_SCRIPT_IMPL_H_
 
-#include <string>
-
 #include <fst/compat.h>
+
+#include <string>
 namespace fst {
 namespace script {
 

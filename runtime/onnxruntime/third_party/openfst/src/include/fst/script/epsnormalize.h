@@ -4,16 +4,16 @@
 #ifndef FST_SCRIPT_EPSNORMALIZE_H_
 #define FST_SCRIPT_EPSNORMALIZE_H_
 
-#include <tuple>
-
 #include <fst/epsnormalize.h>
 #include <fst/script/fst-class.h>
+
+#include <tuple>
 
 namespace fst {
 namespace script {
 
-using EpsNormalizeArgs = std::tuple<const FstClass &, MutableFstClass *,
-                                    EpsNormalizeType>;
+using EpsNormalizeArgs =
+    std::tuple<const FstClass &, MutableFstClass *, EpsNormalizeType>;
 
 template <class Arc>
 void EpsNormalize(EpsNormalizeArgs *args) {

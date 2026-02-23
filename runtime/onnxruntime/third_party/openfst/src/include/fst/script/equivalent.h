@@ -4,17 +4,17 @@
 #ifndef FST_SCRIPT_EQUIVALENT_H_
 #define FST_SCRIPT_EQUIVALENT_H_
 
-#include <tuple>
-
 #include <fst/equivalent.h>
 #include <fst/script/arg-packs.h>
 #include <fst/script/fst-class.h>
 
+#include <tuple>
+
 namespace fst {
 namespace script {
 
-using EquivalentInnerArgs = std::tuple<const FstClass &, const FstClass &,
-                                       float>;
+using EquivalentInnerArgs =
+    std::tuple<const FstClass &, const FstClass &, float>;
 
 using EquivalentArgs = WithReturnValue<bool, EquivalentInnerArgs>;
 

@@ -7,16 +7,14 @@
 #ifndef FST_PUSH_H_
 #define FST_PUSH_H_
 
-#include <vector>
-
-#include <fst/log.h>
-
 #include <fst/arc-map.h>
 #include <fst/factor-weight.h>
 #include <fst/fst.h>
+#include <fst/log.h>
 #include <fst/reweight.h>
 #include <fst/shortest-distance.h>
 
+#include <vector>
 
 namespace fst {
 
@@ -120,7 +118,7 @@ void Push(const Fst<Arc> &ifst, MutableFst<Arc> *ofst, uint32 ptype,
       ShortestDistance(gfst, &gdistance, rtype == REWEIGHT_TO_INITIAL, delta);
     } else {
       ArcMapFst<Arc, Arc, RmWeightMapper<Arc>> uwfst(ifst,
-                                                      RmWeightMapper<Arc>());
+                                                     RmWeightMapper<Arc>());
       ArcMapFst<Arc, GallicArc<Arc, gtype>, ToGallicMapper<Arc, gtype>> guwfst(
           uwfst, ToGallicMapper<Arc, gtype>());
       ShortestDistance(guwfst, &gdistance, rtype == REWEIGHT_TO_INITIAL, delta);

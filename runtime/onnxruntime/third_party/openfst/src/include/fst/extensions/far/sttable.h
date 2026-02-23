@@ -10,12 +10,12 @@
 #ifndef FST_EXTENSIONS_FAR_STTABLE_H_
 #define FST_EXTENSIONS_FAR_STTABLE_H_
 
+#include <fst/util.h>
+
 #include <algorithm>
+#include <fstream>
 #include <istream>
 #include <memory>
-
-#include <fstream>
-#include <fst/util.h>
 
 namespace fst {
 
@@ -105,7 +105,7 @@ class STTableReader {
           filenames[i], std::ios_base::in | std::ios_base::binary);
       if (streams_[i]->fail()) {
         FSTERROR() << "STTableReader::STTableReader: Error reading file: "
-                 << filenames[i];
+                   << filenames[i];
         error_ = true;
         return;
       }

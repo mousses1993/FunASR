@@ -6,18 +6,16 @@
 #ifndef FST_REPLACE_UTIL_H_
 #define FST_REPLACE_UTIL_H_
 
-#include <map>
-#include <unordered_map>
-#include <unordered_set>
-#include <vector>
-
-#include <fst/log.h>
-
 #include <fst/connect.h>
+#include <fst/log.h>
 #include <fst/mutable-fst.h>
 #include <fst/topsort.h>
 #include <fst/vector-fst.h>
 
+#include <map>
+#include <unordered_map>
+#include <unordered_set>
+#include <vector>
 
 namespace fst {
 
@@ -56,9 +54,8 @@ struct ReplaceUtilOptions {
 
   // For backwards compatibility.
   ReplaceUtilOptions(int64 root, bool epsilon_replace_arc)
-      : ReplaceUtilOptions(root,
-                           epsilon_replace_arc ? REPLACE_LABEL_NEITHER
-                                               : REPLACE_LABEL_INPUT) {}
+      : ReplaceUtilOptions(root, epsilon_replace_arc ? REPLACE_LABEL_NEITHER
+                                                     : REPLACE_LABEL_INPUT) {}
 };
 
 // Every non-terminal on a path appears as the first label on that path in every
@@ -342,8 +339,7 @@ void ReplaceUtil<Arc>::GetDependencies(bool stats) const {
         ++stats_[i].nstates;
         if (ifst->Final(s) != Weight::Zero()) ++stats_[i].nfinal;
       }
-      for (ArcIterator<Fst<Arc>> aiter(*ifst, s); !aiter.Done();
-           aiter.Next()) {
+      for (ArcIterator<Fst<Arc>> aiter(*ifst, s); !aiter.Done(); aiter.Next()) {
         if (have_stats_) ++stats_[i].narcs;
         const auto &arc = aiter.Value();
         auto it = nonterminal_hash_.find(arc.olabel);
@@ -581,8 +577,8 @@ void ReplaceUtil<Arc>::GetSCCProperties() const {
   if (!(depprops_ & kCyclic)) return;  // No cyclic dependencies.
   // Checks for self-loops in the dependency graph.
   for (StateId scc = 0; scc < depscc_.size(); ++scc) {
-    for (ArcIterator<Fst<Arc> > aiter(depfst_, scc);
-         !aiter.Done(); aiter.Next()) {
+    for (ArcIterator<Fst<Arc>> aiter(depfst_, scc); !aiter.Done();
+         aiter.Next()) {
       const auto &arc = aiter.Value();
       if (arc.nextstate == scc) {  // SCC has a self loop.
         depsccprops_[scc] |= kReplaceSCCNonTrivial;

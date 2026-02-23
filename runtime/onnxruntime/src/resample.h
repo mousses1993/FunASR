@@ -21,7 +21,7 @@
  */
 // this file is copied and modified from
 // kaldi/src/feat/resample.h
-#pragma once 
+#pragma once
 #include <cstdint>
 #include <vector>
 
@@ -135,4 +135,4 @@ class LinearResample {
   std::vector<float> input_remainder_;  ///< A small trailing part of the
                                         ///< previously seen input signal.
 };
-} // namespace funasr
+}  // namespace funasr

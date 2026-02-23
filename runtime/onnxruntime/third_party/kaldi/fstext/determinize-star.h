@@ -21,19 +21,19 @@
 
 #ifndef KALDI_FSTEXT_DETERMINIZE_STAR_H_
 #define KALDI_FSTEXT_DETERMINIZE_STAR_H_
-#include <fst/fstlib.h>
 #include <fst/fst-decl.h>
+#include <fst/fstlib.h>
+
 #include <algorithm>
 #include <map>
 #include <set>
+#include <stdexcept>  // this algorithm uses exceptions
 #include <vector>
-#include <stdexcept> // this algorithm uses exceptions
 
 namespace fst {
 
 /// \addtogroup fst_extensions
 ///  @{
-
 
 // For example of usage, see test-determinize-star.cc
 
@@ -65,8 +65,8 @@ namespace fst {
    treat them "specially".
 */
 
-
-// This algorithm will be slightly faster if you sort the input fst on input label.
+// This algorithm will be slightly faster if you sort the input fst on input
+// label.
 
 /**
     This function implements the normal version of DeterminizeStar, in which the
@@ -81,42 +81,35 @@ namespace fst {
     specified max_states is reached (when larger than zero), instead of throwing
     out an error.
 
-    Caution, the return status is un-intuitive: this function will return false if
-    determinization completed normally, and true if it was stopped early by
+    Caution, the return status is un-intuitive: this function will return false
+   if determinization completed normally, and true if it was stopped early by
     reaching the 'max-states' limit, and a partial FST was generated.
 */
-template<class F>
+template <class F>
 bool DeterminizeStar(F &ifst, MutableFst<typename F::Arc> *ofst,
-                     float delta = kDelta,
-                     bool *debug_ptr = NULL,
-                     int max_states = -1,
-                     bool allow_partial = false);
+                     float delta = kDelta, bool *debug_ptr = NULL,
+                     int max_states = -1, bool allow_partial = false);
 
+/*  This is a version of DeterminizeStar with a slightly more "natural" output
+   format, where the output sequences are encoded using the GallicArc (i.e. the
+   output symbols are strings. If max_states is positive, it will stop
+   determinization and throw an exception as soon as the max-states is reached.
+   This can be useful in test. If allow_partial is true, the algorithm will
+   output partial results when the specified max_states is reached (when larger
+   than zero), instead of throwing out an error.
 
-
-/*  This is a version of DeterminizeStar with a slightly more "natural" output format,
-    where the output sequences are encoded using the GallicArc (i.e. the output symbols
-    are strings.
-    If max_states is positive, it will stop determinization and throw an
-    exception as soon as the max-states is reached.  This can be useful in test.
-    If allow_partial is true, the algorithm will output partial results when the
-    specified max_states is reached (when larger than zero), instead of throwing
-    out an error.
-
-    Caution, the return status is un-intuitive: this function will return false if
-    determinization completed normally, and true if it was stopped early by
+    Caution, the return status is un-intuitive: this function will return false
+   if determinization completed normally, and true if it was stopped early by
     reaching the 'max-states' limit, and a partial FST was generated.
 */
-template<class F>
+template <class F>
 bool DeterminizeStar(F &ifst, MutableFst<GallicArc<typename F::Arc> > *ofst,
                      float delta = kDelta, bool *debug_ptr = NULL,
-                     int max_states = -1,
-                     bool allow_partial = false);
-
+                     int max_states = -1, bool allow_partial = false);
 
 /// @} end "addtogroup fst_extensions"
 
-} // end namespace fst
+}  // end namespace fst
 
 #include "fstext/determinize-star-inl.h"
 

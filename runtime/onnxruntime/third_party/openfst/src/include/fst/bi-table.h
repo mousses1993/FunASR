@@ -7,6 +7,9 @@
 #ifndef FST_BI_TABLE_H_
 #define FST_BI_TABLE_H_
 
+#include <fst/log.h>
+#include <fst/memory.h>
+
 #include <deque>
 #include <functional>
 #include <memory>
@@ -14,10 +17,6 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
-
-#include <fst/log.h>
-#include <fst/memory.h>
-#include <unordered_set>
 
 namespace fst {
 
@@ -51,9 +50,10 @@ class HashBiTable {
  public:
   // Reserves space for table_size elements. If passing H and E to the
   // constructor, this class owns them.
-  explicit HashBiTable(size_t table_size = 0, H *h = nullptr, E *e = nullptr) :
-      hash_func_(h ? h : new H()), hash_equal_(e ? e : new E()),
-      entry2id_(table_size, *hash_func_, *hash_equal_) {
+  explicit HashBiTable(size_t table_size = 0, H *h = nullptr, E *e = nullptr)
+      : hash_func_(h ? h : new H()),
+        hash_equal_(e ? e : new E()),
+        entry2id_(table_size, *hash_func_, *hash_equal_) {
     if (table_size) id2entry_.reserve(table_size);
   }
 
@@ -123,9 +123,11 @@ class CompactHashBiTable {
   // Reserves space for table_size elements. If passing H and E to the
   // constructor, this class owns them.
   explicit CompactHashBiTable(size_t table_size = 0, H *h = nullptr,
-                              E *e = nullptr) :
-        hash_func_(h ? h : new H()), hash_equal_(e ? e : new E()),
-        compact_hash_func_(*this), compact_hash_equal_(*this),
+                              E *e = nullptr)
+      : hash_func_(h ? h : new H()),
+        hash_equal_(e ? e : new E()),
+        compact_hash_func_(*this),
+        compact_hash_equal_(*this),
         keys_(table_size, compact_hash_func_, compact_hash_equal_) {
     if (table_size) id2entry_.reserve(table_size);
   }
@@ -133,7 +135,8 @@ class CompactHashBiTable {
   CompactHashBiTable(const CompactHashBiTable<I, T, H, E, HS> &table)
       : hash_func_(new H(*table.hash_func_)),
         hash_equal_(new E(*table.hash_equal_)),
-        compact_hash_func_(*this), compact_hash_equal_(*this),
+        compact_hash_func_(*this),
+        compact_hash_equal_(*this),
         keys_(table.keys_.size(), compact_hash_func_, compact_hash_equal_),
         id2entry_(table.id2entry_) {
     keys_.insert(table.keys_.begin(), table.keys_.end());
@@ -260,13 +263,14 @@ class VectorBiTable {
  public:
   // Reserves table_size cells of space. If passing FP argument to the
   // constructor, this class owns it.
-  explicit VectorBiTable(FP *fp = nullptr, size_t table_size = 0) :
-      fp_(fp ? fp : new FP()) {
+  explicit VectorBiTable(FP *fp = nullptr, size_t table_size = 0)
+      : fp_(fp ? fp : new FP()) {
     if (table_size) id2entry_.reserve(table_size);
   }
 
   VectorBiTable(const VectorBiTable<I, T, FP> &table)
-      : fp_(new FP(*table.fp_)), fp2id_(table.fp2id_),
+      : fp_(new FP(*table.fp_)),
+        fp2id_(table.fp2id_),
         id2entry_(table.id2entry_) {}
 
   I FindId(const T &entry, bool insert = true) {
@@ -310,16 +314,24 @@ class VectorHashBiTable {
 
   explicit VectorHashBiTable(S *s, FP *fp, H *h, size_t vector_size = 0,
                              size_t entry_size = 0)
-      : selector_(s), fp_(fp), h_(h), hash_func_(*this), hash_equal_(*this),
+      : selector_(s),
+        fp_(fp),
+        h_(h),
+        hash_func_(*this),
+        hash_equal_(*this),
         keys_(0, hash_func_, hash_equal_) {
     if (vector_size) fp2id_.reserve(vector_size);
     if (entry_size) id2entry_.reserve(entry_size);
   }
 
   VectorHashBiTable(const VectorHashBiTable<I, T, S, FP, H, HS> &table)
-      : selector_(new S(table.s_)), fp_(new FP(*table.fp_)),
-        h_(new H(*table.h_)), id2entry_(table.id2entry_),
-        fp2id_(table.fp2id_), hash_func_(*this), hash_equal_(*this),
+      : selector_(new S(table.s_)),
+        fp_(new FP(*table.fp_)),
+        h_(new H(*table.h_)),
+        id2entry_(table.id2entry_),
+        fp2id_(table.fp2id_),
+        hash_func_(*this),
+        hash_equal_(*this),
         keys_(table.keys_.size(), hash_func_, hash_equal_) {
     keys_.insert(table.keys_.begin(), table.keys_.end());
   }

@@ -7,21 +7,20 @@
 #ifndef FST_SCRIPT_GETTERS_H_
 #define FST_SCRIPT_GETTERS_H_
 
-#include <string>
-
-#include <fst/compose.h>          // For ComposeFilter.
-#include <fst/determinize.h>      // For DeterminizeType.
-#include <fst/encode.h>           // For kEncodeLabels (etc.).
-#include <fst/epsnormalize.h>     // For EpsNormalizeType.
-#include <fst/project.h>          // For ProjectType.
-#include <fst/push.h>             // For kPushWeights (etc.).
-#include <fst/queue.h>            // For QueueType.
-#include <fst/rational.h>         // For ClosureType.
-#include <fst/script/arcsort.h>       // For ArcSortType.
-#include <fst/script/map.h>           // For MapType.
-#include <fst/script/script-impl.h>   // For RandArcSelection.
-
+#include <fst/compose.h>       // For ComposeFilter.
+#include <fst/determinize.h>   // For DeterminizeType.
+#include <fst/encode.h>        // For kEncodeLabels (etc.).
+#include <fst/epsnormalize.h>  // For EpsNormalizeType.
 #include <fst/log.h>
+#include <fst/project.h>             // For ProjectType.
+#include <fst/push.h>                // For kPushWeights (etc.).
+#include <fst/queue.h>               // For QueueType.
+#include <fst/rational.h>            // For ClosureType.
+#include <fst/script/arcsort.h>      // For ArcSortType.
+#include <fst/script/map.h>          // For MapType.
+#include <fst/script/script-impl.h>  // For RandArcSelection.
+
+#include <string>
 
 namespace fst {
 namespace script {
@@ -53,8 +52,7 @@ inline ProjectType GetProjectType(bool project_output) {
 
 inline uint32 GetPushFlags(bool push_weights, bool push_labels,
                            bool remove_total_weight, bool remove_common_affix) {
-  return ((push_weights ? kPushWeights : 0) |
-          (push_labels ? kPushLabels : 0) |
+  return ((push_weights ? kPushWeights : 0) | (push_labels ? kPushLabels : 0) |
           (remove_total_weight ? kPushRemoveTotalWeight : 0) |
           (remove_common_affix ? kPushRemoveCommonAffix : 0));
 }

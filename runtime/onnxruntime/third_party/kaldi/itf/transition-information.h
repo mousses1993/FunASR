@@ -21,6 +21,7 @@
 #define KALDI_ITF_TRANSITION_INFORMATION_H_
 
 #include <stdint.h>
+
 #include <vector>
 
 namespace kaldi {
@@ -51,7 +52,8 @@ class TransitionInformation {
    * If trans_id1 == trans_id2, it must be the case that
    * TransitionIdsEquivalent(trans_id1, trans_id2) == true
    */
-  virtual bool TransitionIdsEquivalent(int32_t trans_id1, int32_t trans_id2) const = 0;
+  virtual bool TransitionIdsEquivalent(int32_t trans_id1,
+                                       int32_t trans_id2) const = 0;
   /**
    * Returns true if this trans_id corresponds to the start of a
    * phone.
@@ -93,7 +95,7 @@ class TransitionInformation {
    */
   virtual const std::vector<int32_t>& TransitionIdToPdfArray() const = 0;
   int32_t NumTransitionIds() const {
-      return TransitionIdToPdfArray().size() - 1;
+    return TransitionIdToPdfArray().size() - 1;
   }
   /**
    * Return the number of distinct outputs from
@@ -105,4 +107,4 @@ class TransitionInformation {
 
 }  // namespace kaldi
 
-#endif // KALDI_TRANSITION_INFORMATION_H_
+#endif  // KALDI_TRANSITION_INFORMATION_H_

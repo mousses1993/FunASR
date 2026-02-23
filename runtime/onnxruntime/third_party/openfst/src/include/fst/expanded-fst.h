@@ -6,16 +6,14 @@
 #ifndef FST_EXPANDED_FST_H_
 #define FST_EXPANDED_FST_H_
 
+#include <fst/fst.h>
+#include <fst/log.h>
 #include <sys/types.h>
+
+#include <fstream>
 #include <istream>
 #include <memory>
 #include <string>
-
-#include <fst/log.h>
-#include <fstream>
-
-#include <fst/fst.h>
-
 
 namespace fst {
 
@@ -62,8 +60,7 @@ class ExpandedFst : public Fst<A> {
   // Empty filename reads from standard input.
   static ExpandedFst<Arc> *Read(const string &filename) {
     if (!filename.empty()) {
-      std::ifstream strm(filename,
-                              std::ios_base::in | std::ios_base::binary);
+      std::ifstream strm(filename, std::ios_base::in | std::ios_base::binary);
       if (!strm) {
         LOG(ERROR) << "ExpandedFst::Read: Can't open file: " << filename;
         return nullptr;
@@ -135,8 +132,7 @@ class ImplToExpandedFst : public ImplToFst<Impl, FST> {
   // Empty filename reads from standard input.
   static Impl *Read(const string &filename) {
     if (!filename.empty()) {
-      std::ifstream strm(filename,
-                              std::ios_base::in | std::ios_base::binary);
+      std::ifstream strm(filename, std::ios_base::in | std::ios_base::binary);
       if (!strm) {
         LOG(ERROR) << "ExpandedFst::Read: Can't open file: " << filename;
         return nullptr;

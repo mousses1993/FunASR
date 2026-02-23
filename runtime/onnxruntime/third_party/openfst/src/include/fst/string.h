@@ -6,19 +6,17 @@
 #ifndef FST_STRING_H_
 #define FST_STRING_H_
 
+#include <fst/compact-fst.h>
+#include <fst/flags.h>
+#include <fst/icu.h>
+#include <fst/log.h>
+#include <fst/mutable-fst.h>
+#include <fst/util.h>
+
 #include <memory>
 #include <sstream>
 #include <string>
 #include <vector>
-
-#include <fst/flags.h>
-#include <fst/log.h>
-
-#include <fst/compact-fst.h>
-#include <fst/icu.h>
-#include <fst/mutable-fst.h>
-#include <fst/util.h>
-
 
 DECLARE_string(fst_field_separator);
 

@@ -4,14 +4,14 @@
 #ifndef FST_SCRIPT_RMEPSILON_H_
 #define FST_SCRIPT_RMEPSILON_H_
 
-#include <utility>
-#include <vector>
-
 #include <fst/queue.h>
 #include <fst/rmepsilon.h>
 #include <fst/script/fst-class.h>
 #include <fst/script/shortest-distance.h>
 #include <fst/script/weight-class.h>
+
+#include <utility>
+#include <vector>
 
 namespace fst {
 namespace script {

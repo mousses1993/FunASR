@@ -7,12 +7,12 @@
 #ifndef FST_SCRIPT_PRINT_IMPL_H_
 #define FST_SCRIPT_PRINT_IMPL_H_
 
+#include <fst/fstlib.h>
+#include <fst/util.h>
+
 #include <ostream>
 #include <sstream>
 #include <string>
-
-#include <fst/fstlib.h>
-#include <fst/util.h>
 
 DECLARE_string(fst_field_separator);
 

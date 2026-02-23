@@ -6,14 +6,12 @@
 #ifndef FST_TOPSORT_H_
 #define FST_TOPSORT_H_
 
-#include <memory>
-#include <vector>
-
-
 #include <fst/dfs-visit.h>
 #include <fst/fst.h>
 #include <fst/statesort.h>
 
+#include <memory>
+#include <vector>
 
 namespace fst {
 

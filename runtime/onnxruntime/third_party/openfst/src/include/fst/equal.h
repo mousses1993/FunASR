@@ -6,11 +6,9 @@
 #ifndef FST_EQUAL_H_
 #define FST_EQUAL_H_
 
-#include <fst/log.h>
-
 #include <fst/fst.h>
+#include <fst/log.h>
 #include <fst/test-properties.h>
-
 
 namespace fst {
 
@@ -40,11 +38,11 @@ class WeightApproxEqual {
 // compatibility of stored properties (etype & kEqualCompatProperties) and
 // of symbol tables (etype & kEqualCompatSymbols).
 template <class Arc, class WeightEqual>
-bool Equal(const Fst<Arc> &fst1, const Fst<Arc> &fst2,
-           WeightEqual weight_equal, uint32 etype = kEqualFsts) {
+bool Equal(const Fst<Arc> &fst1, const Fst<Arc> &fst2, WeightEqual weight_equal,
+           uint32 etype = kEqualFsts) {
   if ((etype & kEqualFstTypes) && (fst1.Type() != fst2.Type())) {
-    VLOG(1) << "Equal: Mismatched FST types (" << fst1.Type() << " != "
-            << fst2.Type() << ")";
+    VLOG(1) << "Equal: Mismatched FST types (" << fst1.Type()
+            << " != " << fst2.Type() << ")";
     return false;
   }
   if ((etype & kEqualCompatProperties) &&
@@ -65,8 +63,8 @@ bool Equal(const Fst<Arc> &fst1, const Fst<Arc> &fst2,
   }
   if (!(etype & kEqualFsts)) return true;
   if (fst1.Start() != fst2.Start()) {
-    VLOG(1) << "Equal: Mismatched start states (" << fst1.Start() << " != "
-            << fst2.Start() << ")";
+    VLOG(1) << "Equal: Mismatched start states (" << fst1.Start()
+            << " != " << fst2.Start() << ")";
     return false;
   }
   StateIterator<Fst<Arc>> siter1(fst1);
@@ -79,15 +77,14 @@ bool Equal(const Fst<Arc> &fst1, const Fst<Arc> &fst2,
     const auto s1 = siter1.Value();
     const auto s2 = siter2.Value();
     if (s1 != s2) {
-      VLOG(1) << "Equal: Mismatched states (" << s1 << "!= "
-              << s2 << ")";
+      VLOG(1) << "Equal: Mismatched states (" << s1 << "!= " << s2 << ")";
       return false;
     }
     const auto &final1 = fst1.Final(s1);
     const auto &final2 = fst2.Final(s2);
     if (!weight_equal(final1, final2)) {
-      VLOG(1) << "Equal: Mismatched final weights at state " << s1
-              << " (" << final1 << " != " << final2 << ")";
+      VLOG(1) << "Equal: Mismatched final weights at state " << s1 << " ("
+              << final1 << " != " << final2 << ")";
       return false;
     }
     ArcIterator<Fst<Arc>> aiter1(fst1, s1);
@@ -101,23 +98,22 @@ bool Equal(const Fst<Arc> &fst1, const Fst<Arc> &fst2,
       const auto &arc2 = aiter2.Value();
       if (arc1.ilabel != arc2.ilabel) {
         VLOG(1) << "Equal: Mismatched arc input labels at state " << s1
-                << ", arc " << a << " (" << arc1.ilabel << " != "
-                << arc2.ilabel << ")";
+                << ", arc " << a << " (" << arc1.ilabel << " != " << arc2.ilabel
+                << ")";
         return false;
       } else if (arc1.olabel != arc2.olabel) {
         VLOG(1) << "Equal: Mismatched arc output labels at state " << s1
-                << ", arc " << a << " (" << arc1.olabel << " != "
-                << arc2.olabel << ")";
+                << ", arc " << a << " (" << arc1.olabel << " != " << arc2.olabel
+                << ")";
         return false;
       } else if (!weight_equal(arc1.weight, arc2.weight)) {
-        VLOG(1) << "Equal: Mismatched arc weights at state " << s1
-                << ", arc " << a << " (" << arc1.weight << " != "
-                << arc2.weight << ")";
+        VLOG(1) << "Equal: Mismatched arc weights at state " << s1 << ", arc "
+                << a << " (" << arc1.weight << " != " << arc2.weight << ")";
         return false;
       } else if (arc1.nextstate != arc2.nextstate) {
-        VLOG(1) << "Equal: Mismatched next state at state " << s1
-                << ", arc " << a << " (" << arc1.nextstate << " != "
-                << arc2.nextstate << ")";
+        VLOG(1) << "Equal: Mismatched next state at state " << s1 << ", arc "
+                << a << " (" << arc1.nextstate << " != " << arc2.nextstate
+                << ")";
         return false;
       }
       aiter1.Next();
@@ -125,21 +121,20 @@ bool Equal(const Fst<Arc> &fst1, const Fst<Arc> &fst2,
     }
     // Sanity checks: should never fail.
     if (fst1.NumArcs(s1) != fst2.NumArcs(s2)) {
-      FSTERROR() << "Equal: Inconsistent arc counts at state " << s1
-                 << " (" << fst1.NumArcs(s1) << " != "
-                 << fst2.NumArcs(s2) << ")";
+      FSTERROR() << "Equal: Inconsistent arc counts at state " << s1 << " ("
+                 << fst1.NumArcs(s1) << " != " << fst2.NumArcs(s2) << ")";
       return false;
     }
     if (fst1.NumInputEpsilons(s1) != fst2.NumInputEpsilons(s2)) {
       FSTERROR() << "Equal: Inconsistent input epsilon counts at state " << s1
-                 << " (" << fst1.NumInputEpsilons(s1) << " != "
-                 << fst2.NumInputEpsilons(s2) << ")";
+                 << " (" << fst1.NumInputEpsilons(s1)
+                 << " != " << fst2.NumInputEpsilons(s2) << ")";
       return false;
     }
     if (fst1.NumOutputEpsilons(s1) != fst2.NumOutputEpsilons(s2)) {
       FSTERROR() << "Equal: Inconsistent output epsilon counts at state " << s1
-                 << " (" << fst1.NumOutputEpsilons(s1) << " != "
-                 << fst2.NumOutputEpsilons(s2) << ")";
+                 << " (" << fst1.NumOutputEpsilons(s1)
+                 << " != " << fst2.NumOutputEpsilons(s2) << ")";
     }
     siter1.Next();
     siter2.Next();
@@ -148,8 +143,8 @@ bool Equal(const Fst<Arc> &fst1, const Fst<Arc> &fst2,
 }
 
 template <class Arc>
-bool Equal(const Fst<Arc> &fst1, const Fst<Arc> &fst2,
-           float delta = kDelta, uint32 etype = kEqualFsts) {
+bool Equal(const Fst<Arc> &fst1, const Fst<Arc> &fst2, float delta = kDelta,
+           uint32 etype = kEqualFsts) {
   return Equal(fst1, fst2, WeightApproxEqual(delta), etype);
 }
 
@@ -158,11 +153,10 @@ bool Equal(const Fst<Arc> &fst1, const Fst<Arc> &fst2,
 // since it is a better match than double -> float narrowing, but
 // the instantiation will fail.
 template <class Arc>
-bool Equal(const Fst<Arc> &fst1, const Fst<Arc> &fst2,
-           double delta, uint32 etype = kEqualFsts) {
+bool Equal(const Fst<Arc> &fst1, const Fst<Arc> &fst2, double delta,
+           uint32 etype = kEqualFsts) {
   return Equal(fst1, fst2, WeightApproxEqual(static_cast<float>(delta)), etype);
 }
-
 
 }  // namespace fst
 

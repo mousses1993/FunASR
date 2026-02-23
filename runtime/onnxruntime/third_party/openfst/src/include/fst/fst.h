@@ -7,29 +7,25 @@
 #ifndef FST_FST_H_
 #define FST_FST_H_
 
-#include <sys/types.h>
-
-#include <cmath>
-#include <cstddef>
-
-#include <iostream>
-#include <memory>
-#include <sstream>
-#include <string>
-#include <utility>
-
+#include <fst/arc.h>
 #include <fst/compat.h>
 #include <fst/flags.h>
 #include <fst/log.h>
-#include <fstream>
-
-#include <fst/arc.h>
 #include <fst/memory.h>
 #include <fst/properties.h>
 #include <fst/register.h>
 #include <fst/symbol-table.h>
 #include <fst/util.h>
+#include <sys/types.h>
 
+#include <cmath>
+#include <cstddef>
+#include <fstream>
+#include <iostream>
+#include <memory>
+#include <sstream>
+#include <string>
+#include <utility>
 
 DECLARE_bool(fst_align);
 
@@ -113,8 +109,13 @@ class FstHeader {
     IS_ALIGNED = 0x4,    // Memory-aligned (where appropriate).
   } Flags;
 
-  FstHeader() : version_(0), flags_(0), properties_(0), start_(-1),
-      numstates_(0), numarcs_(0) {}
+  FstHeader()
+      : version_(0),
+        flags_(0),
+        properties_(0),
+        start_(-1),
+        numstates_(0),
+        numarcs_(0) {}
 
   const string &FstType() const { return fsttype_; }
 
@@ -148,8 +149,7 @@ class FstHeader {
 
   void SetNumArcs(int64 numarcs) { numarcs_ = numarcs; }
 
-  bool Read(std::istream &strm, const string &source,
-            bool rewind = false);
+  bool Read(std::istream &strm, const string &source, bool rewind = false);
 
   bool Write(std::ostream &strm, const string &source) const;
 
@@ -254,8 +254,7 @@ class Fst {
   // results in reading from standard input.
   static Fst<Arc> *Read(const string &filename) {
     if (!filename.empty()) {
-      std::ifstream strm(filename,
-                              std::ios_base::in | std::ios_base::binary);
+      std::ifstream strm(filename, std::ios_base::in | std::ios_base::binary);
       if (!strm) {
         LOG(ERROR) << "Fst::Read: Can't open file: " << filename;
         return nullptr;
@@ -302,8 +301,7 @@ class Fst {
  protected:
   bool WriteFile(const string &filename) const {
     if (!filename.empty()) {
-      std::ofstream strm(filename,
-                               std::ios_base::out | std::ios_base::binary);
+      std::ofstream strm(filename, std::ios_base::out | std::ios_base::binary);
       if (!strm) {
         LOG(ERROR) << "Fst::Write: Can't open file: " << filename;
         return false;
@@ -553,8 +551,7 @@ class ArcIterator {
 // the global namespace.
 
 template <class FST>
-void *operator new(size_t size,
-                   fst::MemoryPool<fst::ArcIterator<FST>> *pool) {
+void *operator new(size_t size, fst::MemoryPool<fst::ArcIterator<FST>> *pool) {
   return pool->Allocate();
 }
 
@@ -711,8 +708,8 @@ class FstImpl {
   // Writes header and symbols to output stream. If opts.header is false, skips
   // writing header. If opts.[io]symbols is false, skips writing those symbols.
   // This method is needed for implementations that implement Write methods.
-  void WriteHeader(std::ostream &strm, const FstWriteOptions &opts,
-                   int version, FstHeader *hdr) const {
+  void WriteHeader(std::ostream &strm, const FstWriteOptions &opts, int version,
+                   FstHeader *hdr) const {
     if (opts.write_header) {
       hdr->SetFstType(type_);
       hdr->SetArcType(Arc::Type());
@@ -805,8 +802,8 @@ template <class Arc>
 inline FstImpl<Arc>::FstImpl(FstImpl<Arc> &&) noexcept = default;
 
 template <class Arc>
-inline FstImpl<Arc> &FstImpl<Arc>::operator=(
-    FstImpl<Arc> &&) noexcept = default;
+inline FstImpl<Arc> &FstImpl<Arc>::operator=(FstImpl<Arc> &&) noexcept =
+    default;
 
 template <class Arc>
 bool FstImpl<Arc>::ReadHeader(std::istream &strm, const FstReadOptions &opts,
@@ -824,13 +821,13 @@ bool FstImpl<Arc>::ReadHeader(std::istream &strm, const FstReadOptions &opts,
               << ", flags: " << hdr->GetFlags();
   }
   if (hdr->FstType() != type_) {
-    LOG(ERROR) << "FstImpl::ReadHeader: FST not of type " << type_
-               << ": " << opts.source;
+    LOG(ERROR) << "FstImpl::ReadHeader: FST not of type " << type_ << ": "
+               << opts.source;
     return false;
   }
   if (hdr->ArcType() != Arc::Type()) {
-    LOG(ERROR) << "FstImpl::ReadHeader: Arc not of type " << Arc::Type()
-               << ": " << opts.source;
+    LOG(ERROR) << "FstImpl::ReadHeader: Arc not of type " << Arc::Type() << ": "
+               << opts.source;
     return false;
   }
   if (hdr->Version() < min_version) {
@@ -923,8 +920,7 @@ class ImplToFst : public FST {
 
   ImplToFst(const ImplToFst<Impl, FST> &fst) : impl_(fst.impl_) {}
 
-  ImplToFst(ImplToFst<Impl, FST> &&fst) noexcept
-      : impl_(std::move(fst.impl_)) {
+  ImplToFst(ImplToFst<Impl, FST> &&fst) noexcept : impl_(std::move(fst.impl_)) {
     fst.impl_ = std::make_shared<Impl>();
   }
 
@@ -970,16 +966,15 @@ class ImplToFst : public FST {
 template <class IFST, class OFST>
 void Cast(const IFST &ifst, OFST *ofst) {
   using OImpl = typename OFST::Impl;
-  ofst->impl_ = std::shared_ptr<OImpl>(ifst.impl_,
-      reinterpret_cast<OImpl *>(ifst.impl_.get()));
+  ofst->impl_ = std::shared_ptr<OImpl>(
+      ifst.impl_, reinterpret_cast<OImpl *>(ifst.impl_.get()));
 }
 
 // FST serialization.
 
 template <class Arc>
-string FstToString(const Fst<Arc> &fst,
-                   const FstWriteOptions &options =
-                       FstWriteOptions("FstToString")) {
+string FstToString(const Fst<Arc> &fst, const FstWriteOptions &options =
+                                            FstWriteOptions("FstToString")) {
   std::ostringstream ostrm;
   fst.Write(ostrm, options);
   return ostrm.str();
